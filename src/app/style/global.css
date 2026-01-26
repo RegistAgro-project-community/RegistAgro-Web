@@ -1,0 +1,28 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+
+@theme {
+  --color-primary: #63a338;
+  --color-primary-hover: #73b349;
+
+  --color-background: #f6f8f6;
+  --color-surface-light: #ffffff;
+  --color-border: #dbe6dc;
+ --color-border-color: #dee3de;
+  --color-text-main: #111811;
+  --color-text-secondary: #618963;
+  --color-text-secondary2: #6c7f6d;
+
+
+  --font-display: "Manrope", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply font-display bg-background text-text-main antialiased;
+  }
+
+  input:focus {
+    @apply outline-none ring-2 ring-primary/20 border-primary;
+  }
+}
