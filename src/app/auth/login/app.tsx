@@ -10,7 +10,6 @@ export default function Login() {
             <h1 className="text-2xl font-bold tracking-tight">RegistAgro</h1>
           </div>
         </header>
-
         <div className="bg-surface border border-border shadow-sm rounded-xl p-8 w-full">
           <div className="mb-8 text-center sm:text-left">
             <h2 className="text-text-main text-2xl font-bold mb-2">
