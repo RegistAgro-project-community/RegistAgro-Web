@@ -61,7 +61,7 @@ export default function Login() {
               </div>
             </div>
 
-            <button className="w-full h-12 bg-primary hover:bg-primary-hover text-black font-bold rounded-lg flex items-center justify-center gap-2 shadow-sm transition-all  cursor-pointer">
+            <button className="w-full h-12 bg-primary hover:bg-primary-hover text-white font-bold rounded-lg flex items-center justify-center gap-2 shadow-sm transition-all  cursor-pointer">
               <span>Entrar</span>
               <span className="material-symbols-outlined">arrow_forward</span>
             </button>

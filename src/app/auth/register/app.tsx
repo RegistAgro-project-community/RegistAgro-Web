@@ -65,7 +65,7 @@ export default function Register() {
             <div className="pt-2 mb-7">
               <button
                 onClick={otp}
-                className="relative w-full cursor-pointer flex items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary hover:bg-primary-hover active:bg-[#0ec014] text-text-main text-base font-bold leading-normal tracking-[0.015em] transition-colors shadow-lg shadow-primary/20 group "
+                className="relative w-full cursor-pointer flex items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary hover:bg-primary-hover  text-white text-base font-bold leading-normal tracking-[0.015em] transition-colors shadow-lg shadow-primary/20 group "
               >
                 <span className="material-symbols-outlined mr-2 transition-transform group-hover:scale-110">
                   verified_user
@@ -144,7 +144,7 @@ export default function Register() {
               <div className="w-full mb-6">
                 <button
                   onClick={dados}
-                  className="w-full bg-primary hover:bg-primary-hover text-text-main font-bold text-base py-3.5 px-4 rounded-lg shadow-sm hover:shadow-sm transition-all duration-200 flex items-center justify-center gap-2 group cursor-pointer"
+                  className="w-full bg-primary hover:bg-primary-hover text-white font-bold text-base py-3.5 px-4 rounded-lg shadow-sm hover:shadow-sm transition-all duration-200 flex items-center justify-center gap-2 group cursor-pointer"
                 >
                   Confirmar Código
                 </button>
@@ -337,7 +337,7 @@ export default function Register() {
               </div>
               <div className="pt-4">
                 <button
-                  className="w-full bg-primary hover:bg-primary-hover active:scale-[0.99] transition-all duration-200 text-black dark:text-black font-bold text-lg rounded-lg h-14 flex items-center justify-center gap-3 shadow-md hover:shadow-lg cursor-pointer"
+                  className="w-full bg-primary hover:bg-primary-hover active:scale-[0.99] transition-all duration-200 text-white  font-bold text-lg rounded-lg h-14 flex items-center justify-center gap-3 shadow-md hover:shadow-lg cursor-pointer"
                   type="button"
                 >
                   <span>Criar Conta</span>
@@ -359,7 +359,6 @@ export default function Register() {
           </div>
         </div>
       )}
-    
     </div>
   );
 }
