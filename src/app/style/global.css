@@ -8,11 +8,10 @@
   --color-background: #f6f8f6;
   --color-surface-light: #ffffff;
   --color-border: #dbe6dc;
- --color-border-color: #dee3de;
+  --color-border-color: #dee3de;
   --color-text-main: #111811;
   --color-text-secondary: #618963;
   --color-text-secondary2: #6c7f6d;
-
 
   --font-display: "Manrope", sans-serif;
 }
