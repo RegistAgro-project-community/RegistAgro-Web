@@ -1,4 +1,63 @@
+import { useState } from "react";
+interface ZodIssue {
+  key: string;
+  message: string;
+  minimum?: number;
+}
+
+interface BackendResponse {
+  valid?: boolean;
+  message?: string;
+  error?: ZodIssue[] | string;
+}
+
 export default function Login() {
+  const [nif, setNif] = useState("");
+  const [password, setPassword] = useState("");
+  const [erro, setErro] = useState("");
+  async function Logar(event: React.FormEvent) {
+    event.preventDefault();
+    try {
+      if (!nif || !password) {
+        setErro("Preencha NIF e senha");
+        return;
+      }
+      
+
+      const res = await fetch(
+        `/api/auth/farm/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({nif,password})
+        },
+      );
+
+      if (!res.ok) {
+        const data = (await res.json()) as BackendResponse
+        let mensagem = ""
+        if(Array.isArray(data.error)){
+          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ")
+        }else if(data.message){
+              mensagem = data.message
+        }else if(data.error === "string"){
+            mensagem = data.error
+        }else{
+          mensagem = "Erro não esperado"
+        }
+        console.log(data)
+        setErro(mensagem)
+        return
+      }
+      setErro("")
+      const data = await res.json();
+      console.log(data, "OK");
+    } catch (error) {
+      setErro("Erro de conexão com o Servidor.");
+      console.error("Erro no fetch:", error);
+    }
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-background">
       <div className="w-full max-w-120 flex flex-col gap-6">
@@ -19,8 +78,13 @@ export default function Login() {
               Bem-vindo de volta! Insira os seus dados para entrar.
             </p>
           </div>
+          {erro && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mx-auto max-w-lg mb-2">
+              {erro}
+            </div>
+          )}
 
-          <form className="flex flex-col gap-6">
+          <form className="flex flex-col gap-6" onSubmit={Logar}>
             <div className="flex flex-col gap-1.5">
               <label
                 className="text-text-main text-sm font-medium"
@@ -34,6 +98,8 @@ export default function Login() {
                   id="nif"
                   placeholder="123456789"
                   type="text"
+                  value={nif}
+                  onChange={(event) => setNif(event.target.value)}
                 />
                 <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary">
                   id_card
@@ -54,6 +120,8 @@ export default function Login() {
                   id="password"
                   placeholder="••••••••"
                   type="password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined  text-text-secondary">
                   visibility
