@@ -1,9 +1,11 @@
 import Nav from "../components/nav";
 import AddPruduto from "../components/modalAddProduto";
+import EditProduto from "../components/modalEditProduto";
 import { useState } from "react";
 export default function Produtos() {
   const [siderAberto, setSiderAberto] = useState(false);
   const [aberto, setAberto] = useState(false);
+  const [abertoEdit, setAbertoEdit] = useState(false)
   return (
     <>
       <div className="bg-background text-text-main">
@@ -192,7 +194,9 @@ export default function Produtos() {
                         </td>
                         <td className="px-6 py-5 text-right">
                           <div className="flex items-center justify-start gap-2">
-                            <button className="material-symbols-outlined text-[20px] p-2 text-gray-500 hover:text-green-600 hover:bg-green-600/10 rounded-lg transition-colors active:scale-90">
+                            <button  
+                            onClick={() => setAbertoEdit(true)}
+                            className="material-symbols-outlined text-[20px] p-2 text-gray-500 hover:text-green-600 hover:bg-green-600/10 rounded-lg transition-colors active:scale-90">
                               edit
                             </button>
                             <button className="material-symbols-outlined text-[20px] p-2 text-gray-500 hover:text-red-600 hover:bg-red-600/10 rounded-lg transition-colors active:scale-90">
@@ -241,6 +245,9 @@ export default function Produtos() {
           Cancelar
         </button>
       </AddPruduto>
+      <EditProduto openEdit = {abertoEdit}>
+
+      </EditProduto>
     </>
   );
 }

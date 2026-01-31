@@ -6,7 +6,7 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
   return (
     <div
       className={`
-    fixed inset-0  overflow-y-auto ${open ? "scale-100 opacity-100 visible bg-black/20  backdrop-blur-sm transition-opacity" : "scale-125 opacity-0 invisible"}`}
+    fixed inset-0  overflow-y-auto ${open ? "scale-100 opacity-100 visible bg-black/20  backdrop-blur-sm transition-opacity z-60" : "scale-125 opacity-0 invisible"}`}
     >
       <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
         <div className="relative transform overflow-hidden rounded-2xl bg-surface-light text-left shadow-2xl border-border-color">
@@ -76,7 +76,7 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
                     className="block w-full rounded-lg border-gray-300 bg-white text-text-main focus:ring-primary  shadow-sm focus:border-primary:hover pl-5 pr-2 py-3"
                   />
                     <div className=" absolute inset-y-0 right-0 flex items-center pr-0">
-                     <select className="block text-sm font-medium text-text-main  rounded-lg h-full bg-white shadow-sm focus:border-primary-hover focus:ring-primary-hover border-gray-300">
+                     <select className="block text-sm font-medium text-text-main  rounded-lg h-full bg-white shadow-sm focus:border-primary-hover focus:ring-primary-hover ">
                       <option disabled selected >un.</option>
                       <option value="">ton</option>
                       <option value="">kg</option>
