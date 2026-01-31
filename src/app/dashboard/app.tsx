@@ -204,6 +204,27 @@ export default function Home() {
                         ))}
                       </tbody>
                     </table>
+                    {/* Paginação */}
+                    <div className="px-6 py-4 border-t border-border-color flex items-center justify-between">
+                      <p className="text-medium text-gray-600">
+                        Mostrando{" "}
+                        <span className="font-medium text-text-main">1</span> a{" "}
+                        <span className="font-medium text-text-main">5</span> de{" "}
+                        <span className="font-medium text-text-main">5</span>{" "}
+                        Produtos
+                      </p>
+                      <div className="flex gap-2">
+                        <button
+                          className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 disabled:opacity-50 active:scale-90"
+                          disabled
+                        >
+                          Anterior
+                        </button>
+                        <button className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 active:scale-90">
+                          Próximo
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
