@@ -10,7 +10,7 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
     >
       <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
         <div className="relative transform overflow-hidden rounded-2xl bg-surface-light text-left shadow-2xl border-border-color">
-          <div className="px-6 py-6 border-b border-border-color flex items-center justify-between bg-[#f9faf9]">
+          <div className="px-6 py-3 border-b border-border-color flex items-center justify-between bg-[#f9faf9]">
             <h3 className="text-lg font-bold text-text-main">
               Adicionar Produto
             </h3>
@@ -76,7 +76,7 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
                     className="block w-full rounded-lg border-gray-300 bg-white text-text-main focus:ring-primary  shadow-sm focus:border-primary:hover pl-5 pr-2 py-3"
                   />
                     <div className=" absolute inset-y-0 right-0 flex items-center pr-0">
-                     <select className="block text-sm font-medium text-text-main  rounded-lg h-full bg-white shadow-sm focus:border-primary-hover focus:ring-primary-hover ">
+                     <select className="block text-sm font-medium text-text-main  rounded-lg h-full bg-white shadow-sm focus:border-primary-hover focus:ring-primary-hover  border-border">
                       <option disabled selected >un.</option>
                       <option value="">ton</option>
                       <option value="">kg</option>
@@ -118,7 +118,7 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
               </div>
             </form>
         </div>
-            <div className="bg-gray-50 px-6 py-5 flex flex-col gap-3 border-t border-border-color ">{children}</div>
+            <div className="bg-gray-50 px-6 py-4 flex flex-col  gap-3 border-t border-border-color ">{children}</div>
           </div>
       </div>
     </div>
