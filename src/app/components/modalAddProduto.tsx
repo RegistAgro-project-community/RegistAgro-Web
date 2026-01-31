@@ -69,11 +69,20 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
                   <label className="block text-sm font-semibold text-text-main mb-1.5">
                     Quantidade
                   </label>
+                  <div className="relative rounded-md shadow-md ">
                   <input
                     type="number"
                     placeholder="0"
-                    className="block w-full rounded-lg border-gray-300 bg-white text-text-main focus:ring-primary  shadow-sm focus:border-primary:hover"
+                    className="block w-full rounded-lg border-gray-300 bg-white text-text-main focus:ring-primary  shadow-sm focus:border-primary:hover pl-5 pr-2 py-3"
                   />
+                    <div className=" absolute inset-y-0 right-0 flex items-center pr-0">
+                     <select className="block text-sm font-medium text-text-main  rounded-lg h-full bg-white shadow-sm focus:border-primary-hover focus:ring-primary-hover border-gray-300">
+                      <option disabled selected >un.</option>
+                      <option value="">ton</option>
+                      <option value="">kg</option>
+                     </select>
+                    </div>
+                  </div>
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-text-main mb-1.5">
