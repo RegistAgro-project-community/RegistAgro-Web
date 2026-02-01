@@ -236,14 +236,14 @@ export default function Produtos() {
         </div>
       </div>
       <AddPruduto open={aberto}>
-        <button className=" bg-primary hover:bg-primary-hover active:scale-93 transition-all text-white md:px-5 px-3 md:py-2.5 py-2 rounded-lg shadow-lg shadow-primary/25 font-bold  text-sm">
-          Salvar
-        </button>
         <button
           className=" bg-red-500 hover:bg-red-600 active:scale-93 transition-all text-white md:px-5 px-3 md:py-2.5 py-2 rounded-lg shadow-lg shadow-primary/25 font-bold  text-sm"
           onClick={() => setAberto(false)}
         >
           Cancelar
+        </button>
+        <button className=" bg-primary hover:bg-primary-hover active:scale-93 transition-all text-white md:px-5 px-3 md:py-2.5 py-2 rounded-lg shadow-lg shadow-primary/25 font-bold  text-sm">
+          Salvar Produto
         </button>
       </AddPruduto>
       <EditProduto openEdit={abertoEdit}>

@@ -118,7 +118,7 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
               </div>
             </form>
         </div>
-            <div className="bg-gray-50 px-6 py-4 flex flex-col  gap-3 border-t border-border-color ">{children}</div>
+            <div className="px-8 py-6 border-t border-border-color bg-gray-100/50 flex items-center justify-end gap-6">{children}</div>
           </div>
       </div>
     </div>
