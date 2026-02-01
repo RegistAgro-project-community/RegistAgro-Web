@@ -5,7 +5,7 @@ import { useState } from "react";
 export default function Produtos() {
   const [siderAberto, setSiderAberto] = useState(false);
   const [aberto, setAberto] = useState(false);
-  const [abertoEdit, setAbertoEdit] = useState(false)
+  const [abertoEdit, setAbertoEdit] = useState(false);
   return (
     <>
       <div className="bg-background text-text-main">
@@ -194,9 +194,10 @@ export default function Produtos() {
                         </td>
                         <td className="px-6 py-5 text-right">
                           <div className="flex items-center justify-start gap-2">
-                            <button  
-                            onClick={() => setAbertoEdit(true)}
-                            className="material-symbols-outlined text-[20px] p-2 text-gray-500 hover:text-green-600 hover:bg-green-600/10 rounded-lg transition-colors active:scale-90">
+                            <button
+                              onClick={() => setAbertoEdit(true)}
+                              className="material-symbols-outlined text-[20px] p-2 text-gray-500 hover:text-green-600 hover:bg-green-600/10 rounded-lg transition-colors active:scale-90"
+                            >
                               edit
                             </button>
                             <button className="material-symbols-outlined text-[20px] p-2 text-gray-500 hover:text-red-600 hover:bg-red-600/10 rounded-lg transition-colors active:scale-90">
@@ -245,8 +246,16 @@ export default function Produtos() {
           Cancelar
         </button>
       </AddPruduto>
-      <EditProduto openEdit = {abertoEdit}>
-
+      <EditProduto openEdit={abertoEdit}>
+        <button
+          className=" bg-red-500 hover:bg-red-600 active:scale-93 transition-all text-white md:px-5 px-3 md:py-2.5 py-2 rounded-lg shadow-lg shadow-primary/25 font-bold  text-sm"
+          onClick={() => setAbertoEdit(false)}
+        >
+          Cencelar
+        </button>
+        <button className=" bg-primary hover:bg-primary-hover active:scale-93 transition-all text-white md:px-5 px-3 md:py-2.5 py-2 rounded-lg shadow-lg shadow-primary/25 font-bold  text-sm">
+          Salvar Alteração
+        </button>
       </EditProduto>
     </>
   );
