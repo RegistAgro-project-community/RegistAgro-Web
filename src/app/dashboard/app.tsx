@@ -39,14 +39,14 @@ export default function Home() {
             {/* Conteudo */}
             <div className="flex-1 overflow-y-auto p-8">
               <div className="flex flex-col gap-2">
-                <h1 className="text-3xl font-bold text-text-main tracking-tight">
+                <h1 className="text-2xl md:text-3xl font-bold text-text-main tracking-tight">
                   Dashbooard da Fazenda
                 </h1>
-                <p className="text-text-secondary">
+                <p className="text-text-secondary ">
                   Bem-vindo de volta! Aqui está o resumo das sias atividades
                   hoje.
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-4">
                   {[
                     {
                       icon: "inventory_2",
@@ -66,7 +66,7 @@ export default function Home() {
                   ].map((item, i) => (
                     <div
                       key={i}
-                      className={`bg-white p-6 rounded-xl border border-border-color shadow-sm flex flex-col justify-between group ${
+                      className={`bg-white p-4 rounded-xl border border-border-color shadow-sm flex items-center justify-between  ${
                         item.icon === "inventory_2"
                           ? "group hover:border-primary/50"
                           : item.icon === "pending_actions"
@@ -76,7 +76,15 @@ export default function Home() {
                               : ""
                       } transition-colors shadow-sm`}
                     >
-                      <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <p className="text-text-secondary text-sm font-medium mb-1">
+                          {item.label}
+                        </p>
+                        <h3 className="text-3xl font-bold text-text-main">
+                          {item.total}
+                        </h3>
+                      </div>
+                      <div className="flex justify-between items-start">
                         <div
                           className={` flex items-center p-2 rounded-lg
                         ${
@@ -94,14 +102,6 @@ export default function Home() {
                             {item.icon}
                           </span>
                         </div>
-                      </div>
-                      <div>
-                        <p className="text-text-secondary text-sm font-medium mb-1">
-                          {item.label}
-                        </p>
-                        <h3 className="text-3xl font-bold text-text-main">
-                          {item.total}
-                        </h3>
                       </div>
                     </div>
                   ))}
