@@ -1,11 +1,13 @@
 import Nav from "../components/nav";
 import AddPruduto from "../components/modalAddProduto";
 import EditProduto from "../components/modalEditProduto";
+import DeleteProduto from "../components/modalDeleteProduto";
 import { useState } from "react";
 export default function Produtos() {
   const [siderAberto, setSiderAberto] = useState(false);
   const [aberto, setAberto] = useState(false);
   const [abertoEdit, setAbertoEdit] = useState(false);
+  const [abertoDelete, setAbertoDelete] = useState(false);
   return (
     <>
       <div className="bg-background text-text-main">
@@ -200,7 +202,10 @@ export default function Produtos() {
                             >
                               edit
                             </button>
-                            <button className="material-symbols-outlined text-[20px] p-2 text-gray-500 hover:text-red-600 hover:bg-red-600/10 rounded-lg transition-colors active:scale-90">
+                            <button
+                              onClick={() => setAbertoDelete(true)}
+                              className="material-symbols-outlined text-[20px] p-2 text-gray-500 hover:text-red-600 hover:bg-red-600/10 rounded-lg transition-colors active:scale-90"
+                            >
                               delete
                             </button>
                           </div>
@@ -257,6 +262,17 @@ export default function Produtos() {
           Salvar Alteração
         </button>
       </EditProduto>
+      <DeleteProduto openDelete={abertoDelete}>
+        <button
+          className=" flex-1 min-w-30 h-12 bg-gray-400 hover:bg-gray-500 active:scale-93 transition-all text-text-main md:px-4 px-3 md:py-0 py-3  rounded-lg shadow-lg shadow-primary/25 font-bold  text-sm leading-normal tracking-[0.015em]"
+          onClick={() => setAbertoDelete(false)}
+        >
+          <span className="truncate">Cancelar</span>
+        </button>
+        <button className="flex-1 min-w-43 h-12 bg-red-500 hover:bg-red-600 items-center justify-center active:scale-93 transition-all text-white md:px-4 px-3 md:py-0 py-3  rounded-lg shadow-lg shadow-primary/25 font-bold  text-sm leading-normal tracking-[0.015em]">
+          <span className="truncate">Confirmar Remoção</span>
+        </button>
+      </DeleteProduto>
     </>
   );
 }
