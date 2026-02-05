@@ -25,6 +25,7 @@ export default function Home() {
               </div>
 
               <div className="flex items-center gap-4">
+                
                 <div className="flex flex-col items-end">
                   <span className="text-sm font-bold text-text-main">
                     {" "}
@@ -34,18 +35,22 @@ export default function Home() {
                     Produtor Verificado
                   </span>
                 </div>
+                <div className="h-10 w-10 bg-amber-200 rounded-full hidden md:block ">
+
+                </div>
               </div>
             </div>
             {/* Conteudo */}
             <div className="flex-1 overflow-y-auto p-8">
-              <div className="flex flex-col gap-2">
-                <h1 className="text-2xl md:text-3xl font-bold text-text-main tracking-tight">
+              <div className="space-y-2">
+                <h1 className="text-2xl md:text-2xl font-bold text-text-main tracking-tight">
                   Dashbooard da Fazenda
                 </h1>
-                <p className="text-text-secondary ">
+                <p className="text-text-secondary text-[13px] ">
                   Bem-vindo de volta! Aqui está o resumo das sias atividades
                   hoje.
                 </p>
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-4">
                   {[
                     {
@@ -66,15 +71,15 @@ export default function Home() {
                   ].map((item, i) => (
                     <div
                       key={i}
-                      className={`bg-white p-4 rounded-xl border border-border-color shadow-sm flex items-center justify-between  ${
+                      className={`bg-white p-4 rounded-lg border flex items-center justify-between  ${
                         item.icon === "inventory_2"
-                          ? "group hover:border-primary/50"
+                          ? "group hover:border-green-300/50"
                           : item.icon === "pending_actions"
-                            ? "hover:border-yellow-500/50"
+                            ? "hover:border-yellow-300/50"
                             : item.icon === "local_shipping"
-                              ? "hover:border-blue-500/50"
+                              ? "hover:border-blue-300/50"
                               : ""
-                      } transition-colors shadow-sm`}
+                      } transition-colors border-gray-200 shadow`}
                     >
                       <div>
                         <p className="text-text-secondary text-sm font-medium mb-1">
@@ -204,27 +209,7 @@ export default function Home() {
                         ))}
                       </tbody>
                     </table>
-                    {/* Paginação */}
-                    <div className="px-6 py-4 border-t border-border-color flex items-center justify-between">
-                      <p className="text-medium text-gray-600">
-                        Mostrando{" "}
-                        <span className="font-medium text-text-main">1</span> a{" "}
-                        <span className="font-medium text-text-main">5</span> de{" "}
-                        <span className="font-medium text-text-main">5</span>{" "}
-                        Produtos
-                      </p>
-                      <div className="flex gap-2">
-                        <button
-                          className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 disabled:opacity-50 active:scale-90"
-                          disabled
-                        >
-                          Anterior
-                        </button>
-                        <button className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 active:scale-90">
-                          Próximo
-                        </button>
-                      </div>
-                    </div>
+                   
                   </div>
                 </div>
               </div>

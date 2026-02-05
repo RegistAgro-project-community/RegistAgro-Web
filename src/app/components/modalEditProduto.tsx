@@ -57,7 +57,7 @@ function EditProduto({ openEdit, children }: AddPrudutoProps) {
                     className="block w-full rounded-lg border-gray-300 bg-white text-text-main focus:ring-primary  shadow-sm focus:border-primary:hover pl-5 pr-2 py-3"
                   />
                   <div className=" absolute inset-y-0 right-0 flex items-center pr-0">
-                    <select className="block text-sm font-medium text-text-main  rounded-lg h-full bg-white shadow-sm focus:border-primary-hover focus:ring-primary-hover  border-border">
+                    <select className="block text-sm font-medium text-text-main  rounded-lg h-full bg-white shadow-sm focus:border-primary-hover focus:ring-primary-hover   border-border">
                       <option disabled selected>
                         un.
                       </option>

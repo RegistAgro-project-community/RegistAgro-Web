@@ -53,7 +53,7 @@ export default function Produtos() {
                 ].map((item, i) => (
                   <div
                     key={i}
-                    className="bg-surface-light p-4 rounded-xl border border-border-color shadow-sm flex items-center justify-between"
+                    className={`bg-surface-light p-4 rounded-xl border border-border-color shadow-sm flex items-center justify-between ${item.icon === "attach_money" ? "hover:border-blue-300/50 " : item.icon === "warning" ? "hover:border-orange-300/50" : item.icon === "grass" ? "bg-primary/30 hover:border-green-300/50" : ""} transition-colors`}
                   >
                     <div>
                       <p className="text-sm text-text-secondary font-medium">
@@ -253,7 +253,7 @@ export default function Produtos() {
       </AddPruduto>
       <EditProduto openEdit={abertoEdit}>
         <button
-          className=" bg-red-500 hover:bg-red-600 active:scale-93 transition-all text-white md:px-5 px-3 md:py-2.5 py-2 rounded-lg shadow-lg shadow-primary/25 font-bold  text-sm"
+          className=" bg-red-500 hover:bg-red-600 active:scale-93 transition-all text-white md:px-5 px-3 md:py-2.5 py-2 rounded-lg shadow-lg  font-bold  text-sm"
           onClick={() => setAbertoEdit(false)}
         >
           Cencelar
@@ -264,12 +264,12 @@ export default function Produtos() {
       </EditProduto>
       <DeleteProduto openDelete={abertoDelete}>
         <button
-          className=" flex-1 min-w-30 h-12 bg-gray-400 hover:bg-gray-500 active:scale-93 transition-all text-text-main md:px-4 px-3 md:py-0 py-3  rounded-lg shadow-lg shadow-primary/25 font-bold  text-sm leading-normal tracking-[0.015em]"
+          className=" flex-1 min-w-30 h-12  bg-red-500 hover:bg-red-600 active:scale-93 transition-all text-text-main md:px-4 px-3 md:py-0 py-3  rounded-lg shadow-lg  font-bold  text-sm leading-normal tracking-[0.015em]"
           onClick={() => setAbertoDelete(false)}
         >
           <span className="truncate">Cancelar</span>
         </button>
-        <button className="flex-1 min-w-43 h-12 bg-red-500 hover:bg-red-600 items-center justify-center active:scale-93 transition-all text-white md:px-4 px-3 md:py-0 py-3  rounded-lg shadow-lg shadow-primary/25 font-bold  text-sm leading-normal tracking-[0.015em]">
+        <button className="flex-1 min-w-43 h-12 bg-primary hover:bg-primary-hover  items-center justify-center active:scale-93 transition-all text-white md:px-4 px-3 md:py-0 py-3  rounded-lg shadow-lg  font-bold  text-sm leading-normal tracking-[0.015em]">
           <span className="truncate">Confirmar Remoção</span>
         </button>
       </DeleteProduto>
