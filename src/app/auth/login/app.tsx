@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { AxiosError } from "axios";
+import axios from "../../api/axios";
 interface ZodIssue {
   key: string;
   message: string;
@@ -10,7 +12,7 @@ interface BackendResponse {
   message?: string;
   error?: ZodIssue[] | string;
 }
-
+const FARMLOGIN_URL = "/auth/farm/login";
 export default function Login() {
   const [nif, setNif] = useState("");
   const [password, setPassword] = useState("");
@@ -19,42 +21,36 @@ export default function Login() {
     event.preventDefault();
     try {
       if (!nif || !password) {
-        setErro("Preencha NIF e senha");
+        setErro("Preencha NIF e Senha");
         return;
       }
-      
-
-      const res = await fetch(
-        `/api/auth/farm/login`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({nif,password})
-        },
+      const res = await axios.post<BackendResponse>(
+        FARMLOGIN_URL,
+        { nif, password },
+        { headers: { "Content-Type": "application/json" } },
       );
-
-      if (!res.ok) {
-        const data = (await res.json()) as BackendResponse
-        let mensagem = ""
-        if(Array.isArray(data.error)){
-          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ")
-        }else if(data.message){
-              mensagem = data.message
-        }else if(data.error === "string"){
-            mensagem = data.error
-        }else{
-          mensagem = "Erro não esperado"
+      setErro("");
+      console.log(res.data, "OK");
+    } catch (err) {
+      const error = err as AxiosError<BackendResponse>;
+      if (error.response) {
+        const data = error.response.data;
+        let mensagem = "";
+        if (Array.isArray(data?.error)) {
+          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
+        } else if (typeof data?.error === "string") {
+          mensagem = data.error;
+        } else if (data?.message) {
+          mensagem = data.message;
+        } else {
+          mensagem = "erro inesperado.";
         }
-        console.log(data)
-        setErro(mensagem)
-        return
+        console.log(data);
+        setErro(mensagem);
+      } else {
+        setErro("Erro de conexão com o Servidor");
       }
-      setErro("")
-      const data = await res.json();
-      console.log(data, "OK");
-    } catch (error) {
-      setErro("Erro de conexão com o Servidor.");
-      console.error("Erro no fetch:", error);
+      console.error("Erro no axios", error);
     }
   }
 
