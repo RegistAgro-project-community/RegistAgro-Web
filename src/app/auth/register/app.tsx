@@ -1,12 +1,56 @@
 import { useState } from "react";
+import axios from "../../api/axios";
+import { AxiosError } from "axios";
+interface ZodIssue {
+  key: string;
+  message: string;
+  minimum?: number;
+}
+
+interface BackendResponse {
+  valid?: boolean;
+  message?: string;
+  error?: ZodIssue[] | string;
+}
 export default function Register() {
-  function otp() {
-    setEtapa("otp");
+  async function CheckNif(event: React.FormEvent) {
+    event.preventDefault();
+    try {
+      if (!nif) {
+        setErro("Preencha o campo");
+        return;
+      }
+      setErro("");
+      const res = await axios.get<BackendResponse>(`/auth/signup/nif/${nif}`);
+      console.log(res.data, "OK");
+    } catch (err) {
+      const error = err as AxiosError<BackendResponse>;
+      if (error.response) {
+        const data = error.response.data;
+        let mensagem = "";
+        if (Array.isArray(data?.error)) {
+          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
+        } else if (typeof data?.error === "string") {
+          mensagem = data.error;
+        } else if (data?.message) {
+          mensagem = data.message;
+        } else {
+          mensagem = "erro inesperado.";
+        }
+        console.log(data);
+        setErro(mensagem);
+      } else {
+        setErro("Erro de conexão com o Servidor");
+      }
+     
+    }
   }
   function dados() {
     setEtapa("dados");
   }
   const [etapa, setEtapa] = useState<"nif" | "otp" | "dados">("nif");
+  const [nif, setNif] = useState("");
+  const [erro, setErro] = useState("");
   const inputs = Array(6).fill(0);
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-background">
@@ -17,8 +61,7 @@ export default function Register() {
               className="w-full h-full bg-center bg-cover  transition-transform duration-700 group-hover:scale-105"
               data-alt="Grama verde"
               style={{
-                backgroundImage:
-                  "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAaMzH0kTiVIryDm0a4zqK6JhrS9FWhuTJMyKtbiLL9uZ_fYazYIzOTG-Rc82Qh_TDchmwLZeZmsJmGLrBFdwOF9iTX5l_FTteavEZXfh28mvlMKrXo97w-yYzYNN4FUQhUiOLh490Po7CGjgfajEz_-UfKLiIi8P-P13MeF05fFZj59ruAJDLSH6ScGfLopIuvEdDjqG9F2R6FsXvxwe8syXAVL_-YPQTQtyaUFQz9JQ2ZB_OrN_pT7raO1A_oQCF-hSrpA_JcS_I')",
+                backgroundImage: "url('/assets/grama.png')",
               }}
             ></div>
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center">
@@ -34,6 +77,11 @@ export default function Register() {
               </h1>
             </div>
           </div>
+          {erro && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mx-auto max-w-11/12 mt-5 text-center ">
+              {erro}
+            </div>
+          )}
           <div className="px-6 py-8 flex-col gap-6">
             <div className="text-center space-y-2 mb-5">
               <h2 className="text-text-main tracking-tight text-[28px] font-[550] leading-tight">
@@ -56,7 +104,9 @@ export default function Register() {
                 <div className="relative">
                   <input
                     className="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-text-main  placeholder:text-text-secondary focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border bg-white focus:border-primary h-14 px-3.75 text-base font-normal leading-normal transition-all"
-                    placeholder="000.000.000-00"
+                    placeholder="123456789"
+                    value={nif}
+                    onChange={(event) => setNif(event.target.value)}
                     type="text"
                   />
                 </div>
@@ -64,7 +114,7 @@ export default function Register() {
             </div>
             <div className="pt-2 mb-7">
               <button
-                onClick={otp}
+                onClick={CheckNif}
                 className="relative w-full cursor-pointer flex items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary hover:bg-primary-hover  text-white text-base font-bold leading-normal tracking-[0.015em] transition-colors shadow-lg shadow-primary/20 group "
               >
                 <span className="material-symbols-outlined mr-2 transition-transform group-hover:scale-110">
@@ -78,10 +128,7 @@ export default function Register() {
                 href="/login"
                 className="inline-flex items-center justify-center gap1 text-text-secondary hover:text-primary font-medium leading-normal transition-colors"
               >
-                Já tenho conta{" "}
-                <span className="underline decoration-2 underline-offset-2">
-                  Entrar
-                </span>
+                Já tenho conta <span className="m-2">Entrar</span>
               </a>
             </div>
           </div>
