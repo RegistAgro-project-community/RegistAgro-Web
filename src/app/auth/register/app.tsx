@@ -21,8 +21,17 @@ export default function Register() {
         return;
       }
       setErro("");
+      setLoading(true);
       const res = await axios.get<BackendResponse>(`/auth/signup/nif/${nif}`);
-      console.log(res.data, "OK");
+      if (res.data.valid === true) {
+        console.log(res.data.message);
+        const valido = res.data.message;
+        setSucesso(`${valido}`);
+        setLoading(false);
+        setTimeout(() => {
+          setEtapa("otp");
+        }, 2000);
+      }
     } catch (err) {
       const error = err as AxiosError<BackendResponse>;
       if (error.response) {
@@ -30,10 +39,13 @@ export default function Register() {
         let mensagem = "";
         if (Array.isArray(data?.error)) {
           mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
+          setLoading(false);
         } else if (typeof data?.error === "string") {
           mensagem = data.error;
+          setLoading(false);
         } else if (data?.message) {
           mensagem = data.message;
+          setLoading(false);
         } else {
           mensagem = "erro inesperado.";
         }
@@ -41,8 +53,8 @@ export default function Register() {
         setErro(mensagem);
       } else {
         setErro("Erro de conexão com o Servidor");
+        setLoading(false);
       }
-     
     }
   }
   function dados() {
@@ -50,7 +62,9 @@ export default function Register() {
   }
   const [etapa, setEtapa] = useState<"nif" | "otp" | "dados">("nif");
   const [nif, setNif] = useState("");
+  const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState("");
+  const [sucesso, setSucesso] = useState("");
   const inputs = Array(6).fill(0);
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-background">
@@ -80,6 +94,16 @@ export default function Register() {
           {erro && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mx-auto max-w-11/12 mt-5 text-center ">
               {erro}
+            </div>
+          )}
+          {sucesso && (
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mx-auto max-w-11/12 mt-5 text-center ">
+              {sucesso}
+            </div>
+          )}
+          {loading && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+              <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
             </div>
           )}
           <div className="px-6 py-8 flex-col gap-6">
