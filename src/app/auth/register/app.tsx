@@ -10,6 +10,7 @@ interface ZodIssue {
 interface BackendResponse {
   valid?: boolean;
   message?: string;
+
   error?: ZodIssue[] | string;
 }
 export default function Register() {
@@ -57,15 +58,69 @@ export default function Register() {
       }
     }
   }
-  function dados() {
-    setEtapa("dados");
+  async function CheckOtp(event: React.FormEvent) {
+    event.preventDefault();
+    try {
+      const vazio = code.some((v) => v === "");
+      if (vazio) {
+        setErro("Preencha todos os campos");
+        return;
+      }
+      setErro("");
+
+      const OTPCODE = code.join("");
+      console.log(OTPCODE);
+      setLoading(true);
+      const res = await axios.get<BackendResponse>(
+        `/auth/signup/verify/${OTPCODE}`,
+      );
+      console.log(res);
+      setLoading(false);
+      if (res.status === 202) {
+        const mensagem = res.data.message;
+      }
+      // if (res.data.valid === true) {
+      //   console.log(res.data.message);
+      //   const valido = res.data.message;
+      //   setSucesso(`${valido}`);
+      //   setLoading(false);
+      //   setTimeout(() => {
+      //     setEtapa("dados");
+      //   }, 2000);
+      // }
+    } catch (err) {
+      const error = err as AxiosError<BackendResponse>;
+      if (error.response) {
+        const data = error.response.data;
+        let mensagem = "";
+        if (Array.isArray(data?.error)) {
+          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
+          setLoading(false);
+        } else if (typeof data?.error === "string") {
+          mensagem = data.error;
+          setLoading(false);
+        } else if (data?.message) {
+          mensagem = data.message;
+          setLoading(false);
+        } else {
+          mensagem = "erro inesperado.";
+        }
+        console.log(data);
+        setErro(mensagem);
+      } else {
+        setErro("Erro de conexão com o Servidor");
+        setLoading(false);
+      }
+    }
   }
+
   const [etapa, setEtapa] = useState<"nif" | "otp" | "dados">("nif");
   const [nif, setNif] = useState("");
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState("");
   const [sucesso, setSucesso] = useState("");
-  const inputs = Array(6).fill(0);
+  const [code, setCode] = useState<string[]>(Array(6).fill(""));
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-background">
       {etapa === "nif" && (
@@ -188,7 +243,16 @@ export default function Register() {
                   RegistAgro
                 </h2>
               </div>
-
+              {erro && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mx-auto max-w-5/6 mb-3  text-center ">
+                  {erro}
+                </div>
+              )}
+              {loading && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+                  <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
+                </div>
+              )}
               <div className="text-center mb-8 w-full">
                 <h1 className="text-2xl text-gray-900 font-bold mb-2">
                   Verificar E-mail
@@ -199,11 +263,17 @@ export default function Register() {
               </div>
               <div className="w-full mb-8">
                 <fieldset className="flex justify-center gap-2 sm:gap-3">
-                  {inputs.map((_, index) => (
+                  {code.map((value, index) => (
                     <input
                       key={index}
                       type="text"
+                      value={value}
                       maxLength={1}
+                      onChange={(e) => {
+                        const newCode = [...code];
+                        newCode[index] = e.target.value;
+                        setCode(newCode);
+                      }}
                       className="w-10 h-10 sm:w-12 sm:h-14  text-center text-xl font-bold 
                        border-2 border-border rounded-xl bg-white 
                        focus:border-primary focus:ring-1 focus:ring-primary 
@@ -214,7 +284,7 @@ export default function Register() {
               </div>
               <div className="w-full mb-6">
                 <button
-                  onClick={dados}
+                  onClick={CheckOtp}
                   className="w-full bg-primary hover:bg-primary-hover text-white font-bold text-base py-3.5 px-4 rounded-lg shadow-sm hover:shadow-sm transition-all duration-200 flex items-center justify-center gap-2 group cursor-pointer"
                 >
                   Confirmar Código
