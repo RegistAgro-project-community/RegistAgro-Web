@@ -30,6 +30,7 @@ export default function Login() {
         { headers: { "Content-Type": "application/json" } },
       );
       setErro("");
+      console.log(res)
       console.log(res.data, "OK");
     } catch (err) {
       const error = err as AxiosError<BackendResponse>;

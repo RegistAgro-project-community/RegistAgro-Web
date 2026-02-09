@@ -108,7 +108,7 @@ function Nav({ sidebarAberto, setSidebarAberto }: NavProps) {
         <div className="p-4 border-t border-border-color">
           <a
             className="flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
-            href="#"
+            href="/logout"
           >
             <span className="material-symbols-outlined">logout</span>
             <span className="text-sm font-medium">Terminar Sessão</span>

@@ -4,7 +4,6 @@ import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 
-const navigate = useNavigate();
 interface ZodIssue {
   key: string;
   message: string;
@@ -19,6 +18,7 @@ interface BackendResponse {
 }
 const FARMSignup_URL = "/auth/farm/signup";
 export default function Register() {
+  const navigate = useNavigate();
   async function CheckNif(event: React.FormEvent) {
     event.preventDefault();
     try {
