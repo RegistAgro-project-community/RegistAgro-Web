@@ -10,9 +10,10 @@ interface ZodIssue {
 interface BackendResponse {
   valid?: boolean;
   message?: string;
-
+  data?: string[];
   error?: ZodIssue[] | string;
 }
+const FARMSignup_URL = "/auth/farm/signup";
 export default function Register() {
   async function CheckNif(event: React.FormEvent) {
     event.preventDefault();
@@ -30,6 +31,7 @@ export default function Register() {
         setSucesso(`${valido}`);
         setLoading(false);
         setTimeout(() => {
+          setSucesso("");
           setEtapa("otp");
         }, 2000);
       }
@@ -75,19 +77,24 @@ export default function Register() {
         `/auth/signup/verify/${OTPCODE}`,
       );
       console.log(res);
-      setLoading(false);
       if (res.status === 202) {
         const mensagem = res.data.message;
+        const data = res.data.data;
+
+        console.log(mensagem, data);
+        setSucesso(`${mensagem}`);
+        setLoading(false);
+        setTimeout(() => {
+          setName(`${data?.name}`);
+          setAdress(`${data?.adress}`);
+          setEmail(`${data?.email}`);
+          setPhone(`${data?.phone}`);
+          setProvince(`${data?.province}`);
+          setToken(res.headers.authorization);
+          setEtapa("dados");
+          setSucesso("");
+        }, 2000);
       }
-      // if (res.data.valid === true) {
-      //   console.log(res.data.message);
-      //   const valido = res.data.message;
-      //   setSucesso(`${valido}`);
-      //   setLoading(false);
-      //   setTimeout(() => {
-      //     setEtapa("dados");
-      //   }, 2000);
-      // }
     } catch (err) {
       const error = err as AxiosError<BackendResponse>;
       if (error.response) {
@@ -113,6 +120,62 @@ export default function Register() {
       }
     }
   }
+  async function Sginup(event: React.FormEvent) {
+    event.preventDefault();
+    try {
+      if (!password || !confirmPassword) {
+        setErro("Preencha os campos");
+        return;
+      } else if (password !== confirmPassword) {
+        setErro("As senhas não coincidem.");
+        return;
+      }
+      console.log(token);
+      const res = await axios.post<BackendResponse>(
+        FARMSignup_URL,
+        {
+          name,
+          email,
+          phone,
+          adress,
+          province,
+          pass1: password,
+          pass2: confirmPassword,
+        },
+        {
+          headers: { "Content-Type": "application/json", Authorization: token },
+        },
+      );
+      setErro("");
+      console.log(res);
+    } catch (err) {
+      const error = err as AxiosError<BackendResponse>;
+      if (error.response) {
+        const data = error.response.data;
+        let mensagem = "";
+        if (Array.isArray(data?.error)) {
+          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
+          setLoading(false);
+        }
+        if (Array.isArray(data?.error)) {
+          mensagem = data.error
+            .map((e) => (typeof e === "string" ? e : e.message))
+            .join(", ");
+          setLoading(false);
+        } else if (data?.message) {
+          mensagem = data.message;
+          setLoading(false);
+        } else {
+          mensagem = "erro inesperado.";
+        }
+        console.log(data);
+        setErro(mensagem);
+      } else {
+        setErro("Erro de conexão com o Servidor");
+        setLoading(false);
+      }
+    }
+  }
 
   const [etapa, setEtapa] = useState<"nif" | "otp" | "dados">("nif");
   const [nif, setNif] = useState("");
@@ -120,6 +183,14 @@ export default function Register() {
   const [erro, setErro] = useState("");
   const [sucesso, setSucesso] = useState("");
   const [code, setCode] = useState<string[]>(Array(6).fill(""));
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [province, setProvince] = useState("");
+  const [adress, setAdress] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPasssword] = useState("");
+  const [token, setToken] = useState<string | null>(null);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-background">
@@ -257,6 +328,11 @@ export default function Register() {
                 <h1 className="text-2xl text-gray-900 font-bold mb-2">
                   Verificar E-mail
                 </h1>
+                {sucesso && (
+                  <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mx-auto max-w-11/12 mb-2 text-center ">
+                    {sucesso}
+                  </div>
+                )}
                 <p className="text-gray-500 text-sm leading-relaxed px-4">
                   Enviamos um código de 6 dígitos para o seu email{" "}
                 </p>
@@ -310,9 +386,9 @@ export default function Register() {
               <div>
                 <h3 className="text-lg font-semibold text-text-main  mb-4 flex items-center gap-2">
                   <span className="material-symbols-outlined text-primary">
-                    person
+                    agriculture
                   </span>
-                  Daods do Produtor
+                  Dados da Fazenda
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Nome */}
@@ -322,10 +398,14 @@ export default function Register() {
                     </span>
                     <div className="relative">
                       <input
-                        className="w-full rounded-xl bg-white border-border border-2 h-12 px-3 text-base font-normal focus:border-primary focus:ring-1 focus:ring-primary"
-                        value="João Manuel da Silva"
+                        className="w-full rounded-xl bg-gray-100 border-transparent text-gray-500 cursor-not-allowed border-2 h-12 px-3 text-base font-normal focus:border-primary focus:ring-1 focus:ring-primary"
+                        value={name}
                         type="text"
+                        disabled
                       />
+                      <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
+                        lock
+                      </span>
                     </div>
                   </label>
                   {/* Email */}
@@ -338,7 +418,7 @@ export default function Register() {
                         className="w-full rounded-xl bg-gray-100 border-transparent text-gray-500 cursor-not-allowed border-2 h-12 px-3 text-base font-normal focus:border-primary focus:ring-1 focus:ring-primary "
                         type="email"
                         disabled
-                        value="joao.silva@fazenda.ao"
+                        value={email}
                       />
                       <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
                         lock
@@ -355,7 +435,7 @@ export default function Register() {
                         className="w-full rounded-xl bg-gray-100 border-transparent text-gray-500 cursor-not-allowed h-12 px-3 text-base font-normaly"
                         type="tel"
                         disabled
-                        value={"923913921"}
+                        value={phone}
                       />
                       <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
                         lock
@@ -380,49 +460,32 @@ export default function Register() {
                     </span>
                     <div className="relative">
                       <input
-                        className="w-full rounded-xl bg-white border-border border-2 h-12 px-3 text-base font-normal focus:border-primary focus:ring-1 focus:ring-primary"
-                        value="Ícolo e Bengo"
+                        className="w-full rounded-xl bg-gray-100 border-transparent text-gray-500 cursor-not-allowed border-2 h-12 px-3 text-base font-normal focus:border-primary focus:ring-1 focus:ring-primary"
+                        value={province}
                         type="text"
-                      />
-                    </div>
-                  </label>
-                  <label className="flex flex-col gap-2">
-                    <span className="text-text-main text-sm font-medium">
-                      Município
-                    </span>
-                    <div className="relative">
-                      <input
-                        className="w-full rounded-xl bg-white border-border border-2 h-12 px-3 text-base font-normal focus:border-primary focus:ring-1 focus:ring-primary"
-                        value="Caculo Cahango"
-                        type="text"
-                      />
-                    </div>
-                  </label>
-                  <label className="flex flex-col gap-2">
-                    <span className="text-text-main text-sm font-medium">
-                      Localização (GPS)
-                    </span>
-                    <div className="relative">
-                      <input
-                        className="w-full rounded-xl bg-white border-border border-2 h-12 px-3 text-base font-normal focus:border-primary focus:ring-1 focus:ring-primary"
-                        value="-12.776, 15.739"
-                        type="text"
+                        disabled
                       />
                       <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
-                        my_location
+                        lock
                       </span>
                     </div>
                   </label>
-                </div>
-                {/* Mnapa */}
-                <div className="mt-4 w-full h-32 rounded-lg overflow-hidden relative">
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509374!2d144.9537353153164!3d-37.81720974202302!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d4c2b34966d%3A0x60045610026a7e0!2sFlinders+St+Station!5e0!3m2!1spt-BR!2sbr!4v1620835000000"
-                    className="absolute inset-0 w-full h-full border-0"
-                    loading="lazy"
-                    allowFullScreen
-                    referrerPolicy="no-referrer-when-downgrade"
-                  />
+                  <label className="flex flex-col gap-2">
+                    <span className="text-text-main text-sm font-medium">
+                      Endereço
+                    </span>
+                    <div className="relative">
+                      <input
+                        className="w-full rounded-xl bg-gray-100 border-transparent text-gray-500 cursor-not-allowed border-2 h-12 px-3 text-base font-normal focus:border-primary focus:ring-1 focus:ring-primary"
+                        value={adress}
+                        type="text"
+                        disabled
+                      />
+                      <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
+                        lock
+                      </span>
+                    </div>
+                  </label>
                 </div>
               </div>
               {/* Segurança */}
@@ -444,10 +507,12 @@ export default function Register() {
                         className="w-full rounded-xl bg-white border-border border-2 h-12 px-3 text-base font-normal focus:border-primary focus:ring-1 focus:ring-primary"
                         placeholder="Crie uma senha forte"
                         type="password"
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
                       ></input>
-                      <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
+                      {/* <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
                         visibility
-                      </span>
+                      </span> */}
                     </div>
                   </label>
                   <label className="flex flex-col gap-2">
@@ -459,10 +524,14 @@ export default function Register() {
                         className="w-full rounded-xl bg-white border-border border-2 h-12 px-3 text-base font-normal focus:border-primary focus:ring-1 focus:ring-primary"
                         placeholder="Crie uma senha forte"
                         type="password"
+                        value={confirmPassword}
+                        onChange={(event) =>
+                          setConfirmPasssword(event.target.value)
+                        }
                       ></input>
-                      <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
+                      {/* <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
                         visibility_off
-                      </span>
+                      </span> */}
                     </div>
                   </label>
                 </div>
@@ -476,8 +545,14 @@ export default function Register() {
                   números.
                 </p>
               </div>
-              <div className="pt-4">
+              {erro && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative  max-w-full   text-center ">
+                  {erro}
+                </div>
+              )}
+              <div className="pt-1">
                 <button
+                  onClick={Sginup}
                   className="w-full bg-primary hover:bg-primary-hover active:scale-[0.99] transition-all duration-200 text-white  font-bold text-lg rounded-lg h-14 flex items-center justify-center gap-3 shadow-md hover:shadow-lg cursor-pointer"
                   type="button"
                 >
