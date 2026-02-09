@@ -1,6 +1,10 @@
 import { useState } from "react";
 import axios from "../../api/axios";
 import { AxiosError } from "axios";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
+
+const navigate = useNavigate();
 interface ZodIssue {
   key: string;
   message: string;
@@ -131,6 +135,7 @@ export default function Register() {
         return;
       }
       console.log(token);
+
       const res = await axios.post<BackendResponse>(
         FARMSignup_URL,
         {
@@ -148,6 +153,13 @@ export default function Register() {
       );
       setErro("");
       console.log(res);
+      const auth_token = token?.split(" ");
+      Cookies.set("token", auth_token[1], {
+        expires: 1,
+        secure: true,
+        sameSite: "strict",
+      });
+      navigate("/dashboard");
     } catch (err) {
       const error = err as AxiosError<BackendResponse>;
       if (error.response) {
