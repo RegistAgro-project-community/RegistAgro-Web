@@ -1,4 +1,5 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { removeToken } from "../auth";
 
 interface NavProps {
   sidebarAberto: boolean;
@@ -7,6 +8,7 @@ interface NavProps {
 
 function Nav({ sidebarAberto, setSidebarAberto }: NavProps) {
   const rota = useLocation();
+  const navegate = useNavigate();
   const rotaAtiva = (path: string) => rota.pathname === path;
 
   const menuItens = [
@@ -106,13 +108,16 @@ function Nav({ sidebarAberto, setSidebarAberto }: NavProps) {
           ))}
         </nav>
         <div className="p-4 border-t border-border-color">
-          <a
+          <button
             className="flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
-            href="/logout"
+            onClick={() => {
+              removeToken();
+              navegate("/login");
+            }}
           >
             <span className="material-symbols-outlined">logout</span>
             <span className="text-sm font-medium">Terminar Sessão</span>
-          </a>
+          </button>
         </div>
       </div>
     </>

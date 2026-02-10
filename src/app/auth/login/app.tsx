@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { AxiosError } from "axios";
 import axios from "../../api/axios";
+import Cookies from "js-cookie";
+import { Toast } from "primereact/toast";
+import { useNavigate } from "react-router-dom";
 interface ZodIssue {
   key: string;
   message: string;
@@ -14,25 +17,60 @@ interface BackendResponse {
 }
 const FARMLOGIN_URL = "/auth/farm/login";
 export default function Login() {
+  const navigate = useNavigate();
   const [nif, setNif] = useState("");
   const [password, setPassword] = useState("");
-  const [erro, setErro] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  const [token, setToken] = useState<string | null>(null);
+  const toast = useRef<Toast>(null);
   async function Logar(event: React.FormEvent) {
     event.preventDefault();
     try {
       if (!nif || !password) {
-        setErro("Preencha NIF e Senha");
+        toast.current?.show({
+          severity: "error",
+          summary: "Algo de errado",
+          detail: "Preencha NIF e Senha",
+          life: 2000,
+        });
         return;
       }
+      setLoading(true);
       const res = await axios.post<BackendResponse>(
         FARMLOGIN_URL,
         { nif, password },
         { headers: { "Content-Type": "application/json" } },
       );
-      setErro("");
-      console.log(res)
-      console.log(res.data, "OK");
+
+      console.log(res);
+
+      console.log(res);
+      setToken(res.headers.authorization);
+      const auth_token = token?.split(" ")[1];
+
+      const valido = res.data.message;
+      toast.current?.show({
+        severity: "success",
+        summary: "Tudo certo",
+        detail: valido,
+        life: 2000,
+      });
+
+      if (res.status === 200) {
+        setLoading(false);
+        Cookies.set("token", auth_token!, {
+          expires: 1,
+          secure: true,
+          sameSite: "Strict",
+        });
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1500);
+      }
     } catch (err) {
+      setLoading(false);
       const error = err as AxiosError<BackendResponse>;
       if (error.response) {
         const data = error.response.data;
@@ -47,9 +85,20 @@ export default function Login() {
           mensagem = "erro inesperado.";
         }
         console.log(data);
-        setErro(mensagem);
+
+        toast.current?.show({
+          severity: "error",
+          summary: "Algo de errado",
+          detail: mensagem,
+          life: 2000,
+        });
       } else {
-        setErro("Erro de conexão com o Servidor");
+        toast.current?.show({
+          severity: "error",
+          summary: "Algo de errado",
+          detail: "Erro de conexão com o Servidor",
+          life: 2000,
+        });
       }
       console.error("Erro no axios", error);
     }
@@ -57,6 +106,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-background">
+      <Toast ref={toast} position="top-right" />
       <div className="w-full max-w-120 flex flex-col gap-6">
         <header className="flex flex-col items-center gap-2 mb-4">
           <div className="flex items-center gap-3 text-text-main">
@@ -75,12 +125,11 @@ export default function Login() {
               Bem-vindo de volta! Insira os seus dados para entrar.
             </p>
           </div>
-          {erro && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mx-auto max-w-lg mb-2">
-              {erro}
+          {loading && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+              <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
             </div>
           )}
-
           <form className="flex flex-col gap-6" onSubmit={Logar}>
             <div className="flex flex-col gap-1.5">
               <label
@@ -126,7 +175,10 @@ export default function Login() {
               </div>
             </div>
 
-            <button className="w-full h-12 bg-primary hover:bg-primary-hover text-white font-bold rounded-lg flex items-center justify-center gap-2 shadow-sm transition-all  cursor-pointer">
+            <button
+              type="submit"
+              className="w-full h-12 bg-primary hover:bg-primary-hover text-white font-bold rounded-lg flex items-center justify-center gap-2 shadow-sm transition-all  cursor-pointer"
+            >
               <span>Entrar</span>
               <span className="material-symbols-outlined">arrow_forward</span>
             </button>

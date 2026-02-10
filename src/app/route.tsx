@@ -6,7 +6,6 @@ import Produtos from "./produtos/app";
 import Pedidos from "./pedidos/app";
 import { PublicRote } from "./publicRote";
 import { PrivateRote } from "./privateRote";
-import { Logout } from "./logout";
 
 export function AppRoutes() {
   return (
@@ -52,7 +51,6 @@ export function AppRoutes() {
             </PrivateRote>
           }
         ></Route>
-        <Route path="/logout" element={<Logout />} />
       </Routes>
     </BrowserRouter>
   );

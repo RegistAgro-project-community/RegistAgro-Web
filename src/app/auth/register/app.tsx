@@ -1,41 +1,72 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import axios from "../../api/axios";
 import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import { Toast } from "primereact/toast";
 
 interface ZodIssue {
   key: string;
   message: string;
   minimum?: number;
 }
-
+interface FormData {
+  id: string;
+  name: string;
+  adress: string;
+  email: string;
+  phone: string;
+  province: string;
+}
 interface BackendResponse {
   valid?: boolean;
   message?: string;
-  data?: string[];
+  data?: FormData;
   error?: ZodIssue[] | string;
 }
 const FARMSignup_URL = "/auth/farm/signup";
 export default function Register() {
+  const toast = useRef<Toast>(null);
+  const [etapa, setEtapa] = useState<"nif" | "otp" | "dados">("nif");
+  const [nif, setNif] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const [code, setCode] = useState<string[]>(Array(6).fill(""));
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [province, setProvince] = useState("");
+  const [adress, setAdress] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPasssword] = useState("");
+  const [token, setToken] = useState<string | null>(null);
+
   const navigate = useNavigate();
   async function CheckNif(event: React.FormEvent) {
     event.preventDefault();
     try {
       if (!nif) {
-        setErro("Preencha o campo");
+        toast.current?.show({
+          severity: "error",
+          summary: "Algo de errado",
+          detail: "Preencha o campo",
+          life: 2000,
+        });
         return;
       }
-      setErro("");
       setLoading(true);
       const res = await axios.get<BackendResponse>(`/auth/signup/nif/${nif}`);
       if (res.data.valid === true) {
         console.log(res.data.message);
         const valido = res.data.message;
-        setSucesso(`${valido}`);
+        toast.current?.show({
+          severity: "success",
+          summary: "Tudo certo",
+          detail: valido,
+          life: 2000,
+        });
         setLoading(false);
         setTimeout(() => {
-          setSucesso("");
           setEtapa("otp");
         }, 2000);
       }
@@ -46,20 +77,28 @@ export default function Register() {
         let mensagem = "";
         if (Array.isArray(data?.error)) {
           mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
-          setLoading(false);
         } else if (typeof data?.error === "string") {
           mensagem = data.error;
-          setLoading(false);
         } else if (data?.message) {
           mensagem = data.message;
-          setLoading(false);
         } else {
           mensagem = "erro inesperado.";
         }
         console.log(data);
-        setErro(mensagem);
+        setLoading(false);
+        toast.current?.show({
+          severity: "error",
+          summary: "Algo de errado",
+          detail: mensagem,
+          life: 2000,
+        });
       } else {
-        setErro("Erro de conexão com o Servidor");
+        toast.current?.show({
+          severity: "error",
+          summary: "Algo de errado",
+          detail: "Erro de conexão com o Servidor",
+          life: 2000,
+        });
         setLoading(false);
       }
     }
@@ -69,13 +108,15 @@ export default function Register() {
     try {
       const vazio = code.some((v) => v === "");
       if (vazio) {
-        setErro("Preencha todos os campos");
+        toast.current?.show({
+          severity: "error",
+          summary: "Algo de errado",
+          detail: "Preenca tods os campos",
+          life: 2000,
+        });
         return;
       }
-      setErro("");
-
       const OTPCODE = code.join("");
-      console.log(OTPCODE);
       setLoading(true);
       const res = await axios.get<BackendResponse>(
         `/auth/signup/verify/${OTPCODE}`,
@@ -84,9 +125,12 @@ export default function Register() {
       if (res.status === 202) {
         const mensagem = res.data.message;
         const data = res.data.data;
-
-        console.log(mensagem, data);
-        setSucesso(`${mensagem}`);
+        toast.current?.show({
+          severity: "success",
+          summary: "Tudo certo",
+          detail: mensagem,
+          life: 2000,
+        });
         setLoading(false);
         setTimeout(() => {
           setName(`${data?.name}`);
@@ -96,7 +140,6 @@ export default function Register() {
           setProvince(`${data?.province}`);
           setToken(res.headers.authorization);
           setEtapa("dados");
-          setSucesso("");
         }, 2000);
       }
     } catch (err) {
@@ -106,21 +149,28 @@ export default function Register() {
         let mensagem = "";
         if (Array.isArray(data?.error)) {
           mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
-          setLoading(false);
         } else if (typeof data?.error === "string") {
           mensagem = data.error;
-          setLoading(false);
         } else if (data?.message) {
           mensagem = data.message;
-          setLoading(false);
         } else {
           mensagem = "erro inesperado.";
         }
-        console.log(data);
-        setErro(mensagem);
-      } else {
-        setErro("Erro de conexão com o Servidor");
         setLoading(false);
+        toast.current?.show({
+          severity: "error",
+          summary: "Algo de errado",
+          detail: mensagem,
+          life: 2000,
+        });
+      } else {
+        setLoading(false);
+        toast.current?.show({
+          severity: "error",
+          summary: "Algo de errado",
+          detail: "Erro de Conexão com o Servidor",
+          life: 2000,
+        });
       }
     }
   }
@@ -128,14 +178,23 @@ export default function Register() {
     event.preventDefault();
     try {
       if (!password || !confirmPassword) {
-        setErro("Preencha os campos");
+        toast.current?.show({
+          severity: "error",
+          summary: "Algo de errado",
+          detail: "Preencha os Campos.",
+          life: 2000,
+        });
         return;
       } else if (password !== confirmPassword) {
-        setErro("As senhas não coincidem.");
+        toast.current?.show({
+          severity: "error",
+          summary: "Algo de errado",
+          detail: "As  senhas não coincidem.",
+          life: 2000,
+        });
         return;
       }
-      console.log(token);
-
+      setLoading(true);
       const res = await axios.post<BackendResponse>(
         FARMSignup_URL,
         {
@@ -151,15 +210,25 @@ export default function Register() {
           headers: { "Content-Type": "application/json", Authorization: token },
         },
       );
-      setErro("");
-      console.log(res);
-      const auth_token = token?.split(" ");
-      Cookies.set("token", auth_token[1], {
-        expires: 1,
-        secure: true,
-        sameSite: "strict",
+      toast.current?.show({
+        severity: "success",
+        summary: "Tudo certo",
+        detail: res.data.message,
+        life: 2000,
       });
-      navigate("/dashboard");
+      if (res.data.valid === true) {
+        setLoading(false);
+        const auth_token = token?.split(" ")[1];
+        Cookies.set("token", auth_token!, {
+          expires: 1,
+          secure: true,
+          sameSite: "strict",
+        });
+
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1500);
+      }
     } catch (err) {
       const error = err as AxiosError<BackendResponse>;
       if (error.response) {
@@ -167,45 +236,38 @@ export default function Register() {
         let mensagem = "";
         if (Array.isArray(data?.error)) {
           mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
-          setLoading(false);
         }
         if (Array.isArray(data?.error)) {
           mensagem = data.error
             .map((e) => (typeof e === "string" ? e : e.message))
             .join(", ");
-          setLoading(false);
         } else if (data?.message) {
           mensagem = data.message;
-          setLoading(false);
         } else {
           mensagem = "erro inesperado.";
         }
-        console.log(data);
-        setErro(mensagem);
-      } else {
-        setErro("Erro de conexão com o Servidor");
         setLoading(false);
+        toast.current?.show({
+          severity: "error",
+          summary: "Algo de errado",
+          detail: mensagem,
+          life: 2000,
+        });
+      } else {
+        setLoading(false);
+        toast.current?.show({
+          severity: "error",
+          summary: "Algo de errado",
+          detail: "Erro de conexão com o Servidor",
+          life: 2000,
+        });
       }
     }
   }
 
-  const [etapa, setEtapa] = useState<"nif" | "otp" | "dados">("nif");
-  const [nif, setNif] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [erro, setErro] = useState("");
-  const [sucesso, setSucesso] = useState("");
-  const [code, setCode] = useState<string[]>(Array(6).fill(""));
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [province, setProvince] = useState("");
-  const [adress, setAdress] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPasssword] = useState("");
-  const [token, setToken] = useState<string | null>(null);
-
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-background">
+      <Toast ref={toast} position="top-right" />"
       {etapa === "nif" && (
         <form className="relative z-10 w-full max-w-120 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden">
           <div className="relative h-48 w-full  overflow-hidden group">
@@ -229,16 +291,6 @@ export default function Register() {
               </h1>
             </div>
           </div>
-          {erro && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mx-auto max-w-11/12 mt-5 text-center ">
-              {erro}
-            </div>
-          )}
-          {sucesso && (
-            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mx-auto max-w-11/12 mt-5 text-center ">
-              {sucesso}
-            </div>
-          )}
           {loading && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
               <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
@@ -326,11 +378,7 @@ export default function Register() {
                   RegistAgro
                 </h2>
               </div>
-              {erro && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mx-auto max-w-5/6 mb-3  text-center ">
-                  {erro}
-                </div>
-              )}
+
               {loading && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
                   <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
@@ -340,11 +388,7 @@ export default function Register() {
                 <h1 className="text-2xl text-gray-900 font-bold mb-2">
                   Verificar E-mail
                 </h1>
-                {sucesso && (
-                  <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mx-auto max-w-11/12 mb-2 text-center ">
-                    {sucesso}
-                  </div>
-                )}
+
                 <p className="text-gray-500 text-sm leading-relaxed px-4">
                   Enviamos um código de 6 dígitos para o seu email{" "}
                 </p>
@@ -557,11 +601,6 @@ export default function Register() {
                   números.
                 </p>
               </div>
-              {erro && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative  max-w-full   text-center ">
-                  {erro}
-                </div>
-              )}
               <div className="pt-1">
                 <button
                   onClick={Sginup}
