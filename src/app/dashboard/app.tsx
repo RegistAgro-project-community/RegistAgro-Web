@@ -1,7 +1,72 @@
+import axios from "../api/axios";
 import Nav from "../components/nav";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import Cookies from "js-cookie";
+import { AxiosError } from "axios";
+interface ZodIssue {
+  key: string;
+  message: string;
+  minimum?: number;
+}
+interface FormData {
+  id: string;
+  name: string;
+  adress: string;
+  email: string;
+  phone: string;
+  province: string;
+}
+interface BackendResponse {
+  valid?: boolean;
+  message?: string;
+  data?: FormData;
+  error?: ZodIssue[] | string;
+}
 export default function Home() {
+  useEffect(() => {
+      if (!called.current) {
+    // eslint-disable-next-line react-hooks/immutability
+    UserName();
+    called.current = true;
+  }
+  }, []);
+const called = useRef(false);
   const [siderAberto, setSiderAberto] = useState(false);
+  const [fazendaName, setFazendaName] = useState('')
+  const User_URL = "/users/profile";
+  const token = Cookies.get("token");
+  async function UserName() {
+    console.log(token);
+    try {
+      const res = await axios.get<BackendResponse>(User_URL, {
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      });
+      console.log(res);
+      const name = res.data.data?.name
+      setFazendaName(`${name}`)
+    } catch (err) {
+      const error = err as AxiosError<BackendResponse>;
+      if (error.response) {
+        const data = error.response.data;
+        let mensagem = "";
+        if (Array.isArray(data?.error)) {
+          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
+        }
+        if (Array.isArray(data?.error)) {
+          mensagem = data.error
+            .map((e) => (typeof e === "string" ? e : e.message))
+            .join(", ");
+        } else if (data?.message) {
+          mensagem = data.message;
+        } else {
+          mensagem = "erro inesperado.";
+        }
+        console.log(mensagem);
+      } else {
+        console.log("Erro Server");
+      }
+    }
+  }
   return (
     <div className="bg-background text-text-main">
       <div className="relative flex h-screen w-full overflow-hidden bg-background">
@@ -25,19 +90,16 @@ export default function Home() {
               </div>
 
               <div className="flex items-center gap-4">
-                
                 <div className="flex flex-col items-end">
                   <span className="text-sm font-bold text-text-main">
                     {" "}
-                    Fazenda Sol Nascente
+                    {fazendaName || "Problema"}  
                   </span>
                   <span className="text-xs text-text-secondary">
                     Produtor Verificado
                   </span>
                 </div>
-                <div className="h-10 w-10 bg-amber-200 rounded-full hidden md:block ">
-
-                </div>
+                <div className="h-10 w-10 bg-amber-200 rounded-full hidden md:block "></div>
               </div>
             </div>
             {/* Conteudo */}
@@ -209,7 +271,6 @@ export default function Home() {
                         ))}
                       </tbody>
                     </table>
-                   
                   </div>
                 </div>
               </div>

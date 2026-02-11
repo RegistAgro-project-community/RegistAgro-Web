@@ -45,10 +45,10 @@ export default function Login() {
       );
 
       console.log(res);
-
-      console.log(res);
       setToken(res.headers.authorization);
-      const auth_token = token?.split(" ")[1];
+      const token1 = res.headers.authorization
+      console.log(token)
+      const auth_token = token1?.split(" ")[1];
 
       const valido = res.data.message;
       toast.current?.show({
