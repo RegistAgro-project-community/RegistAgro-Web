@@ -1,8 +1,29 @@
+import { useState, useRef } from "react";
+
 type AddPrudutoProps = {
   open: boolean;
-  children?: React.ReactNode
+  children?: React.ReactNode;
 };
 function AddPruduto({ open, children }: AddPrudutoProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [image, setImage] = useState<File | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImage(file);
+    }
+    
+  };
+  function removeImage() {
+      setImage(null);
+
+      if (inputRef.current) {
+        inputRef.current.value = "";
+      }
+    
+  }
+
   return (
     <div
       className={`
@@ -31,7 +52,10 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
                 <label className="block text-sm font-semibold text-text-main mb-1.5">
                   Imagem do Produto
                 </label>
-                <div className="flex justify-center rounded-lg border-2 border-dashed border-gray-300 px-6 py-8 hover:border-primary-hover hover:bg-gray-50 transition-all cursor-pointer group">
+                <div
+                  onClick={() => inputRef.current?.click()}
+                  className={`${image ? "hidden": ""} flex justify-center rounded-lg border-2 border-dashed border-gray-300 px-6 py-8 hover:border-primary-hover hover:bg-gray-50 transition-all cursor-pointer group`}
+                >
                   <div className="text-center">
                     <span className="material-symbols-outlined mx-auto  text-gray-400 group-hover:text-primary transition-all  text-[40px]">
                       cloud_upload
@@ -40,7 +64,6 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
                       <label className="relative cursor-pointer rounded-b-md bg-transparent font-medium text-primary hover:text-text-main focus-within:outline-none">
                         {" "}
                         <span>Clique para Enviar</span>
-                        <input className="sr-only" type="file" />
                       </label>
                       <p className="pl-1"> ou araste e solte</p>
                     </div>
@@ -49,6 +72,33 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
                     </p>
                   </div>
                 </div>
+                <input
+                  ref={inputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+                {image && (
+                  <div className="mt-4 flex items-center justify-between bg-gray-50 border-gray-300 border rounded-lg px-3 py-2">
+                    <div className="flex items-center gap-2 text-sm text-primary">
+                      <span className="material-symbols-outlined text-base">
+                        description
+                      </span>
+                      <span className="font-medium">{image.name}</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="text-red-500 hover:text-red-700 transition  flex "
+                    >
+                      <span className="material-symbols-outlined text-base">
+                        close
+                      </span>
+                    </button>
+                  </div>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-semibold text-text-main mb-1.5">
@@ -70,17 +120,19 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
                     Quantidade
                   </label>
                   <div className="relative rounded-md shadow-md ">
-                  <input
-                    type="number"
-                    placeholder="0"
-                    className="block w-full rounded-lg border-gray-300 bg-white text-text-main focus:ring-primary  shadow-sm focus:border-primary:hover pl-5 pr-2 py-3"
-                  />
+                    <input
+                      type="number"
+                      placeholder="0"
+                      className="block w-full rounded-lg border-gray-300 bg-white text-text-main focus:ring-primary  shadow-sm focus:border-primary:hover pl-5 pr-2 py-3"
+                    />
                     <div className=" absolute inset-y-0 right-0 flex items-center pr-0">
-                     <select className="block text-sm font-medium text-text-main  rounded-lg h-full bg-white shadow-sm focus:border-primary-hover focus:ring-primary-hover  border-border">
-                      <option disabled selected >un.</option>
-                      <option value="">ton</option>
-                      <option value="">kg</option>
-                     </select>
+                      <select className="block text-sm font-medium text-text-main  rounded-lg h-full bg-white shadow-sm focus:border-primary-hover focus:ring-primary-hover  border-border">
+                        <option disabled selected>
+                          un.
+                        </option>
+                        <option value="">ton</option>
+                        <option value="">kg</option>
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -117,9 +169,11 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
                 </select>
               </div>
             </form>
-        </div>
-            <div className="px-8 py-6 border-t border-border-color bg-gray-100/50 flex items-center justify-end gap-6">{children}</div>
           </div>
+          <div className="px-8 py-6 border-t border-border-color bg-gray-100/50 flex items-center justify-end gap-6">
+            {children}
+          </div>
+        </div>
       </div>
     </div>
   );

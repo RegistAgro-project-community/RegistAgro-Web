@@ -23,18 +23,18 @@ interface BackendResponse {
   error?: ZodIssue[] | string;
 }
 export default function Home() {
+  const token = Cookies.get("token");
   useEffect(() => {
       if (!called.current) {
     // eslint-disable-next-line react-hooks/immutability
-    UserName();
+  if(token)  UserName();
     called.current = true;
   }
-  }, []);
+  }, [token]);
 const called = useRef(false);
   const [siderAberto, setSiderAberto] = useState(false);
   const [fazendaName, setFazendaName] = useState('')
   const User_URL = "/users/profile";
-  const token = Cookies.get("token");
   async function UserName() {
     console.log(token);
     try {

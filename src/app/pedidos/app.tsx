@@ -69,6 +69,155 @@ export default function Pedidos() {
                 </div>
               ))}
             </div>
+            <div className="bg-white rounded-xl border border-border-color shadow-sm overflow-hidden overflow-x-auto mt-5">
+              {/*Search*/}
+              <div className="  p-4  border-b border-border-color flex gap-4 items-center overflow-hidden">
+                <div className="relative flex-1 max-w-md">
+                  <span className="material-symbols-outlined absolute left-5 top-1/2 -translate-1/2 text-gray-400 text-[20px]">
+                    search
+                  </span>
+                  <input
+                    type="text"
+                    className="w-full pl-10 pr-4 py-2 bg-background border-none rounded-lg text-sm focus:ring-2 focus:ring-primary/50 text-text-main placeholder-gray-400"
+                    placeholder="Buscar cliente..."
+                  />
+                </div>
+              </div>
+              {/* Tabela */}
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-background border-b border-border-color uppercase">
+                    <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                      ID
+                    </th>
+                    <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                      Consumidor
+                    </th>
+                    <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                      Produto
+                    </th>
+                    <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                      Qunatidade
+                    </th>
+
+                    <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                      Preço
+                    </th>
+                    <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary text-center">
+                      Status
+                    </th>
+                    <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary text-center">
+                      Ações
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border-color">
+                  {[
+                    {
+                      consumidor: "Felipe João",
+                      produto: "batata",
+                      quant: "20kg",
+                      preco: "10.000",
+                      status: "pendente",
+                    },
+                    {
+                      consumidor: "Felipe João",
+                      produto: "batata",
+                      quant: "20kg",
+                      preco: "10.000",
+                      status: "pendente",
+                    },
+                    {
+                      consumidor: "Felipe João",
+                      produto: "batata",
+                      quant: "20kg",
+                      preco: "10.000",
+                      status: "pendente",
+                    },
+                    {
+                      consumidor: "Felipe João",
+                      produto: "batata",
+                      quant: "20kg",
+                      preco: "10.000",
+                      status: "pendente",
+                    },
+                    {
+                      consumidor: "Felipe João",
+                      produto: "batata",
+                      quant: "20kg",
+                      preco: "10.000",
+                      status: "pendente",
+                    },
+                  ].map((item, i) => (
+                    <tr
+                      key={i}
+                      className="hover:bg-gray-50 transition-colors group"
+                    >
+                      <td className="px-6 py-5">
+                        <p className="text-sm font-medium text-text-secondary">
+                          #{i + 1}
+                        </p>
+                      </td>
+                      <td className="px-6 py-5">
+                        <span className="text-sm font-semibold text-text-main ">
+                          {item.consumidor}
+                        </span>
+                      </td>
+                      <td className="px-6 py-5">
+                        <p className=" text-base font-medium text-text-secondary leading-relaxed capitalize">
+                          {item.produto}
+                        </p>
+                      </td>
+                      <td className="px-6 py-5">
+                        <p className="text-sm text-text-secondary font-medium ">
+                          {item.quant}
+                        </p>
+                      </td>
+                      <td className="px-6 py-5">
+                        <span className="text-sm text-text-secondary">
+                          {item.preco}Kz
+                        </span>
+                      </td>
+                      <td className="px-6 py-5 text-center">
+                        <span className="inline-flex items-center px-2.5 py-0 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
+                          {item.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-5 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button className="px-3 py-1.5 text-xs font-semibold text-text-secondary hover:text-red-600 transition-colors">
+                            Rejeitar
+                          </button>
+                          <button className="px-4 py-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-lg shadow-sm transition-all transform active:scale-95">
+                            Aceitar
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {/* Paginação */}
+              <div className="px-6 py-4 border-t border-border-color flex items-center justify-between w-full">
+                <p className="text-medium text-gray-600">
+                  Mostrando{" "}
+                  <span className="font-medium text-text-main">1</span> a{" "}
+                  <span className="font-medium text-text-main">5</span> de{" "}
+                  <span className="font-medium text-text-main">5</span> Produtos
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 disabled:opacity-50 active:scale-90"
+                    disabled
+                  >
+                    Anterior
+                  </button>
+                  <button className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 active:scale-90">
+                    Próximo
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </main>
       </div>
