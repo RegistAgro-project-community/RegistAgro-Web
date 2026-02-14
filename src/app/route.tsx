@@ -6,6 +6,7 @@ import Produtos from "./produtos/app";
 import Pedidos from "./pedidos/app";
 import { PublicRote } from "./publicRote";
 import { PrivateRote } from "./privateRote";
+import ContratarTransorte from "./transporte/app";
 
 export function AppRoutes() {
   return (
@@ -48,6 +49,14 @@ export function AppRoutes() {
           element={
             <PrivateRote>
               <Pedidos />
+            </PrivateRote>
+          }
+        ></Route>
+        <Route
+          path="/pedidos/transporte"
+          element={
+            <PrivateRote>
+              <ContratarTransorte />
             </PrivateRote>
           }
         ></Route>
