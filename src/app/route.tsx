@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Login from "./auth/login/app";
 import Register from "./auth/register/app";
 import Home from "./dashboard/app";
@@ -7,11 +7,13 @@ import Pedidos from "./pedidos/app";
 import { PublicRote } from "./publicRote";
 import { PrivateRote } from "./privateRote";
 import ContratarTransorte from "./transporte/app";
+import PerfilUsuario from "./perfil/app";
 
 export function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route
           path="/login"
           element={
@@ -57,6 +59,14 @@ export function AppRoutes() {
           element={
             <PrivateRote>
               <ContratarTransorte />
+            </PrivateRote>
+          }
+        ></Route>
+        <Route
+          path="/perfil"
+          element={
+            <PrivateRote>
+              <PerfilUsuario />
             </PrivateRote>
           }
         ></Route>
