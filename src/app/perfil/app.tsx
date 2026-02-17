@@ -1,7 +1,105 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "../api/axios";
 import Nav from "../components/nav";
+import Cookies from "js-cookie";
+import { AxiosError } from "axios";
+import EditarPerfil from "../components/modalEditPerfil";
+interface ZodIssue {
+  key: string;
+  message: string;
+  minimum?: number;
+}
+interface FormData {
+  id: string;
+  name: string;
+  adress: string;
+  email: string;
+  phone: string;
+  province: string;
+  created_at: string;
+}
+interface BackendResponse {
+  valid?: boolean;
+  message?: string;
+  data?: FormData;
+  error?: ZodIssue[] | string;
+}
 export default function PerfilUsuario() {
   const [siderAberto, setSiderAberto] = useState(false);
+  const [abertoEdit, setAbertoEdit] = useState(false);
+  const User_URL = "/users/profile";
+  const [formData, setFormData] = useState({
+    id: "",
+    name: "",
+    adress: "",
+    email: "",
+    phone: "",
+    province: "",
+    dataISO: "",
+  });
+  const token = Cookies.get("token");
+  async function fetchPerfil() {
+    if (!token) return;
+    try {
+      const res = await axios.get<BackendResponse>(User_URL, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res);
+      setFormData((prev) => ({
+        ...prev,
+        name: res.data.data?.name || "",
+        phone: res.data.data?.phone || "",
+        email: res.data.data?.email || "",
+        province: res.data.data?.province || "",
+        adress: res.data.data?.adress || "",
+        dataISO: res.data.data?.created_at || "",
+      }));
+    } catch (err) {
+      const error = err as AxiosError<BackendResponse>;
+      if (error.response) {
+        const data = error.response.data;
+        let mensagem = "";
+        if (Array.isArray(data?.error)) {
+          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
+        }
+        if (Array.isArray(data?.error)) {
+          mensagem = data.error
+            .map((e) => (typeof e === "string" ? e : e.message))
+            .join(", ");
+        } else if (data?.message) {
+          mensagem = data.message;
+        } else {
+          mensagem = "erro inesperado.";
+        }
+        console.log(mensagem);
+      } else {
+        console.log("Erro Server");
+      }
+    }
+  }
+  useEffect(() => {
+    const carregarDados = async () => {
+      fetchPerfil();
+      setAbertoEdit(false);
+      console.log(abertoEdit);
+    };
+    carregarDados();
+    window.addEventListener("perfilAtualizado", carregarDados);
+    return () => {
+      window.removeEventListener("perfilAtualizado", carregarDados);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
+  const data = new Date(formData.dataISO);
+  const dataFormat = data.toLocaleDateString("pt-PT", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
   return (
     <>
       <div className="bg-background text-text-main">
@@ -31,7 +129,10 @@ export default function PerfilUsuario() {
                   </p>
                 </div>
                 <div className="flex gap-3">
-                  <button className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-hover text-white font-bold text-sm transition-all shadow-lg ">
+                  <button
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-hover text-white font-bold text-sm transition-all shadow-lg active:scale-90"
+                    onClick={() => setAbertoEdit(true)}
+                  >
                     <span className="material-symbols-outlined text-[20px]">
                       edit
                     </span>
@@ -73,7 +174,7 @@ export default function PerfilUsuario() {
                           Nome da Fazenda
                         </p>
                         <p className="text-text-main  text-lg font-medium">
-                          Fazenda Santa CCCCC
+                          {formData.name}
                         </p>
                       </div>
                       <div className="space-y-1">
@@ -92,7 +193,7 @@ export default function PerfilUsuario() {
                           <span className="material-symbols-outlined text-primary text-sm">
                             call
                           </span>
-                          +244 912345678
+                          +244 {formData.phone}
                         </div>
                       </div>
 
@@ -104,7 +205,7 @@ export default function PerfilUsuario() {
                           <span className="material-symbols-outlined text-primary text-sm">
                             mail
                           </span>
-                          contato@santacecilia.pt
+                          {formData.email}
                         </div>
                       </div>
                     </div>
@@ -126,10 +227,10 @@ export default function PerfilUsuario() {
                         </span>
                         <div>
                           <p className="text-text-main  font-medium">
-                            Estrada Rural, km 4
+                            {formData.adress}
                           </p>
                           <p className="text-text-muted  text-gray-400 text-sm mt-0.5">
-                            7000-123 Évora, Portugal
+                            {formData.province}
                           </p>
                         </div>
                       </div>
@@ -152,7 +253,7 @@ export default function PerfilUsuario() {
                             Ativa
                           </p>
                           <p className="text-xs text-green-700 ">
-                            Desde Jan 2023
+                            Desde {dataFormat}
                           </p>
                         </div>
                       </div>
@@ -164,7 +265,15 @@ export default function PerfilUsuario() {
           </main>
         </div>
       </div>
-      Perfil
+      <EditarPerfil openEditPerfil={abertoEdit}>
+        <button
+          onClick={() => setAbertoEdit(false)}
+          className="w-full py-2 text-text-muted hover:text-primary font-medium text-sm transition-all underline underline-offset-4 decoration-text-muted/30 active:scale-90"
+          type="button"
+        >
+          Cancelar
+        </button>
+      </EditarPerfil>
     </>
   );
 }

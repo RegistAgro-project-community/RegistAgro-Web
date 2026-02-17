@@ -24,49 +24,56 @@ interface BackendResponse {
 }
 export default function Home() {
   const token = Cookies.get("token");
-  useEffect(() => {
-      if (!called.current) {
-    // eslint-disable-next-line react-hooks/immutability
-  if(token)  UserName();
-    called.current = true;
-  }
-  }, [token]);
-const called = useRef(false);
-  const [siderAberto, setSiderAberto] = useState(false);
-  const [fazendaName, setFazendaName] = useState('')
+  const [fazendaName, setFazendaName] = useState("");
   const User_URL = "/users/profile";
-  async function UserName() {
-    console.log(token);
-    try {
-      const res = await axios.get<BackendResponse>(User_URL, {
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      });
-      console.log(res);
-      const name = res.data.data?.name
-      setFazendaName(`${name}`)
-    } catch (err) {
-      const error = err as AxiosError<BackendResponse>;
-      if (error.response) {
-        const data = error.response.data;
-        let mensagem = "";
-        if (Array.isArray(data?.error)) {
-          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
+  const called = useRef(false);
+  const [siderAberto, setSiderAberto] = useState(false);
+  useEffect(() => {
+    if (!called.current) {
+      if (token) {
+        async function UserName() {
+          console.log(token);
+          try {
+            const res = await axios.get<BackendResponse>(User_URL, {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            console.log(res);
+            const name = res.data.data?.name;
+            setFazendaName(`${name}`);
+          } catch (err) {
+            const error = err as AxiosError<BackendResponse>;
+            if (error.response) {
+              const data = error.response.data;
+              let mensagem = "";
+              if (Array.isArray(data?.error)) {
+                mensagem = data.error
+                  .map((e: ZodIssue) => e.message)
+                  .join(", ");
+              }
+              if (Array.isArray(data?.error)) {
+                mensagem = data.error
+                  .map((e) => (typeof e === "string" ? e : e.message))
+                  .join(", ");
+              } else if (data?.message) {
+                mensagem = data.message;
+              } else {
+                mensagem = "erro inesperado.";
+              }
+              console.log(mensagem);
+            } else {
+              console.log("Erro Server");
+            }
+          }
         }
-        if (Array.isArray(data?.error)) {
-          mensagem = data.error
-            .map((e) => (typeof e === "string" ? e : e.message))
-            .join(", ");
-        } else if (data?.message) {
-          mensagem = data.message;
-        } else {
-          mensagem = "erro inesperado.";
-        }
-        console.log(mensagem);
-      } else {
-        console.log("Erro Server");
+        UserName();
       }
+      called.current = true;
     }
-  }
+  }, [token]);
+
   return (
     <div className="bg-background text-text-main">
       <div className="relative flex h-screen w-full overflow-hidden bg-background">
@@ -93,7 +100,7 @@ const called = useRef(false);
                 <div className="flex flex-col items-end">
                   <span className="text-sm font-bold text-text-main">
                     {" "}
-                    {fazendaName || "Problema"}  
+                    {fazendaName || "Problema"}
                   </span>
                   <span className="text-xs text-text-secondary">
                     Produtor Verificado
@@ -112,7 +119,6 @@ const called = useRef(false);
                   Bem-vindo de volta! Aqui está o resumo das sias atividades
                   hoje.
                 </p>
-
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-4">
                   {[
                     {
@@ -235,9 +241,9 @@ const called = useRef(false);
                             valor: "550.000kz",
                             status: "pago",
                           },
-                        ].map((item) => (
+                        ].map((item, i) => (
                           <tr
-                            key={item.pedido}
+                            key={i}
                             className="hover:bg-background/50 transition-colors"
                           >
                             <td className="px-6 py-4 text-sm font-medium text-text-main">
