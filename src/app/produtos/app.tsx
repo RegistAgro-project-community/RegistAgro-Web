@@ -2,14 +2,108 @@ import Nav from "../components/nav";
 import AddPruduto from "../components/modalAddProduto";
 import EditProduto from "../components/modalEditProduto";
 import DeleteProduto from "../components/modalDeleteProduto";
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { AxiosError } from "axios";
+import axios from "../api/axios";
+import Cookies from "js-cookie";
+import { Toast } from "primereact/toast";
+interface ZodIssue {
+  key: string;
+  message: string;
+  minimum?: number;
+}
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  photo: string;
+  price: number;
+  stock: number;
+  transport: string;
+  type: string;
+  unit: string;
+  created_at: string;
+}
+interface BackendResponse {
+  totalProducts: number;
+  products: Array<Product>;
+  balance: string;
+  low_stock: number;
+  valid?: boolean;
+  message?: string;
+  error?: ZodIssue[] | string;
+}
 export default function Produtos() {
   const [siderAberto, setSiderAberto] = useState(false);
   const [aberto, setAberto] = useState(false);
   const [abertoEdit, setAbertoEdit] = useState(false);
   const [abertoDelete, setAbertoDelete] = useState(false);
+  const PRODUTOS_URL = "/products/farms/get/products";
+  const [totalProduto, setTotalProduto] = useState("");
+  const [estoqueBaixo, setEstoqueBaixo] = useState("");
+  const [ganho, setGanho] = useState("");
+  const [produtos, setProdutos] = useState<Product[]>([]);
+  const token = Cookies.get("token");
+  const toast = useRef<Toast>(null);
+  const [selecionado, setSelecionado] = useState({ id: "" });
+  const preparacaoDelete = (id: string) => {
+    setSelecionado({ id });
+    setAbertoDelete(true);
+  };
+  async function Produtos() {
+    if (!token) return;
+    try {
+      const res = await axios.get<BackendResponse>(PRODUTOS_URL, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res);
+      setTotalProduto(res.data.totalProducts.toString() || "0");
+      setEstoqueBaixo(res.data.low_stock.toString() || "0");
+      setGanho(res.data.balance);
+      setProdutos([...res.data.products]);
+    } catch (err) {
+      const error = err as AxiosError<BackendResponse>;
+      if (error.response) {
+        const data = error.response.data;
+        let mensagem = "";
+        if (Array.isArray(data?.error)) {
+          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
+        }
+        if (Array.isArray(data?.error)) {
+          mensagem = data.error
+            .map((e) => (typeof e === "string" ? e : e.message))
+            .join(", ");
+        } else if (data?.message) {
+          mensagem = data.message;
+        } else {
+          mensagem = "erro inesperado.";
+        }
+        console.log(mensagem);
+      } else {
+        console.log("Erro Server");
+      }
+    }
+  }
+  useEffect(() => {
+    const carregarDados = async () => {
+      Produtos();
+      setAbertoDelete(false);
+    };
+    carregarDados();
+    window.addEventListener("perfilAtualizado", carregarDados);
+    return () => {
+      window.removeEventListener("perfilAtualizado", carregarDados);
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
+  console.log(produtos);
   return (
     <>
+      <Toast ref={toast} position="top-right" />
       <div className="bg-background text-text-main">
         <div className="relative flex h-screen w-full overflow-hidden bg-background">
           <Nav sidebarAberto={siderAberto} setSidebarAberto={setSiderAberto} />
@@ -47,9 +141,21 @@ export default function Produtos() {
             <div className="flex-1 overflow-auto p-8  bg-background">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
-                  { label: "Total de Produtos", total: 124, icon: "grass" },
-                  { label: "Baixo Estoque", total: 6, icon: "warning" },
-                  { label: "Ganho", total: 10500, icon: "attach_money" },
+                  {
+                    label: "Total de Produtos",
+                    total: totalProduto || 0,
+                    icon: "grass",
+                  },
+                  {
+                    label: "Baixo Estoque",
+                    total: estoqueBaixo || 0,
+                    icon: "warning",
+                  },
+                  {
+                    label: "Ganhos",
+                    total: ganho || "0Kz",
+                    icon: "attach_money",
+                  },
                 ].map((item, i) => (
                   <div
                     key={i}
@@ -60,7 +166,7 @@ export default function Produtos() {
                         {item.label}
                       </p>
                       <p className="text-2xl font-bold text-text-main mt-2">
-                        {item.total} {item.icon === "attach_money" ? " Kz" : ""}
+                        {item.total} {item.icon === "attach_money"}
                       </p>
                     </div>
                     <div
@@ -114,84 +220,38 @@ export default function Produtos() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border-color">
-                    {[
-                      {
-                        nome: "Alface",
-                        categoria: "verduras",
-                        quant: "20t",
-                        preco: "10.000",
-                        transporte: "Caminhão Refigerado",
-                        lote: "Lote #2025-A",
-                        unidade: "t",
-                      },
-                      {
-                        nome: "Alface",
-                        categoria: "verduras",
-                        quant: "20t",
-                        preco: "10.000",
-                        transporte: "Caminhão Refigerado",
-                        lote: "Lote #2025-A",
-                        unidade: "t",
-                      },
-                      {
-                        nome: "Alface",
-                        categoria: "verduras",
-                        quant: "20t",
-                        preco: "10.000",
-                        transporte: "Caminhão Refigerado",
-                        lote: "Lote #2025-A",
-                        unidade: "t",
-                      },
-                      {
-                        nome: "Alface",
-                        categoria: "verduras",
-                        quant: "20t",
-                        preco: "10.000",
-                        transporte: "Caminhão Refigerado",
-                        lote: "Lote #2025-A",
-                        unidade: "t",
-                      },
-                      {
-                        nome: "Alface",
-                        categoria: "verduras",
-                        quant: "20t",
-                        preco: "10.000",
-                        transporte: "Caminhão Refigerado",
-                        lote: "Lote #2025-A",
-                        unidade: "t",
-                      },
-                    ].map((item) => (
+                    {produtos.map((item) => (
                       <tr
-                        key={item.nome}
+                        key={item.id}
                         className="hover:bg-gray-50 transition-colors group"
                       >
                         <td className="px-6 py-5">
                           <p className="font-bold text-text-main text-sm">
-                            {item.nome}
+                            {item.name}
                           </p>
-                          <p className="text-xs text-gray-500">{item.lote}</p>
+                          {/* <p className="text-xs text-gray-500">{item.lote}</p> */}
                         </td>
                         <td className="px-6 py-5">
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-200 text-green-600">
-                            {item.categoria}
+                            {item.type}
                           </span>
                         </td>
                         <td className="px-6 py-5">
                           <p className="text-sm font-medium text-fw-medium">
-                            {item.quant}
+                            {item.stock}
                           </p>
                         </td>
                         <td className="px-6 py-5">
                           <p className="text-sm font-medium text-text-main">
-                            {item.preco}
+                            {item.price}
                             <span className="text-xs  text-gray-500">
-                              /{item.unidade}
+                              /{item.unit}
                             </span>
                           </p>
                         </td>
                         <td className="px-6 py-5">
                           <span className="text-sm text-text-secondary">
-                            {item.transporte}
+                            {item.transport}
                           </span>
                         </td>
                         <td className="px-6 py-5 text-right">
@@ -203,7 +263,7 @@ export default function Produtos() {
                               edit
                             </button>
                             <button
-                              onClick={() => setAbertoDelete(true)}
+                              onClick={() => preparacaoDelete(item.id)}
                               className="material-symbols-outlined text-[20px] p-2 text-gray-500 hover:text-red-600 hover:bg-red-600/10 rounded-lg transition-colors active:scale-90"
                             >
                               delete
@@ -262,15 +322,12 @@ export default function Produtos() {
           Salvar Alteração
         </button>
       </EditProduto>
-      <DeleteProduto openDelete={abertoDelete}>
+      <DeleteProduto openDelete={abertoDelete} produtoId={selecionado.id}>
         <button
           className=" flex-1 min-w-30 h-12  bg-red-500 hover:bg-red-600 active:scale-93 transition-all text-text-main md:px-4 px-3 md:py-0 py-3  rounded-lg shadow-lg  font-bold  text-sm leading-normal tracking-[0.015em]"
           onClick={() => setAbertoDelete(false)}
         >
           <span className="truncate">Cancelar</span>
-        </button>
-        <button className="flex-1 min-w-43 h-12 bg-primary hover:bg-primary-hover  items-center justify-center active:scale-93 transition-all text-white md:px-4 px-3 md:py-0 py-3  rounded-lg shadow-lg  font-bold  text-sm leading-normal tracking-[0.015em]">
-          <span className="truncate">Confirmar Remoção</span>
         </button>
       </DeleteProduto>
     </>
