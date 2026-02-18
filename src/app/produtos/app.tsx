@@ -91,6 +91,7 @@ export default function Produtos() {
     const carregarDados = async () => {
       Produtos();
       setAbertoDelete(false);
+      setAbertoEdit(false)
     };
     carregarDados();
     window.addEventListener("perfilAtualizado", carregarDados);
@@ -307,9 +308,7 @@ export default function Produtos() {
         >
           Cancelar
         </button>
-        <button className=" bg-primary hover:bg-primary-hover active:scale-93 transition-all text-white md:px-5 px-3 md:py-2.5 py-2 rounded-lg shadow-lg shadow-primary/25 font-bold  text-sm">
-          Salvar Produto
-        </button>
+        
       </AddPruduto>
       <EditProduto openEdit={abertoEdit}>
         <button
