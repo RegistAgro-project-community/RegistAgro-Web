@@ -51,9 +51,14 @@ export default function Produtos() {
   const token = Cookies.get("token");
   const toast = useRef<Toast>(null);
   const [selecionado, setSelecionado] = useState({ id: "" });
+  const [productSelect, setProductSelect] = useState<Product | null>(null);
   const preparacaoDelete = (id: string) => {
     setSelecionado({ id });
     setAbertoDelete(true);
+  };
+  const handleEdit = (product: Product) => {
+    setProductSelect(product);
+    setAbertoEdit(true);
   };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function handleSearch(e: any) {
@@ -296,7 +301,7 @@ export default function Produtos() {
                         <td className="px-6 py-5 text-right">
                           <div className="flex items-center justify-start gap-2">
                             <button
-                              onClick={() => setAbertoEdit(true)}
+                              onClick={() => handleEdit(item)}
                               className="material-symbols-outlined text-[20px] p-2 text-gray-500 hover:text-green-600 hover:bg-green-600/10 rounded-lg transition-colors active:scale-90"
                             >
                               edit
@@ -361,15 +366,12 @@ export default function Produtos() {
           Cancelar
         </button>
       </AddPruduto>
-      <EditProduto openEdit={abertoEdit}>
+      <EditProduto openEdit={abertoEdit} product={productSelect}>
         <button
           className=" bg-red-500 hover:bg-red-600 active:scale-93 transition-all text-white md:px-5 px-3 md:py-2.5 py-2 rounded-lg shadow-lg  font-bold  text-sm"
           onClick={() => setAbertoEdit(false)}
         >
           Cencelar
-        </button>
-        <button className=" bg-primary hover:bg-primary-hover active:scale-93 transition-all text-white md:px-5 px-3 md:py-2.5 py-2 rounded-lg shadow-lg shadow-primary/25 font-bold  text-sm">
-          Salvar Alteração
         </button>
       </EditProduto>
       <DeleteProduto openDelete={abertoDelete} produtoId={selecionado.id}>
