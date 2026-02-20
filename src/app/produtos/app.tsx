@@ -7,6 +7,7 @@ import { AxiosError } from "axios";
 import axios from "../api/axios";
 import Cookies from "js-cookie";
 import { Toast } from "primereact/toast";
+import { useNavigate } from "react-router-dom";
 interface ZodIssue {
   key: string;
   message: string;
@@ -34,8 +35,12 @@ interface BackendResponse {
   error?: ZodIssue[] | string;
 }
 export default function Produtos() {
+  const navegate = useNavigate();
   const [siderAberto, setSiderAberto] = useState(false);
   const [aberto, setAberto] = useState(false);
+  const [correntPage, setCorrentPage] = useState(1);
+  const itemsPerPage = 5;
+  const [searchProduct, setSearchProduct] = useState("");
   const [abertoEdit, setAbertoEdit] = useState(false);
   const [abertoDelete, setAbertoDelete] = useState(false);
   const PRODUTOS_URL = "/products/farms/get/products";
@@ -50,6 +55,12 @@ export default function Produtos() {
     setSelecionado({ id });
     setAbertoDelete(true);
   };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function handleSearch(e: any) {
+    setSearchProduct(e.target.value);
+    setCorrentPage(1);
+    console.log(searchProduct);
+  }
   async function Produtos() {
     if (!token) return;
     try {
@@ -91,7 +102,7 @@ export default function Produtos() {
     const carregarDados = async () => {
       Produtos();
       setAbertoDelete(false);
-      setAbertoEdit(false)
+      setAbertoEdit(false);
     };
     carregarDados();
     window.addEventListener("perfilAtualizado", carregarDados);
@@ -102,6 +113,18 @@ export default function Produtos() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
   console.log(produtos);
+  const filteredProducts = produtos.filter((item) => {
+    const product = searchProduct.toLowerCase();
+    return item.name.toLowerCase().includes(product);
+  });
+  const totalItems = filteredProducts.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const indexOfLastPage = correntPage * itemsPerPage;
+  const indexOfFristPage = indexOfLastPage - itemsPerPage;
+  const correntItems = filteredProducts.slice(
+    indexOfFristPage,
+    indexOfLastPage,
+  );
   return (
     <>
       <Toast ref={toast} position="top-right" />
@@ -180,7 +203,6 @@ export default function Produtos() {
                   </div>
                 ))}
               </div>
-
               <div className="bg-white rounded-xl border border-border-color shadow-sm overflow-hidden overflow-x-auto mt-5">
                 {/*Search*/}
                 <div className="  p-4  border-b border-border-color flex gap-4 items-center">
@@ -192,6 +214,8 @@ export default function Produtos() {
                       type="text"
                       className="w-full pl-10 pr-4 py-2 bg-background border-none rounded-lg text-sm focus:ring-2 focus:ring-primary/50 text-text-main placeholder-gray-400"
                       placeholder="Buscar produto..."
+                      value={searchProduct}
+                      onChange={handleSearch}
                     />
                   </div>
                 </div>
@@ -220,13 +244,19 @@ export default function Produtos() {
                       </th>
                     </tr>
                   </thead>
+
                   <tbody className="divide-y divide-border-color">
-                    {produtos.map((item) => (
+                    {correntItems.map((item, i) => (
                       <tr
-                        key={item.id}
+                        key={i}
                         className="hover:bg-gray-50 transition-colors group"
                       >
-                        <td className="px-6 py-5">
+                        <td
+                          className="px-6 py-5 cursor-pointer"
+                          onClick={() =>
+                            navegate(`/produtos/produto-detalhe/${item.id}`)
+                          }
+                        >
                           <p className="font-bold text-text-main text-sm">
                             {item.name}
                           </p>
@@ -251,8 +281,16 @@ export default function Produtos() {
                           </p>
                         </td>
                         <td className="px-6 py-5">
-                          <span className="text-sm text-text-secondary">
-                            {item.transport}
+                          <span className="text-sm text-text-secondary capitalize">
+                            {item.transport === "frigorifico"
+                              ? "frigorifico"
+                              : item.transport === "fechado"
+                                ? "fechado"
+                                : item.transport === "aberto_coberto"
+                                  ? "aberto coberto"
+                                  : item.transport === "aberto"
+                                    ? "aberto"
+                                    : ""}
                           </span>
                         </td>
                         <td className="px-6 py-5 text-right">
@@ -279,19 +317,33 @@ export default function Produtos() {
                 <div className="px-6 py-4 border-t border-border-color flex items-center justify-between">
                   <p className="text-medium text-gray-600">
                     Mostrando{" "}
-                    <span className="font-medium text-text-main">1</span> a{" "}
-                    <span className="font-medium text-text-main">5</span> de{" "}
-                    <span className="font-medium text-text-main">5</span>{" "}
+                    <span className="font-medium text-text-main">
+                      {totalItems === 0 ? 0 : indexOfFristPage + 1}
+                    </span>{" "}
+                    a{" "}
+                    <span className="font-medium text-text-main">
+                      {Math.min(indexOfLastPage, totalItems)}
+                    </span>{" "}
+                    de{" "}
+                    <span className="font-medium text-text-main">
+                      {totalItems}
+                    </span>{" "}
                     Produtos
                   </p>
                   <div className="flex gap-2">
                     <button
+                      onClick={() => setCorrentPage((prev) => prev - 1)}
                       className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 disabled:opacity-50 active:scale-90"
-                      disabled
+                      disabled={correntPage === 1}
                     >
                       Anterior
                     </button>
-                    <button className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 active:scale-90">
+
+                    <button
+                      onClick={() => setCorrentPage((prev) => prev + 1)}
+                      disabled={correntPage === totalPages || totalPages === 0}
+                      className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 active:scale-90 disabled:opacity-50"
+                    >
                       Próximo
                     </button>
                   </div>
@@ -308,7 +360,6 @@ export default function Produtos() {
         >
           Cancelar
         </button>
-        
       </AddPruduto>
       <EditProduto openEdit={abertoEdit}>
         <button
