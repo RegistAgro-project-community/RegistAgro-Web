@@ -7,8 +7,8 @@ interface Product {
   id: string;
   name: string;
   description: string;
-  price: number;
-  stock: number;
+  price: string;
+  qtd: string;
   unit: string;
 }
 type AddPrudutoProps = {
@@ -42,12 +42,26 @@ function Editproduct({ openEdit, children, product }: AddPrudutoProps) {
   });
   useEffect(() => {
     if (product) {
+      console.log(product);
+
+      const priceNumber = product.price.replace(/[^0-9.]/g, "");
+
+      const qtdMatch = product.qtd.match(/^(\d+(?:\.\d+)?)(kg|ton)$/i);
+      const stockNumber = qtdMatch
+        ? qtdMatch[1]
+        : product.qtd.replace(/[^0-9.]/g, "");
+      const stockUnit = qtdMatch
+        ? qtdMatch[2].toLowerCase() === "ton"
+          ? "t"
+          : qtdMatch[2].toLowerCase()
+        : "";
+
       setFormData({
         name: product.name,
         description: product.description,
-        price: product.price,
-        stock: product.stock,
-        unit: product.unit,
+        price: Number(priceNumber),
+        stock: Number(stockNumber),
+        unit: stockUnit,
       });
     }
   }, [product]);

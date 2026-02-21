@@ -18,8 +18,8 @@ interface Product {
   name: string;
   description: string;
   photo: string;
-  price: number;
-  stock: number;
+  price: string;
+  qtd: string;
   transport: string;
   type: string;
   unit: string;
@@ -275,28 +275,18 @@ export default function Produtos() {
                           </td>
                           <td className="px-6 py-5">
                             <p className="text-sm font-medium text-fw-medium">
-                              {item.stock}
+                              {item.qtd}
                             </p>
                           </td>
                           <td className="px-6 py-5">
                             <p className="text-sm font-medium text-text-main">
                               {item.price}
-                              <span className="text-xs  text-gray-500">
-                                /{item.unit}
-                              </span>
+                              <span className="text-xs  text-gray-500"></span>
                             </p>
                           </td>
                           <td className="px-6 py-5">
                             <span className="text-sm text-text-secondary capitalize">
-                              {item.transport === "frigorifico"
-                                ? "frigorifico"
-                                : item.transport === "fechado"
-                                  ? "fechado"
-                                  : item.transport === "aberto_coberto"
-                                    ? "aberto coberto"
-                                    : item.transport === "aberto"
-                                      ? "aberto"
-                                      : ""}
+                              {item.transport}
                             </span>
                           </td>
                           <td className="px-6 py-5 text-right">
@@ -388,7 +378,7 @@ export default function Produtos() {
       </EditProduto>
       <DeleteProduto openDelete={abertoDelete} produtoId={selecionado.id}>
         <button
-          className=" flex-1 min-w-30 h-12  bg-red-500 hover:bg-red-600 active:scale-93 transition-all text-text-main md:px-4 px-3 md:py-0 py-3  rounded-lg shadow-lg  font-bold  text-sm leading-normal tracking-[0.015em]"
+          className=" flex-1 min-w-30 h-12  bg-red-500 hover:bg-red-600 active:scale-93 transition-all text-white md:px-4 px-3 md:py-0 py-3  rounded-lg shadow-lg  font-bold  text-sm leading-normal tracking-[0.015em]"
           onClick={() => setAbertoDelete(false)}
         >
           <span className="truncate">Cancelar</span>
