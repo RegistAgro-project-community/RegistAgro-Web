@@ -25,6 +25,7 @@ interface BackendResponse {
   valid?: boolean;
   message?: string;
   data?: FormData;
+  nif?: string;
   error?: ZodIssue[] | string;
 }
 export default function PerfilUsuario() {
@@ -46,6 +47,7 @@ export default function PerfilUsuario() {
     phone: "",
     province: "",
     dataISO: "",
+    nif: "",
   });
   const token = Cookies.get("token");
   async function fetchPerfil() {
@@ -66,6 +68,7 @@ export default function PerfilUsuario() {
         province: res.data.data?.province || "",
         adress: res.data.data?.adress || "",
         dataISO: res.data.data?.created_at || "",
+        nif: res.data.nif || "",
       }));
       setImg(res.data.data?.profile || "");
     } catch (err) {
@@ -99,16 +102,12 @@ export default function PerfilUsuario() {
     setLoading(true);
     setUpload(true);
     try {
-      const res = await axios.post<BackendResponse>(
-        UploadImg_URL,
-         formData ,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
+      const res = await axios.post<BackendResponse>(UploadImg_URL, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
         },
-      );
+      });
       if (res.status === 201) {
         window.dispatchEvent(new Event("perfilAtualizado"));
         console.log(res);
@@ -121,7 +120,6 @@ export default function PerfilUsuario() {
           detail: valido,
           life: 3000,
         });
-        
       }
     } catch (err) {
       setLoading(false);
@@ -285,7 +283,7 @@ export default function PerfilUsuario() {
                           Nif
                         </p>
                         <p className="text-text-main  text-lg font-medium font-mono">
-                          500123456
+                          {formData.nif}
                         </p>
                       </div>
                       <div className="space-y-1">
