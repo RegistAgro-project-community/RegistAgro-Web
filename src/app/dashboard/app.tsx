@@ -9,12 +9,8 @@ interface ZodIssue {
   minimum?: number;
 }
 interface FormData {
-  id: string;
   name: string;
-  adress: string;
-  email: string;
-  phone: string;
-  province: string;
+  profile: string;
 }
 interface BackendResponse {
   valid?: boolean;
@@ -25,6 +21,7 @@ interface BackendResponse {
 export default function Home() {
   const token = Cookies.get("token");
   const [fazendaName, setFazendaName] = useState("");
+  const [fazendaIgm, setFazendaImg] = useState("");
   const User_URL = "/users/profile";
   const called = useRef(false);
   const [siderAberto, setSiderAberto] = useState(false);
@@ -41,8 +38,8 @@ export default function Home() {
               },
             });
             console.log(res);
-            const name = res.data.data?.name;
-            setFazendaName(`${name}`);
+            setFazendaImg(res.data.data?.profile || "");
+            setFazendaName(res.data.data?.name || "");
           } catch (err) {
             const error = err as AxiosError<BackendResponse>;
             if (error.response) {
@@ -108,7 +105,7 @@ export default function Home() {
                 </div>
                 <div className="h-10 w-10 bg-amber-200 rounded-full hidden md:block ">
                   <img
-                    src="https://api-registagro.onrender.com/upload/users/user-30-01-2026_145927.jpg"
+                    src={`${fazendaIgm ? `${fazendaIgm}` : "https://api-registagro.onrender.com/upload/users/user-30-01-2026_145927.jpg"}`}
                     alt="Euclénio kkkk"
                     title="Foto de Perfil"
                     className="aspect-square w-full rounded-full object-cover border border-border-color"
