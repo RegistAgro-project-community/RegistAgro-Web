@@ -1,6 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { removeToken } from "../auth";
-import { Link } from "react-router-dom";
 
 interface NavProps {
   sidebarAberto: boolean;
@@ -78,8 +77,8 @@ function Nav({ sidebarAberto, setSidebarAberto }: NavProps) {
 
         <nav className="flex flex-col gap-2 p-4 mt-4 flex-1">
           {menuItens.map((item) => (
-            <Link
-              to={item.herf}
+            <a
+              href={item.herf}
               key={item.herf}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg ${
                 rotaAtiva(item.herf)
@@ -105,7 +104,7 @@ function Nav({ sidebarAberto, setSidebarAberto }: NavProps) {
               >
                 {item.label}
               </span>
-            </Link>
+            </a>
           ))}
         </nav>
         <div className="p-4 border-t border-border-color">
