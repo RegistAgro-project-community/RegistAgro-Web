@@ -1,9 +1,10 @@
 import Nav from "../components/nav";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "../api/axios";
 import Cookies from "js-cookie";
 import type { AxiosError } from "axios";
+import { Toast } from "primereact/toast";
 
 interface ZodIssue {
   key: string;
@@ -35,6 +36,10 @@ export default function ProdutoDetalhe() {
   const [siderAberto, setSiderAberto] = useState(false);
   const [produto, setProduto] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [upload, setUpload] = useState(false);
+  const [loadingImg, setLoadingImg] = useState(false);
+  const toast = useRef<Toast>(null);
 
   useEffect(() => {
     const buscarDetalhes = async () => {
@@ -79,7 +84,14 @@ export default function ProdutoDetalhe() {
       }
     };
 
-    if (id) buscarDetalhes();
+    if (id) {
+      buscarDetalhes();
+    }
+
+    window.addEventListener("perfilAtualizado", buscarDetalhes);
+    return () => {
+      window.removeEventListener("perfilAtualizado", buscarDetalhes);
+    };
   }, [id]);
 
   if (loading)
@@ -101,8 +113,90 @@ export default function ProdutoDetalhe() {
     );
   console.log(":Produto ", produto);
   console.log(produto?.photo);
+  async function handleFile(event: React.ChangeEvent<HTMLInputElement>) {
+    const token = Cookies.get("token");
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("img", file);
+    setLoadingImg(true);
+    setUpload(true);
+    try {
+      const res = await axios.patch<BackendResponse>(
+        `/products/upload/product/${id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+      window.dispatchEvent(new Event("perfilAtualizado"));
+      if (res.status === 200) {
+        console.log(res);
+        setTimeout(() => {
+          const valido = res.data.message;
+          setUpload(false);
+          setLoadingImg(false);
+          toast.current?.show({
+            severity: "success",
+            summary: "Tudo certo",
+            detail: valido,
+            life: 3000,
+          });
+        }, 1000);
+      }
+    } catch (err) {
+      setLoading(false);
+      setUpload(false);
+      const error = err as AxiosError<BackendResponse>;
+      if (error.response) {
+        const data = error.response.data;
+        let mensagem = "";
+        if (Array.isArray(data?.error)) {
+          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
+        } else if (typeof data?.error === "string") {
+          mensagem = data.error;
+        } else if (data?.message) {
+          mensagem = data.message;
+        } else {
+          mensagem = "erro inesperado.";
+        }
+        console.log(data);
+
+        toast.current?.show({
+          severity: "error",
+          summary: "Algo de errado",
+          detail: mensagem,
+          life: 2000,
+        });
+      } else {
+        toast.current?.show({
+          severity: "error",
+          summary: "Algo de errado",
+          detail: "Erro de conexão com o Servidor",
+          life: 2000,
+        });
+      }
+      console.error("Erro no axios", error);
+    }
+  }
   return (
     <>
+      <Toast ref={toast} position="top-right" />
+      <input
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
+        accept="image/*"
+        onChange={handleFile}
+      />
+      {loadingImg && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
+        </div>
+      )}
       <div className="bg-background text-text-main">
         <div className="relative flex h-screen w-full overflow-hidden bg-background">
           <Nav sidebarAberto={siderAberto} setSidebarAberto={setSiderAberto} />
@@ -161,21 +255,48 @@ export default function ProdutoDetalhe() {
 
                   <div className="p-6">
                     <div className="flex flex-col md:flex-row gap-8">
-                      <div className="w-full md:w-1/3 shrink-0">
+                      <div className="w-full md:w-1/3 shrink-0 relative group">
                         {produto?.photo ? (
-                          <img
-                            src={produto?.photo}
-                            alt={produto?.name}
-                            className="aspect-square w-full rounded-xl object-cover border border-border-color"
-                          />
+                          <div className="relative">
+                            <img
+                              src={produto?.photo}
+                              alt={produto?.name}
+                              className="aspect-square w-full rounded-xl object-cover border border-border-color"
+                            />
+
+                            <button
+                              className="absolute bottom-3 right-3 bg-white/60 hover:bg-white p-2 rounded-full shadow-lg flex items-center justify-center border border-gray-200 transition-all active:scale-95 cursor-pointer"
+                              onClick={() => fileInputRef.current?.click()}
+                              disabled={upload}
+                              title="Alterar imagem"
+                            >
+                              <span
+                                className="material-symbols-outlined text-primary hover:text-primary-hover "
+                                style={{ fontSize: "24px" }}
+                              >
+                                add_a_photo
+                              </span>
+                            </button>
+                          </div>
                         ) : (
-                          <div className="aspect-square w-full rounded-xl bg-red-50 flex items-center justify-center border-2 border-dashed border-red-100">
+                          <div className="aspect-square w-full rounded-xl bg-red-50 flex items-center justify-center border-2 border-dashed border-red-100 relative">
                             <span
                               className="material-symbols-outlined text-red-500/80"
                               style={{ fontSize: "120px" }}
                             >
                               nutrition
                             </span>
+                            <button
+                              className="absolute bottom-3 right-3 bg-red-500 hover:bg-red-600 p-2 rounded-full shadow-lg flex items-center justify-center text-white transition-all"
+                              onClick={() => {}}
+                            >
+                              <span
+                                className="material-symbols-outlined"
+                                style={{ fontSize: "24px" }}
+                              >
+                                add_a_photo
+                              </span>
+                            </button>
                           </div>
                         )}
                       </div>
