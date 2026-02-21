@@ -251,71 +251,83 @@ export default function Produtos() {
                   </thead>
 
                   <tbody className="divide-y divide-border-color">
-                    {correntItems.map((item, i) => (
-                      <tr
-                        key={i}
-                        className="hover:bg-gray-50 transition-colors group"
-                      >
-                        <td
-                          className="px-6 py-5 cursor-pointer"
-                          onClick={() =>
-                            navegate(`/produtos/produto-detalhe/${item.id}`)
-                          }
+                    {correntItems && correntItems.length > 0 ? (
+                      correntItems.map((item, i) => (
+                        <tr
+                          key={i}
+                          className="hover:bg-gray-50 transition-colors group"
                         >
-                          <p className="font-bold text-text-main text-sm">
-                            {item.name}
-                          </p>
-                          {/* <p className="text-xs text-gray-500">{item.lote}</p> */}
-                        </td>
-                        <td className="px-6 py-5">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-200 text-green-600">
-                            {item.type}
-                          </span>
-                        </td>
-                        <td className="px-6 py-5">
-                          <p className="text-sm font-medium text-fw-medium">
-                            {item.stock}
-                          </p>
-                        </td>
-                        <td className="px-6 py-5">
-                          <p className="text-sm font-medium text-text-main">
-                            {item.price}
-                            <span className="text-xs  text-gray-500">
-                              /{item.unit}
+                          <td
+                            className="px-6 py-5 cursor-pointer"
+                            onClick={() =>
+                              navegate(`/produtos/produto-detalhe/${item.id}`)
+                            }
+                          >
+                            <p className="font-bold text-text-main text-sm">
+                              {item.name}
+                            </p>
+                            {/* <p className="text-xs text-gray-500">{item.lote}</p> */}
+                          </td>
+                          <td className="px-6 py-5">
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-200 text-green-600">
+                              {item.type}
                             </span>
-                          </p>
-                        </td>
-                        <td className="px-6 py-5">
-                          <span className="text-sm text-text-secondary capitalize">
-                            {item.transport === "frigorifico"
-                              ? "frigorifico"
-                              : item.transport === "fechado"
-                                ? "fechado"
-                                : item.transport === "aberto_coberto"
-                                  ? "aberto coberto"
-                                  : item.transport === "aberto"
-                                    ? "aberto"
-                                    : ""}
-                          </span>
-                        </td>
-                        <td className="px-6 py-5 text-right">
-                          <div className="flex items-center justify-start gap-2">
-                            <button
-                              onClick={() => handleEdit(item)}
-                              className="material-symbols-outlined text-[20px] p-2 text-gray-500 hover:text-green-600 hover:bg-green-600/10 rounded-lg transition-colors active:scale-90"
-                            >
-                              edit
-                            </button>
-                            <button
-                              onClick={() => preparacaoDelete(item.id)}
-                              className="material-symbols-outlined text-[20px] p-2 text-gray-500 hover:text-red-600 hover:bg-red-600/10 rounded-lg transition-colors active:scale-90"
-                            >
-                              delete
-                            </button>
+                          </td>
+                          <td className="px-6 py-5">
+                            <p className="text-sm font-medium text-fw-medium">
+                              {item.stock}
+                            </p>
+                          </td>
+                          <td className="px-6 py-5">
+                            <p className="text-sm font-medium text-text-main">
+                              {item.price}
+                              <span className="text-xs  text-gray-500">
+                                /{item.unit}
+                              </span>
+                            </p>
+                          </td>
+                          <td className="px-6 py-5">
+                            <span className="text-sm text-text-secondary capitalize">
+                              {item.transport === "frigorifico"
+                                ? "frigorifico"
+                                : item.transport === "fechado"
+                                  ? "fechado"
+                                  : item.transport === "aberto_coberto"
+                                    ? "aberto coberto"
+                                    : item.transport === "aberto"
+                                      ? "aberto"
+                                      : ""}
+                            </span>
+                          </td>
+                          <td className="px-6 py-5 text-right">
+                            <div className="flex items-center justify-start gap-2">
+                              <button
+                                onClick={() => handleEdit(item)}
+                                className="material-symbols-outlined text-[20px] p-2 text-gray-500 hover:text-green-600 hover:bg-green-600/10 rounded-lg transition-colors active:scale-90"
+                              >
+                                edit
+                              </button>
+                              <button
+                                onClick={() => preparacaoDelete(item.id)}
+                                className="material-symbols-outlined text-[20px] p-2 text-gray-500 hover:text-red-600 hover:bg-red-600/10 rounded-lg transition-colors active:scale-90"
+                              >
+                                delete
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={8} className="py-20 text-center">
+                          <div className="flex flex-col items-center justify-center w-full">
+                            <p className="text-gray-500 font-medium">
+                              Sem produtos cadastrados
+                            </p>
                           </div>
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
                 {/* Paginação */}

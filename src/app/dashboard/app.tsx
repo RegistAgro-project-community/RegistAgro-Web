@@ -106,7 +106,14 @@ export default function Home() {
                     Produtor Verificado
                   </span>
                 </div>
-                <div className="h-10 w-10 bg-amber-200 rounded-full hidden md:block "></div>
+                <div className="h-10 w-10 bg-amber-200 rounded-full hidden md:block ">
+                  <img
+                    src="https://api-registagro.onrender.com/upload/users/user-30-01-2026_145927.jpg"
+                    alt="Euclénio kkkk"
+                    title="Foto de Perfil"
+                    className="aspect-square w-full rounded-full object-cover border border-border-color"
+                  />
+                </div>
               </div>
             </div>
             {/* Conteudo */}

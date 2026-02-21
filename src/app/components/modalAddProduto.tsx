@@ -16,6 +16,7 @@ interface ZodIssue {
 interface BackendResponse {
   valid?: boolean;
   message?: string;
+  info?: string;
   error?: ZodIssue[] | string;
 }
 function AddPruduto({ open, children }: AddPrudutoProps) {
@@ -114,6 +115,8 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
           mensagem = data.error;
         } else if (data?.message) {
           mensagem = data.message;
+        } else if (data?.info) {
+          mensagem = data.info;
         } else {
           mensagem = "erro inesperado.";
         }
@@ -232,7 +235,7 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
                     value={formData.type}
                     onChange={pegarValor}
                   >
-                    <option>Selecione uma categoria</option>
+                    <option selected>Selecione uma categoria</option>
                     <option value={"vegatais"}> Vegetais</option>
                     <option value={"frutas"}>Frutas</option>
                     <option value={"legumes"}>Legumes</option>
@@ -262,9 +265,7 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
                           name="unit"
                           onChange={pegarValor}
                         >
-                          <option defaultValue={"t"} disabled selected>
-                            un.
-                          </option>
+                          <option selected>un.</option>
                           <option value="t">ton</option>
                           <option value="kg">kg</option>
                         </select>
@@ -295,14 +296,12 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
                     Tipo de transporte
                   </label>
                   <select
-                    className="block w-full rounded-lg border-gray-300 bg-white shadow-sm focus:border-primary-hover focus:ring-primary-hover px-4 py-3 sm:text-sm font-semibold text-text-main mb-1.5"
+                    className="block w-full rounded-lg border-gray-300 bg-white shadow-sm focus:border-primary-hover focus:ring-primary-hover px-4 py-3 sm:text-sm font-semibold text-text-secondary2 mb-1.5"
                     onChange={pegarValor}
                     value={formData.transport}
                     name="transport"
                   >
-                    <option selected disabled>
-                      Selecione o transporte
-                    </option>
+                    <option selected>Selecione o transporte</option>
                     <option value={"frigorifico"}>
                       {" "}
                       Transporte frigorifico

@@ -28,6 +28,7 @@ export default function PerfilUsuario() {
   const [siderAberto, setSiderAberto] = useState(false);
   const [abertoEdit, setAbertoEdit] = useState(false);
   const User_URL = "/users/profile";
+ 
   const [formData, setFormData] = useState({
     id: "",
     name: "",
@@ -158,8 +159,12 @@ export default function PerfilUsuario() {
                         <div
                           className="size-24 rounded-lg bg-cover bg-center"
                           style={{
-                            backgroundImage: "url('/assets/logo_fazenda.png')",
+                            backgroundImage:
+                              `url("https://api-registagro.onrender.com/upload/users/user-30-01-2026_145927.jpg")`,
                           }}
+                          // style={{
+                          //   backgroundImage: "url('/assets/logo_fazenda.png')",
+                          // }}
                         ></div>
                       </div>
                       <div className="hidden sm:block">

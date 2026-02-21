@@ -43,9 +43,9 @@ function DeleteProduto({ openDelete, children, produtoId }: AddPrudutoProps) {
         detail: valido,
         life: 2000,
       });
-      setLoading(false);
       window.dispatchEvent(new Event("perfilAtualizado"));
       setTimeout(() => {
+        setLoading(false);
         setModalOpen(false);
       }, 500);
     } catch (err) {
