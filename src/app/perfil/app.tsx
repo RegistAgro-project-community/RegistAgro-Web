@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "../api/axios";
 import Nav from "../components/nav";
 import Cookies from "js-cookie";
 import { AxiosError } from "axios";
 import EditarPerfil from "../components/modalEditPerfil";
+import { Toast } from "primereact/toast";
+
 interface ZodIssue {
   key: string;
   message: string;
@@ -17,6 +19,7 @@ interface FormData {
   phone: string;
   province: string;
   created_at: string;
+  profile: string;
 }
 interface BackendResponse {
   valid?: boolean;
@@ -28,7 +31,13 @@ export default function PerfilUsuario() {
   const [siderAberto, setSiderAberto] = useState(false);
   const [abertoEdit, setAbertoEdit] = useState(false);
   const User_URL = "/users/profile";
- 
+  const UploadImg_URL = "/users/upload/profile";
+  const [upload, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [img, setImg] = useState("");
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const toast = useRef<Toast>(null);
+
   const [formData, setFormData] = useState({
     id: "",
     name: "",
@@ -58,6 +67,7 @@ export default function PerfilUsuario() {
         adress: res.data.data?.adress || "",
         dataISO: res.data.data?.created_at || "",
       }));
+      setImg(res.data.data?.profile || "");
     } catch (err) {
       const error = err as AxiosError<BackendResponse>;
       if (error.response) {
@@ -79,6 +89,73 @@ export default function PerfilUsuario() {
       } else {
         console.log("Erro Server");
       }
+    }
+  }
+  async function handleFile(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("img", file);
+    setLoading(true);
+    setUpload(true);
+    try {
+      const res = await axios.post<BackendResponse>(
+        UploadImg_URL,
+         formData ,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+      if (res.status === 201) {
+        window.dispatchEvent(new Event("perfilAtualizado"));
+        console.log(res);
+        const valido = res.data.message;
+        setUpload(false);
+        setLoading(false);
+        toast.current?.show({
+          severity: "success",
+          summary: "Tudo certo",
+          detail: valido,
+          life: 3000,
+        });
+        
+      }
+    } catch (err) {
+      setLoading(false);
+      setUpload(false);
+      const error = err as AxiosError<BackendResponse>;
+      if (error.response) {
+        const data = error.response.data;
+        let mensagem = "";
+        if (Array.isArray(data?.error)) {
+          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
+        } else if (typeof data?.error === "string") {
+          mensagem = data.error;
+        } else if (data?.message) {
+          mensagem = data.message;
+        } else {
+          mensagem = "erro inesperado.";
+        }
+        console.log(data);
+
+        toast.current?.show({
+          severity: "error",
+          summary: "Algo de errado",
+          detail: mensagem,
+          life: 2000,
+        });
+      } else {
+        toast.current?.show({
+          severity: "error",
+          summary: "Algo de errado",
+          detail: "Erro de conexão com o Servidor",
+          life: 2000,
+        });
+      }
+      console.error("Erro no axios", error);
     }
   }
   useEffect(() => {
@@ -103,6 +180,19 @@ export default function PerfilUsuario() {
 
   return (
     <>
+      <Toast ref={toast} position="top-right" />
+      <input
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
+        accept="image/*"
+        onChange={handleFile}
+      />
+      {loading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
+        </div>
+      )}
       <div className="bg-background text-text-main">
         <div className="relative flex h-screen w-full overflow-hidden bg-background">
           <Nav sidebarAberto={siderAberto} setSidebarAberto={setSiderAberto} />
@@ -155,20 +245,28 @@ export default function PerfilUsuario() {
                   </div>
                   <div className="px-8 pb-8 -mt-12 relative">
                     <div className="flex items-end justify-between mb-6">
-                      <div className="bg-white  p-1.5 rounded-xl shadow-md inline-block">
+                      <div className="relative bg-white p-1.5 rounded-xl shadow-md inline-block">
                         <div
                           className="size-24 rounded-lg bg-cover bg-center"
                           style={{
-                            backgroundImage:
-                              `url("https://api-registagro.onrender.com/upload/users/user-30-01-2026_145927.jpg")`,
+                            backgroundImage: `url(${img ? `${img}` : "https://api-registagro.onrender.com/upload/users/user-30-01-2026_145927.jpg"})`,
                           }}
-                          // style={{
-                          //   backgroundImage: "url('/assets/logo_fazenda.png')",
-                          // }}
                         ></div>
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={upload}
+                          className="absolute -bottom-2 -right-2 bg-primary text-white w-8 h-8 rounded-full shadow-lg hover:bg-primary-hover scale-90 hover:scale-95 transition-all border-2 border-white flex items-center justify-center cursor-pointer"
+                          title="Alterar foto"
+                        >
+                          <span className="material-symbols-outlined text-[1px]">
+                            photo_camera
+                          </span>
+                        </button>
                       </div>
+
                       <div className="hidden sm:block">
-                        <span className="px-3 py-1 rounded-full bg-green-100  text-primary text-xs font-bold uppercase tracking-wider border border-green-200 ">
+                        <span className="px-3 py-1 rounded-full bg-green-100 text-primary text-xs font-bold uppercase tracking-wider border border-green-200">
                           Verificado
                         </span>
                       </div>
