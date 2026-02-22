@@ -39,7 +39,7 @@ export default function Produtos() {
   const [siderAberto, setSiderAberto] = useState(false);
   const [aberto, setAberto] = useState(false);
   const [correntPage, setCorrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 4;
   const [searchProduct, setSearchProduct] = useState("");
   const [abertoEdit, setAbertoEdit] = useState(false);
   const [abertoDelete, setAbertoDelete] = useState(false);
