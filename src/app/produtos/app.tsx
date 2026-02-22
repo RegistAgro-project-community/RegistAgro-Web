@@ -235,7 +235,7 @@ export default function Produtos() {
                         Categoria
                       </th>
                       <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
-                        Quantidade
+                        Estoque
                       </th>
                       <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
                         Preço

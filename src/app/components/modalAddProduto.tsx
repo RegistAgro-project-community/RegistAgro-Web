@@ -236,7 +236,7 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
                     onChange={pegarValor}
                   >
                     <option selected>Selecione uma categoria</option>
-                    <option value={"vegatais"}> Vegetais</option>
+                    <option value={"vegetais"}> Vegetais</option>
                     <option value={"frutas"}>Frutas</option>
                     <option value={"legumes"}>Legumes</option>
                     <option value={"carnes"}>Carnes</option>
@@ -247,7 +247,7 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-semibold text-text-main mb-1.5">
-                      Quantidade
+                      Estoque
                     </label>
                     <div className="relative rounded-md shadow-md ">
                       <input

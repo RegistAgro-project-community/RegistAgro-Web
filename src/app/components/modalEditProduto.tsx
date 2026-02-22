@@ -181,7 +181,7 @@ function Editproduct({ openEdit, children, product }: AddPrudutoProps) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-text-secondary2 mb-1.5">
-                    Quantidade
+                   Estoque
                   </label>
                   <div className="relative rounded-md shadow-md ">
                     <input
