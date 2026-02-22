@@ -312,7 +312,11 @@ export default function Produtos() {
                         <td colSpan={8} className="py-20 text-center">
                           <div className="flex flex-col items-center justify-center w-full">
                             <p className="text-gray-500 font-medium">
-                              Sem produtos cadastrados
+                              {produtos.length === 0
+                                ? "Sem produtos cadastrados"
+                                : filteredProducts.length === 0
+                                  ? "Produto não encontrado"
+                                  : ""}
                             </p>
                           </div>
                         </td>
