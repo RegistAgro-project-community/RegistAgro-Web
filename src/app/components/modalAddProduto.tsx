@@ -142,15 +142,15 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
   return (
     <>
       <Toast ref={toast} position="top-right" />
+      {loading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
+        </div>
+      )}
       <div
         className={`
     fixed inset-0  overflow-y-auto ${isModalOpen ? "scale-100 opacity-100 visible bg-black/20  backdrop-blur-sm transition-opacity z-60" : "scale-125 opacity-0 invisible"}`}
       >
-        {loading && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-            <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
-          </div>
-        )}
         <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
           <div className="relative transform overflow-hidden rounded-2xl bg-surface-light text-left shadow-2xl border-border-color">
             <div className="px-6 py-3 border-b border-border-color flex items-center justify-between bg-[#f9faf9]">
