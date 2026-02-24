@@ -2,12 +2,13 @@ import axios from "../api/axios";
 import Nav from "../components/nav";
 import { useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
-import { AxiosError } from "axios";
-interface ZodIssue {
-  key: string;
-  message: string;
-  minimum?: number;
-}
+// import { AxiosError } from "axios";
+// interface ZodIssue {
+//   key: string;
+//   message: string;
+//   minimum?: number;
+//   error: string;
+// }
 interface FormData {
   name: string;
   profile: string;
@@ -16,60 +17,135 @@ interface BackendResponse {
   valid?: boolean;
   message?: string;
   data?: FormData;
-  error?: ZodIssue[] | string;
+  pendents?: string;
+  info?: string;
+  error?: string;
 }
 export default function Home() {
   const token = Cookies.get("token");
   const [fazendaName, setFazendaName] = useState("");
   const [fazendaIgm, setFazendaImg] = useState("");
+  const [pendentOrder, setPedentOrder] = useState("");
   const User_URL = "/users/profile";
+  const Order_URL = "/orders/farms/order/get";
   const called = useRef(false);
   const [siderAberto, setSiderAberto] = useState(false);
   useEffect(() => {
     if (!called.current) {
       if (token) {
-        async function UserName() {
-          console.log(token);
+        async function fetchData() {
           try {
-            const res = await axios.get<BackendResponse>(User_URL, {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-            });
-            console.log(res);
-            setFazendaImg(res.data.data?.profile || "");
-            setFazendaName(res.data.data?.name || "");
-          } catch (err) {
-            const error = err as AxiosError<BackendResponse>;
-            if (error.response) {
-              const data = error.response.data;
-              let mensagem = "";
-              if (Array.isArray(data?.error)) {
-                mensagem = data.error
-                  .map((e: ZodIssue) => e.message)
-                  .join(", ");
-              }
-              if (Array.isArray(data?.error)) {
-                mensagem = data.error
-                  .map((e) => (typeof e === "string" ? e : e.message))
-                  .join(", ");
-              } else if (data?.message) {
-                mensagem = data.message;
-              } else {
-                mensagem = "erro inesperado.";
-              }
-              console.log(mensagem);
-            } else {
-              console.log("Erro Server");
+            const [userRes, orderRes] = await Promise.all([
+              axios.get<BackendResponse>(User_URL, {
+                headers: { Authorization: `Bearer ${token}` },
+              }),
+              axios.get<BackendResponse>(Order_URL, {
+                headers: { Authorization: `Bearer ${token}` },
+              }),
+            ]);
+            console.log(token);
+            console.log(userRes.data)
+            setFazendaImg(userRes.data.data?.profile || "");
+            setFazendaName(userRes.data.data?.name || "");
+            setPedentOrder(String(orderRes.data.pendents));
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } catch (error: any) {
+            if (error.response?.status === 429) {
+              console.log("Rate limit atingido");
             }
           }
         }
-        UserName();
+        fetchData();
       }
       called.current = true;
     }
   }, [token]);
+
+  // useEffect(() => {
+  //   if (!called.current) {
+  //     if (token) {
+  //       async function UserName() {
+  //         console.log(token);
+  //         try {
+  //           const res = await axios.get<BackendResponse>(User_URL, {
+  //             headers: {
+  //               "Content-Type": "application/json",
+  //               Authorization: `Bearer ${token}`,
+  //             },
+  //           });
+  //           console.log(res);
+  //           setFazendaImg(res.data.data?.profile || "");
+  //           setFazendaName(res.data.data?.name || "");
+  //         } catch (err) {
+  //           const error = err as AxiosError<BackendResponse>;
+  //           if (error.response) {
+  //             const data = error.response.data;
+  //             let mensagem = "";
+  //             if (Array.isArray(data?.error)) {
+  //               mensagem = data.error
+  //                 .map((e: ZodIssue) => e.message)
+  //                 .join(", ");
+  //             }
+  //             if (Array.isArray(data?.error)) {
+  //               mensagem = data.error
+  //                 .map((e) => (typeof e === "string" ? e : e.message))
+  //                 .join(", ");
+  //             } else if (data?.message) {
+  //               mensagem = data.message;
+  //             } else {
+  //               mensagem = "erro inesperado.";
+  //             }
+  //             console.log(mensagem);
+  //           } else {
+  //             console.log("Erro Server");
+  //           }
+  //         }
+  //       }
+  //       UserName();
+  //     }
+  //     called.current = true;
+  //   }
+  // }, [token]);
+  // useEffect(() => {
+  //   if (token) {
+  //     async function Order() {
+  //       try {
+  //         const res = await axios.get<BackendResponse>(Order_URL, {
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //         });
+  //         console.log(res);
+  //         setPedentOrder(String(res.data.pendents));
+  //       } catch (err) {
+  //         const error = err as AxiosError<BackendResponse>;
+  //         if (error.response) {
+  //           const data = error.response.data;
+  //           let mensagem = "";
+  //           if (data.error) {
+  //             mensagem = data.error;
+  //           }
+  //           if (Array.isArray(data?.error)) {
+  //             mensagem = data.error
+  //               .map((e) => (typeof e === "string" ? e : e.message))
+  //               .join(", ");
+  //           } else if (data?.message) {
+  //             mensagem = data.message;
+  //           } else if (data?.info) {
+  //             mensagem = data.info;
+  //           } else {
+  //             mensagem = "erro inesperado.";
+  //           }
+  //           console.log(mensagem);
+  //         } else {
+  //           console.log("Erro Server");
+  //         }
+  //       }
+  //     }
+  //     Order();
+  //   }
+  // });
 
   return (
     <div className="bg-background text-text-main">
@@ -105,7 +181,7 @@ export default function Home() {
                 </div>
                 <div className="h-10 w-10 bg-amber-200 rounded-full hidden md:block ">
                   <img
-                    src={`${fazendaIgm ? `${fazendaIgm}` : "https://api-registagro.onrender.com/upload/users/user-30-01-2026_145927.jpg"}`}
+                    src={`${fazendaIgm ? `${fazendaIgm}` : "http://localhost:5500/upload/users/user-30-01-2026_145927.jpg"}`}
                     alt="Euclénio kkkk"
                     title="Foto de Perfil"
                     className="aspect-square w-full rounded-full object-cover border border-border-color"
@@ -133,7 +209,7 @@ export default function Home() {
                     {
                       icon: "pending_actions",
                       label: "Pedidos pendentes",
-                      total: 8,
+                      total: pendentOrder || 0,
                     },
                     {
                       icon: "local_shipping",
