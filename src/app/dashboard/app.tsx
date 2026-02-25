@@ -1,25 +1,21 @@
 import axios from "../api/axios";
 import Nav from "../components/nav";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
-// import { AxiosError } from "axios";
-// interface ZodIssue {
-//   key: string;
-//   message: string;
-//   minimum?: number;
-//   error: string;
-// }
+import { useQuery } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
+
 interface FormData {
   name: string;
   profile: string;
 }
 interface BackendResponse {
-  valid?: boolean;
-  message?: string;
   data?: FormData;
   pendents?: string;
-  info?: string;
-  error?: string;
+}
+interface BackendError {
+  message?: string;
+  error?: string | { message: string }[];
 }
 export default function Home() {
   const token = Cookies.get("token");
@@ -28,39 +24,69 @@ export default function Home() {
   const [pendentOrder, setPedentOrder] = useState("");
   const User_URL = "/users/profile";
   const Order_URL = "/orders/farms/order/get";
-  const called = useRef(false);
+  // const called = useRef(false);
   const [siderAberto, setSiderAberto] = useState(false);
-  useEffect(() => {
-    if (!called.current) {
-      if (token) {
-        async function fetchData() {
-          try {
-            const [userRes, orderRes] = await Promise.all([
-              axios.get<BackendResponse>(User_URL, {
-                headers: { Authorization: `Bearer ${token}` },
-              }),
-              axios.get<BackendResponse>(Order_URL, {
-                headers: { Authorization: `Bearer ${token}` },
-              }),
-            ]);
-            console.log(token);
-            console.log(userRes.data)
-            setFazendaImg(userRes.data.data?.profile || "");
-            setFazendaName(userRes.data.data?.name || "");
-            setPedentOrder(String(orderRes.data.pendents));
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } catch (error: any) {
-            if (error.response?.status === 429) {
-              console.log("Rate limit atingido");
-            }
-          }
-        }
-        fetchData();
-      }
-      called.current = true;
-    }
-  }, [token]);
 
+  async function fetchData() {
+    try {
+      const [userRes, orderRes] = await Promise.all([
+        axios.get<BackendResponse>(User_URL, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get<BackendResponse>(Order_URL, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
+      return {
+        user: userRes.data,
+        order: orderRes.data,
+      };
+    } catch (err) {
+      const error = err as AxiosError<BackendError>;
+
+      if (error.response) {
+        const data = error.response.data;
+
+        if (Array.isArray(data?.error)) {
+          throw new Error(data.error.map((e) => e.message).join(", "));
+        }
+
+        if (typeof data?.error === "string") {
+          throw new Error(data.error);
+        }
+
+        if (data?.message) {
+          throw new Error(data.message);
+        }
+      }
+
+      throw new Error("Erro inesperado no servidor");
+    }
+  }
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["dashboard", token],
+    queryFn: fetchData,
+    enabled: !!token,
+    staleTime: 5 * 60 * 1000,
+  });
+  useEffect(() => {
+    if (token && data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setFazendaName(data.user.data?.name || "");
+      setFazendaImg(data.user.data?.profile || "");
+      setPedentOrder(data.order?.pendents || "");
+    }
+  }, [token, data]);
+
+  // useEffect(() => {
+  //   if (!called.current) {
+  //     if (token) {
+  //       fetchData();
+  //     }
+  //     called.current = true;
+  //   }
+  // }, [token]);
   // useEffect(() => {
   //   if (!called.current) {
   //     if (token) {
@@ -146,6 +172,16 @@ export default function Home() {
   //     Order();
   //   }
   // });
+
+  if (isLoading)
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
+      </div>
+    );
+  if (error) {
+    console.log(error);
+  }
 
   return (
     <div className="bg-background text-text-main">
