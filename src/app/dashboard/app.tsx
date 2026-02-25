@@ -9,58 +9,83 @@ interface FormData {
   name: string;
   profile: string;
 }
+interface Comsumer {
+  name: string;
+}
+interface Product {
+  name: string;
+  type: string;
+}
+interface OrderData {
+  consumer: Comsumer;
+  product: Product;
+  status: string;
+  value: number;
+}
 interface BackendResponse {
+  totalProducts?: number;
   data?: FormData;
   pendents?: string;
+  orders: OrderData[];
 }
 interface BackendError {
   message?: string;
   error?: string | { message: string }[];
+  info?: string;
 }
 export default function Home() {
   const token = Cookies.get("token");
   const [fazendaName, setFazendaName] = useState("");
+  const itemsPerPage = 5;
+  const [totalOrders, setTotalOrders] = useState<OrderData[] | null>([]);
+  const [correntPage] = useState(1);
   const [fazendaIgm, setFazendaImg] = useState("");
   const [pendentOrder, setPedentOrder] = useState("");
+  const [totalProduto, setTotalProduto] = useState("");
   const User_URL = "/users/profile";
   const Order_URL = "/orders/farms/order/get";
+  const PRODUTOS_URL = "/products/farms/get/products";
   // const called = useRef(false);
   const [siderAberto, setSiderAberto] = useState(false);
 
   async function fetchData() {
     try {
-      const [userRes, orderRes] = await Promise.all([
+      const [userRes, orderRes, productRes] = await Promise.all([
         axios.get<BackendResponse>(User_URL, {
           headers: { Authorization: `Bearer ${token}` },
         }),
         axios.get<BackendResponse>(Order_URL, {
           headers: { Authorization: `Bearer ${token}` },
         }),
+        axios.get<BackendResponse>(PRODUTOS_URL, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
       ]);
       return {
         user: userRes.data,
         order: orderRes.data,
+        product: productRes.data,
       };
     } catch (err) {
       const error = err as AxiosError<BackendError>;
 
       if (error.response) {
         const data = error.response.data;
-
         if (Array.isArray(data?.error)) {
-          throw new Error(data.error.map((e) => e.message).join(", "));
+          const messagem = data.error.map((e) => e.message).join(", ");
+          console.log(messagem);
         }
-
         if (typeof data?.error === "string") {
-          throw new Error(data.error);
+          console.log(data.error);
         }
 
         if (data?.message) {
-          throw new Error(data.message);
+          console.log(data.message);
+        }
+        if (data.info) {
+          console.log(data.info);
         }
       }
-
-      throw new Error("Erro inesperado no servidor");
     }
   }
 
@@ -76,6 +101,10 @@ export default function Home() {
       setFazendaName(data.user.data?.name || "");
       setFazendaImg(data.user.data?.profile || "");
       setPedentOrder(data.order?.pendents || "");
+      setTotalProduto(String(data.product.totalProducts));
+      setTotalOrders([...data.order.orders]);
+      console.log(data.order);
+      console.log(token);
     }
   }, [token, data]);
 
@@ -182,7 +211,8 @@ export default function Home() {
   if (error) {
     console.log(error);
   }
-
+  const startIndex = (correntPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
   return (
     <div className="bg-background text-text-main">
       <div className="relative flex h-screen w-full overflow-hidden bg-background">
@@ -240,7 +270,7 @@ export default function Home() {
                     {
                       icon: "inventory_2",
                       label: "Total de produtos cadastrados",
-                      total: 45,
+                      total: totalProduto || 0,
                     },
                     {
                       icon: "pending_actions",
@@ -326,71 +356,57 @@ export default function Home() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border-color">
-                        {[
-                          {
-                            pedido: "#4023",
-                            nome: "Maria Silva",
-                            valor: "550.000kz",
-                            status: "pedente",
-                          },
-                          {
-                            pedido: "#4023",
-                            nome: "Maria Silva",
-                            valor: "550.000kz",
-                            status: "pago",
-                          },
-                          {
-                            pedido: "#4023",
-                            nome: "Maria Silva",
-                            valor: "550.000kz",
-                            status: "entregue",
-                          },
-                          {
-                            pedido: "#4023",
-                            nome: "Maria Silva",
-                            valor: "550.000kz",
-                            status: "enviado",
-                          },
-                          {
-                            pedido: "#4023",
-                            nome: "Maria Silva",
-                            valor: "550.000kz",
-                            status: "pago",
-                          },
-                        ].map((item, i) => (
-                          <tr
-                            key={i}
-                            className="hover:bg-background/50 transition-colors"
-                          >
-                            <td className="px-6 py-4 text-sm font-medium text-text-main">
-                              {" "}
-                              <span className="font-mono">{item.pedido}</span>
-                            </td>
-                            <td className="px-6 py-4 text-sm text-text-secondary">
-                              {item.nome}
-                            </td>
-                            <td className="px-6 py-4 text-sm font-semibold text-text-main">
-                              {item.valor}
-                            </td>
-                            <td className="px-6 py-4">
-                              <span
-                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                  item.status === "pedente"
-                                    ? "bg-yellow-100 text-yellow-800 border-yellow-200"
-                                    : item.status === "pago"
-                                      ? "bg-green-100 text-green-800 border-green-200"
-                                      : item.status === "enviado"
-                                        ? "bg-blue-100 text-blue-800 border-blue-200"
-                                        : item.status === "entregue"
-                                          ? "bg-gray-200 text-gray-600"
-                                          : ""
-                                }`}
+                        {totalOrders && totalOrders.length > 0 ? (
+                          totalOrders
+                            ?.slice(startIndex, endIndex)
+                            .map((item, i) => (
+                              <tr
+                                key={i}
+                                className="hover:bg-background/50 transition-colors"
                               >
-                                {item.status}
-                              </span>
+                                <td className="px-6 py-4 text-sm font-medium text-text-main">
+                                  {" "}
+                                  <span className="font-mono">{i + 1}</span>
+                                </td>
+                                <td className="px-6 py-4 text-sm text-text-secondary">
+                                  {item.consumer.name}
+                                </td>
+                                <td className="px-6 py-4 text-sm font-semibold text-text-main">
+                                  {item.value.toLocaleString("pt-AO", {
+                                    style: "currency",
+                                    currency: "AOA",
+                                  })}
+                                </td>
+                                <td className="px-6 py-4">
+                                  <span
+                                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                      item.status === "pendent"
+                                        ? "bg-yellow-100 text-yellow-800 border-yellow-200"
+                                        : item.status === "pago"
+                                          ? "bg-green-100 text-green-800 border-green-200"
+                                          : item.status === "enviado"
+                                            ? "bg-blue-100 text-blue-800 border-blue-200"
+                                            : item.status === "entregue"
+                                              ? "bg-gray-200 text-gray-600"
+                                              : ""
+                                    }`}
+                                  >
+                                    {item.status}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))
+                        ) : (
+                          <tr>
+                            <td colSpan={8} className="py-20 text-center">
+                              <div className="flex flex-col items-center justify-center w-full">
+                                <p className="text-gray-500 font-medium">
+                                  {"Você ainda não possui nenhum pedido"}
+                                </p>
+                              </div>
                             </td>
                           </tr>
-                        ))}
+                        )}
                       </tbody>
                     </table>
                   </div>
