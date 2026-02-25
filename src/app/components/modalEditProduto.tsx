@@ -76,7 +76,12 @@ function Editproduct({ openEdit, children, product }: AddPrudutoProps) {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "price" || name === "stock" ? Number(value) : value,
+      [name]:
+        name === "price" || name === "stock"
+          ? value === ""
+            ? ""
+            : Number(value)
+          : value,
     }));
   };
   const token = Cookies.get("token");
@@ -181,7 +186,7 @@ function Editproduct({ openEdit, children, product }: AddPrudutoProps) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-text-secondary2 mb-1.5">
-                   Estoque
+                    Estoque
                   </label>
                   <div className="relative rounded-md shadow-md ">
                     <input

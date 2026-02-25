@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import { Link } from "react-router-dom";
 
 interface FormData {
   name: string;
@@ -91,11 +92,13 @@ export default function Home() {
     }
   }
 
-  const { data, isLoading, error } = useQuery({
+  const { data,  error } = useQuery({
     queryKey: ["dashboard", token],
     queryFn: fetchData,
     enabled: !!token,
-    staleTime: 5 * 60 * 1000,
+    retry: 1,
+    staleTime: 1000 * 60 * 6,
+    refetchOnWindowFocus: false,
   });
   useEffect(() => {
     if (token && data) {
@@ -106,112 +109,16 @@ export default function Home() {
       setOngoing(data.order?.ongoing || "");
       setTotalProduto(String(data.product.totalProducts));
       setTotalOrders([...data.order.orders]);
-      console.log(data.order);
-
       console.log(token);
     }
   }, [token, data]);
 
-  // useEffect(() => {
-  //   if (!called.current) {
-  //     if (token) {
-  //       fetchData();
-  //     }
-  //     called.current = true;
-  //   }
-  // }, [token]);
-  // useEffect(() => {
-  //   if (!called.current) {
-  //     if (token) {
-  //       async function UserName() {
-  //         console.log(token);
-  //         try {
-  //           const res = await axios.get<BackendResponse>(User_URL, {
-  //             headers: {
-  //               "Content-Type": "application/json",
-  //               Authorization: `Bearer ${token}`,
-  //             },
-  //           });
-  //           console.log(res);
-  //           setFazendaImg(res.data.data?.profile || "");
-  //           setFazendaName(res.data.data?.name || "");
-  //         } catch (err) {
-  //           const error = err as AxiosError<BackendResponse>;
-  //           if (error.response) {
-  //             const data = error.response.data;
-  //             let mensagem = "";
-  //             if (Array.isArray(data?.error)) {
-  //               mensagem = data.error
-  //                 .map((e: ZodIssue) => e.message)
-  //                 .join(", ");
-  //             }
-  //             if (Array.isArray(data?.error)) {
-  //               mensagem = data.error
-  //                 .map((e) => (typeof e === "string" ? e : e.message))
-  //                 .join(", ");
-  //             } else if (data?.message) {
-  //               mensagem = data.message;
-  //             } else {
-  //               mensagem = "erro inesperado.";
-  //             }
-  //             console.log(mensagem);
-  //           } else {
-  //             console.log("Erro Server");
-  //           }
-  //         }
-  //       }
-  //       UserName();
-  //     }
-  //     called.current = true;
-  //   }
-  // }, [token]);
-  // useEffect(() => {
-  //   if (token) {
-  //     async function Order() {
-  //       try {
-  //         const res = await axios.get<BackendResponse>(Order_URL, {
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         });
-  //         console.log(res);
-  //         setPedentOrder(String(res.data.pendents));
-  //       } catch (err) {
-  //         const error = err as AxiosError<BackendResponse>;
-  //         if (error.response) {
-  //           const data = error.response.data;
-  //           let mensagem = "";
-  //           if (data.error) {
-  //             mensagem = data.error;
-  //           }
-  //           if (Array.isArray(data?.error)) {
-  //             mensagem = data.error
-  //               .map((e) => (typeof e === "string" ? e : e.message))
-  //               .join(", ");
-  //           } else if (data?.message) {
-  //             mensagem = data.message;
-  //           } else if (data?.info) {
-  //             mensagem = data.info;
-  //           } else {
-  //             mensagem = "erro inesperado.";
-  //           }
-  //           console.log(mensagem);
-  //         } else {
-  //           console.log("Erro Server");
-  //         }
-  //       }
-  //     }
-  //     Order();
-  //   }
-  // });
-
-  if (isLoading)
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
-      </div>
-    );
+  // if (isLoading)
+  //   return (
+  //     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+  //       <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
+  //     </div>
+  //   );
   if (error) {
     console.log(error);
   }
@@ -335,12 +242,12 @@ export default function Home() {
                     <h3 className="text-lg font-bold  text-text-main">
                       Resumo dos Últimos Pedidos
                     </h3>
-                    <a
+                    <Link
                       className="text-sm font-semibold text-primary hover:text-primary-hover transition-colors"
-                      href="/pedidos"
+                      to="/pedidos"
                     >
                       Ver todos os pedidos
-                    </a>
+                    </Link>
                   </div>
                   <div className="bg-white rounded-xl border border-border-color shadow-sm overflow-hidden overflow-x-auto">
                     <table className="w-full text-left border-collapse">

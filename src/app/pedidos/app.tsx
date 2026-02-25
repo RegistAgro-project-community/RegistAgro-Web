@@ -74,11 +74,13 @@ export default function Pedidos() {
       }
     }
   }
-  const { data, isLoading, error } = useQuery({
+  const { data,  error } = useQuery({
     queryKey: ["Orders", token],
     queryFn: fetchOrdersData,
     enabled: !!token,
-    staleTime: 5 * 60 * 1000,
+    retry: 1,
+    staleTime: 1000 * 60 * 6,
+    refetchOnWindowFocus: false,
   });
   useEffect(() => {
     if (token && data) {
@@ -89,12 +91,12 @@ export default function Pedidos() {
       setTotalOrder(String(data.data.total));
     }
   }, [token, data]);
-  if (isLoading)
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
-      </div>
-    );
+  // if (isLoading)
+  //   return (
+  //     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+  //       <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
+  //     </div>
+  //   );
   if (error) {
     console.log(error);
   }

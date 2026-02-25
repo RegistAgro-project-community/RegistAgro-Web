@@ -108,6 +108,7 @@ export default function Produtos() {
       Produtos();
       setAbertoDelete(false);
       setAbertoEdit(false);
+      setAberto(false);
     };
     carregarDados();
     window.addEventListener("perfilAtualizado", carregarDados);
@@ -120,7 +121,11 @@ export default function Produtos() {
   console.log(produtos);
   const filteredProducts = produtos.filter((item) => {
     const product = searchProduct.toLowerCase();
-    return item.name.toLowerCase().includes(product);
+    return (
+      item.name.toLowerCase().includes(product) ||
+      item.type.toLowerCase().includes(product) ||
+      item.transport.toLowerCase().includes(product)
+    );
   });
   const totalItems = filteredProducts.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);

@@ -29,15 +29,16 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
   useEffect(() => {
     setModalOpen(open);
   }, [open]);
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     name: "",
     description: "",
-    price: 0,
-    stock: 0,
+    price: "" as number | "",
+    stock: "" as number | "",
     unit: "un",
     type: "",
     transport: "",
-  });
+  };
+  const [formData, setFormData] = useState(initialFormData);
   const pegarValor = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -46,7 +47,12 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "price" || name === "stock" ? Number(value) : value,
+      [name]:
+        name === "price" || name === "stock"
+          ? value === ""
+            ? ""
+            : Number(value)
+          : value,
     }));
   };
 
@@ -63,6 +69,11 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
       inputRef.current.value = "";
     }
   }
+  function limparFormulario() {
+    setFormData(initialFormData);
+    removeImage();
+  }
+
   async function AdcionarProduto(event: React.FormEvent) {
     event.preventDefault();
     const token = Cookies.get("token");
@@ -100,6 +111,7 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
       });
       if (res.status === 201) {
         window.dispatchEvent(new Event("perfilAtualizado"));
+        limparFormulario();
         setLoading(false);
         setModalOpen(false);
       }
@@ -145,12 +157,12 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
       <div
         className={`
           fixed inset-0  overflow-y-auto ${isModalOpen ? "scale-100 opacity-100 visible bg-black/20  backdrop-blur-sm transition-opacity z-60" : "scale-125 opacity-0 invisible"}`}
-          >
-            {loading && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-                <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
-              </div>
-            )}
+      >
+        {loading && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
+          </div>
+        )}
         <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
           <div className="relative transform overflow-hidden rounded-2xl bg-surface-light text-left shadow-2xl border-border-color">
             <div className="px-6 py-3 border-b border-border-color flex items-center justify-between bg-[#f9faf9]">
