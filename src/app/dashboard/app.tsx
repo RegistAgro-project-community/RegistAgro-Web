@@ -26,6 +26,7 @@ interface BackendResponse {
   totalProducts?: number;
   data?: FormData;
   pendents?: string;
+  ongoing?: string;
   orders: OrderData[];
 }
 interface BackendError {
@@ -40,6 +41,7 @@ export default function Home() {
   const [totalOrders, setTotalOrders] = useState<OrderData[] | null>([]);
   const [correntPage] = useState(1);
   const [fazendaIgm, setFazendaImg] = useState("");
+  const [ongoing, setOngoing] = useState("");
   const [pendentOrder, setPedentOrder] = useState("");
   const [totalProduto, setTotalProduto] = useState("");
   const User_URL = "/users/profile";
@@ -101,9 +103,11 @@ export default function Home() {
       setFazendaName(data.user.data?.name || "");
       setFazendaImg(data.user.data?.profile || "");
       setPedentOrder(data.order?.pendents || "");
+      setOngoing(data.order?.ongoing || "");
       setTotalProduto(String(data.product.totalProducts));
       setTotalOrders([...data.order.orders]);
       console.log(data.order);
+
       console.log(token);
     }
   }, [token, data]);
@@ -213,6 +217,7 @@ export default function Home() {
   }
   const startIndex = (correntPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
+
   return (
     <div className="bg-background text-text-main">
       <div className="relative flex h-screen w-full overflow-hidden bg-background">
@@ -280,7 +285,7 @@ export default function Home() {
                     {
                       icon: "local_shipping",
                       label: "Entregas em andamento",
-                      total: 3,
+                      total: ongoing || 0,
                     },
                   ].map((item, i) => (
                     <div
