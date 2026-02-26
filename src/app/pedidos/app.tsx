@@ -48,30 +48,17 @@ export default function Pedidos() {
   }
   async function fetchOrdersData() {
     try {
-      const data = axios.get<BackendResponse>(Order_URL, {
+      const data = await axios.get<BackendResponse>(Order_URL, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return data;
     } catch (err) {
       const error = err as AxiosError<BackendError>;
 
-      if (error.response) {
-        const data = error.response.data;
-        if (Array.isArray(data?.error)) {
-          const messagem = data.error.map((e) => e.message).join(", ");
-          console.log(messagem);
-        }
-        if (typeof data?.error === "string") {
-          console.log(data.error);
-        }
-
-        if (data?.message) {
-          console.log(data.message);
-        }
-        if (data.info) {
-          console.log(data.info);
-        }
+      if (error.response?.data?.info) {
+        console.log(error.response.data.info);
       }
+      return null;
     }
   }
   const { data, isLoading, error } = useQuery({
