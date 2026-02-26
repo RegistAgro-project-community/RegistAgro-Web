@@ -92,7 +92,7 @@ export default function Home() {
     }
   }
 
-  const { data,  error } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["dashboard", token],
     queryFn: fetchData,
     enabled: !!token,
@@ -113,12 +113,6 @@ export default function Home() {
     }
   }, [token, data]);
 
-  // if (isLoading)
-  //   return (
-  //     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-  //       <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
-  //     </div>
-  //   );
   if (error) {
     console.log(error);
   }
@@ -131,6 +125,11 @@ export default function Home() {
         <div className="relative flex h-screen w-full overflow-hidden bg-background">
           <Nav sidebarAberto={siderAberto} setSidebarAberto={setSiderAberto} />
           <main className="flex-1 flex flex-col h-full overflow-hidden relative">
+            {isLoading && (
+              <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40">
+                <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
+              </div>
+            )}
             <div className="h-16 w-full bg-white border-b border-border-color flex items-center justify-between px-8 shrink-0">
               <div className="flex items-center gap-2">
                 {" "}
