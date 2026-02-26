@@ -3,7 +3,7 @@ import Nav from "../components/nav";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useQuery } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
+import type { AxiosError, AxiosResponse } from "axios";
 import { Link } from "react-router-dom";
 
 interface FormData {
@@ -52,8 +52,18 @@ export default function Home() {
   const [siderAberto, setSiderAberto] = useState(false);
 
   async function fetchData() {
+    const semOrder: BackendResponse = {
+      orders: [],
+      pendents: "0",
+      ongoing: "0",
+    };
+
+    const semProduct: BackendResponse = {
+      orders: [],
+      totalProducts: 0,
+    };
     try {
-      const [userRes, orderRes, productRes] = await Promise.all([
+      const [userRes, orderRes, productRes] = await Promise.allSettled([
         axios.get<BackendResponse>(User_URL, {
           headers: { Authorization: `Bearer ${token}` },
         }),
@@ -64,10 +74,17 @@ export default function Home() {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
+      const orderData =
+        orderRes.status === "fulfilled" ? orderRes.value.data : semOrder;
+
+      const productData =
+        productRes.status === "fulfilled" ? productRes.value.data : semProduct;
       return {
-        user: userRes.data,
-        order: orderRes.data,
-        product: productRes.data,
+        user: (
+          userRes as PromiseFulfilledResult<AxiosResponse<BackendResponse>>
+        ).value.data,
+        order: orderData,
+        product: productData,
       };
     } catch (err) {
       const error = err as AxiosError<BackendError>;
