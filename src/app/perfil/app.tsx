@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { AxiosError } from "axios";
 import EditarPerfil from "../components/modalEditPerfil";
 import { Toast } from "primereact/toast";
+import { useQuery } from "@tanstack/react-query";
 
 interface ZodIssue {
   key: string;
@@ -60,6 +61,7 @@ export default function PerfilUsuario() {
         },
       });
       console.log(res);
+      return res.data;
       setFormData((prev) => ({
         ...prev,
         name: res.data.data?.name || "",
@@ -94,6 +96,33 @@ export default function PerfilUsuario() {
       }
     }
   }
+  const {
+    data: Perfil,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["Perfil", token],
+    queryFn: fetchPerfil,
+    enabled: !!token,
+    retry: 1,
+    staleTime: 1000 * 60 * 6,
+    refetchOnWindowFocus: false,
+  });
+  useEffect(() => {
+    if (!Perfil) return;
+    setFormData((prev) => ({
+      ...prev,
+      name: Perfil.data?.name || "",
+      phone: Perfil.data?.phone || "",
+      email: Perfil.data?.email || "",
+      province: Perfil.data?.province || "",
+      adress: Perfil.data?.adress || "",
+      dataISO: Perfil.data?.created_at || "",
+      nif: Perfil.nif || "",
+    }));
+    setImg(Perfil.data?.profile || "");
+  }, [Perfil]);
+
   async function handleFile(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -175,7 +204,7 @@ export default function PerfilUsuario() {
     month: "long",
     year: "numeric",
   });
-
+  if (error) console.log(error);
   return (
     <>
       <Toast ref={toast} position="top-right" />
@@ -195,6 +224,11 @@ export default function PerfilUsuario() {
         <div className="relative flex h-screen w-full overflow-hidden bg-background">
           <Nav sidebarAberto={siderAberto} setSidebarAberto={setSiderAberto} />
           <main className="flex-1 flex flex-col h-full overflow-hidden relative">
+            {isLoading && (
+              <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40">
+                <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
+              </div>
+            )}
             <div className="flex-1 overflow-auto p-8  bg-background">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                 <div>
