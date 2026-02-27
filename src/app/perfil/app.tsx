@@ -146,7 +146,6 @@ export default function PerfilUsuario() {
         },
       });
       if (res.status === 201) {
-        window.dispatchEvent(new Event("AtualizarStatusModal"));
         console.log(res);
         const valido = res.data.message;
         setUpload(false);
