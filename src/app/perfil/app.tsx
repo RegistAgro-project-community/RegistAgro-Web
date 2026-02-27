@@ -5,8 +5,8 @@ import Cookies from "js-cookie";
 import { AxiosError } from "axios";
 import EditarPerfil from "../components/modalEditPerfil";
 import { Toast } from "primereact/toast";
-import { useQuery } from "@tanstack/react-query";
-
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 interface ZodIssue {
   key: string;
   message: string;
@@ -37,8 +37,10 @@ export default function PerfilUsuario() {
   const [upload, setUpload] = useState(false);
   const [loading, setLoading] = useState(false);
   const [img, setImg] = useState("");
+  const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const toast = useRef<Toast>(null);
+  const token = Cookies.get("token");
 
   const [formData, setFormData] = useState({
     id: "",
@@ -50,7 +52,6 @@ export default function PerfilUsuario() {
     dataISO: "",
     nif: "",
   });
-  const token = Cookies.get("token");
   async function fetchPerfil() {
     if (!token) return;
     try {
@@ -108,6 +109,13 @@ export default function PerfilUsuario() {
     staleTime: 1000 * 60 * 6,
     refetchOnWindowFocus: false,
   });
+  const userImgMutation = useMutation({
+    mutationFn: handleFile,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["Perfil"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    },
+  });
   useEffect(() => {
     if (!Perfil) return;
     setFormData((prev) => ({
@@ -138,7 +146,7 @@ export default function PerfilUsuario() {
         },
       });
       if (res.status === 201) {
-        window.dispatchEvent(new Event("perfilAtualizado"));
+        window.dispatchEvent(new Event("AtualizarStatusModal"));
         console.log(res);
         const valido = res.data.message;
         setUpload(false);
@@ -185,16 +193,16 @@ export default function PerfilUsuario() {
       console.error("Erro no axios", error);
     }
   }
+
   useEffect(() => {
-    const carregarDados = async () => {
-      fetchPerfil();
+    const fecharModal = async () => {
       setAbertoEdit(false);
       console.log(abertoEdit);
     };
-    carregarDados();
-    window.addEventListener("perfilAtualizado", carregarDados);
+    fecharModal();
+    window.addEventListener("AtualizarStatusModal", fecharModal);
     return () => {
-      window.removeEventListener("perfilAtualizado", carregarDados);
+      window.removeEventListener("AtualizarStatusModal", fecharModal);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
@@ -213,7 +221,9 @@ export default function PerfilUsuario() {
         ref={fileInputRef}
         className="hidden"
         accept="image/*"
-        onChange={handleFile}
+        onChange={(e) => {
+          userImgMutation.mutate(e);
+        }}
       />
       {loading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
