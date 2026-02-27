@@ -3,6 +3,7 @@ import axios from "../api/axios";
 import { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import { Toast } from "primereact/toast";
+import { useQuery } from "@tanstack/react-query";
 type DetalhePros = {
   openEditPerfil: boolean;
   children?: React.ReactNode;
@@ -43,52 +44,54 @@ function EditarPerfil({ openEditPerfil, children }: DetalhePros) {
   const token = Cookies.get("token");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (token) {
-      async function fetchPerfil() {
-        try {
-          const res = await axios.get<BackendResponse>(User_URL, {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          console.log(res);
-          setFormData((prev) => ({
-            ...prev,
-            name: res.data.data?.name || "",
-            phone: res.data.data?.phone || "",
-            email: res.data.data?.email || "",
-            province: res.data.data?.province || "",
-            adress: res.data.data?.adress || "",
-            dataISO: res.data.data?.created_at || "",
-          }));
-        } catch (err) {
-          const error = err as AxiosError<BackendResponse>;
-          if (error.response) {
-            const data = error.response.data;
-            let mensagem = "";
-            if (Array.isArray(data?.error)) {
-              mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
-            }
-            if (Array.isArray(data?.error)) {
-              mensagem = data.error
-                .map((e) => (typeof e === "string" ? e : e.message))
-                .join(", ");
-            } else if (data?.message) {
-              mensagem = data.message;
-            } else {
-              mensagem = "erro inesperado.";
-            }
-            console.log(mensagem);
-          } else {
-            console.log("Erro Server");
-          }
+  async function fetchPerfil() {
+    try {
+      const res = await axios.get<BackendResponse>(User_URL, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res);
+      return res.data;
+    } catch (err) {
+      const error = err as AxiosError<BackendResponse>;
+      if (error.response) {
+        const data = error.response.data;
+        let mensagem = "";
+        if (Array.isArray(data?.error)) {
+          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
         }
+        if (Array.isArray(data?.error)) {
+          mensagem = data.error
+            .map((e) => (typeof e === "string" ? e : e.message))
+            .join(", ");
+        } else if (data?.message) {
+          mensagem = data.message;
+        } else {
+          mensagem = "erro inesperado.";
+        }
+        console.log(mensagem);
+      } else {
+        console.log("Erro Server");
       }
-      fetchPerfil();
     }
-  }, [token]);
+  }
+  const { data: Perfil } = useQuery({
+    queryKey: ["editPerfil", token],
+    queryFn: fetchPerfil,
+    retry: 1,
+  });
+  useEffect(() => {
+    if (!Perfil) return;
+    setFormData((prev) => ({
+      ...prev,
+      name: Perfil.data?.name || "",
+      province: Perfil.data?.province || "",
+      adress: Perfil.data?.adress || "",
+    }));
+  }, [Perfil]);
+
   async function AtualizarDados(event: React.FormEvent) {
     event.preventDefault();
     console.log(formData);
