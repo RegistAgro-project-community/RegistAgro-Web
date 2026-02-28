@@ -132,15 +132,13 @@ export default function Register() {
           life: 2000,
         });
         setLoading(false);
-        setTimeout(() => {
-          setName(`${data?.name}`);
-          setAdress(`${data?.adress}`);
-          setEmail(`${data?.email}`);
-          setPhone(`${data?.phone}`);
-          setProvince(`${data?.province}`);
-          setToken(res.headers.authorization);
-          setEtapa("dados");
-        }, 2000);
+        setName(`${data?.name}`);
+        setAdress(`${data?.adress}`);
+        setEmail(`${data?.email}`);
+        setPhone(`${data?.phone}`);
+        setProvince(`${data?.province}`);
+        setToken(res.headers.authorization);
+        setEtapa("dados");       
       }
     } catch (err) {
       const error = err as AxiosError<BackendResponse>;
