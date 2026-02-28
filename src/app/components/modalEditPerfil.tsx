@@ -3,7 +3,7 @@ import axios from "../api/axios";
 import { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import { Toast } from "primereact/toast";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 type DetalhePros = {
   openEditPerfil: boolean;
   children?: React.ReactNode;
@@ -38,6 +38,7 @@ function EditarPerfil({ openEditPerfil, children }: DetalhePros) {
   useEffect(() => {
     setIsModalOpen(openEditPerfil);
   }, [openEditPerfil]);
+  const queryClient = useQueryClient();
   const toast = useRef<Toast>(null);
   const User_URL = "/users/profile";
   const UserUPDATE_URL = "/users/update";
@@ -121,7 +122,7 @@ function EditarPerfil({ openEditPerfil, children }: DetalhePros) {
       });
 
       if (res.status === 200) {
-        window.dispatchEvent(new Event("perfilAtualizado"));
+        window.dispatchEvent(new Event("AtualizarStatusModal"));
         setLoading(false);
         setIsModalOpen(false);
       }
@@ -166,6 +167,14 @@ function EditarPerfil({ openEditPerfil, children }: DetalhePros) {
       [name]: value,
     }));
   }
+  const userEdit = useMutation({
+    mutationFn: AtualizarDados,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["Perfil"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    },
+  });
+
   return (
     <>
       <Toast ref={toast} position="top-right" />
@@ -232,7 +241,9 @@ function EditarPerfil({ openEditPerfil, children }: DetalhePros) {
             </div>
             <div className="pt-4 flex flex-col gap-3">
               <button
-                onClick={AtualizarDados}
+                onClick={(e) => {
+                  userEdit.mutate(e)
+                }}
                 className="w-full py-3.5 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl shadow-lg  transition-all active:scale-90"
                 type="submit"
               >
