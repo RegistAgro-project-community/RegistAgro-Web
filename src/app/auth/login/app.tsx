@@ -65,9 +65,8 @@ export default function Login() {
           secure: true,
           sameSite: "Strict",
         });
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 1500);
+        navigate("/dashboard");
+        
       }
     } catch (err) {
       setLoading(false);
@@ -169,9 +168,9 @@ export default function Login() {
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined  text-text-secondary">
+                {/* <span className="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined  text-text-secondary">
                   visibility
-                </span>
+                </span> */}
               </div>
             </div>
 
