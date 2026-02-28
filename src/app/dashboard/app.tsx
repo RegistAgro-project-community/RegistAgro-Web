@@ -127,6 +127,7 @@ export default function Home() {
       setTotalProduto(String(data.product.totalProducts));
       setTotalOrders([...data.order.orders]);
       console.log(token);
+      console.log(data)
     }
   }, [token, data]);
 

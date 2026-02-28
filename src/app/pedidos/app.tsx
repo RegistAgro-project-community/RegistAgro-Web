@@ -66,7 +66,7 @@ export default function Pedidos() {
     queryFn: fetchOrdersData,
     enabled: !!token,
     retry: 1,
-    staleTime: 1000 * 60 * 6,
+    refetchInterval: 1000 * 60 * 0.5,
     refetchOnWindowFocus: false,
   });
   useEffect(() => {

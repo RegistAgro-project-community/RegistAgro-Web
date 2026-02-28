@@ -13,5 +13,12 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },
+    //  proxy: {
+    //   "/api": {
+    //     target: "https://api-registagro.onrender.com",
+    //     changeOrigin: true,
+    //     rewrite: (path) => path.replace(/^\/api/, ""),
+    //   },
+    // },
   },
 });
