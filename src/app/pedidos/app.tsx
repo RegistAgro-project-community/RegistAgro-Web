@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Nav from "../components/nav";
 import Cookies from "js-cookie";
 import axios from "../api/axios";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import type { Toast } from "primereact/toast";
 interface Consumer {
   name: string;
 }
@@ -17,12 +18,14 @@ interface OrderData {
   value: number;
   qtd: number;
   unit: string;
+  id: string;
 }
 interface BackendResponse {
   orders: OrderData[];
   pendents: number;
   total: number;
   ongoing?: number;
+  message: string;
 }
 interface BackendError {
   message?: string;
@@ -36,7 +39,9 @@ export default function Pedidos() {
   const itemsPerPage = 5;
   const [searchProduct, setSearchProduct] = useState("");
   const [ongoing, setOngoing] = useState("");
+  const queryClient = useQueryClient();
   const [pendentOrder, setPedentOrder] = useState("");
+  const toast = useRef<Toast>(null);
   const [totalOrder, setTotalOrder] = useState("");
   const Order_URL = "/orders/farms/order/get";
   const [siderAberto, setSiderAberto] = useState(false);
@@ -82,6 +87,29 @@ export default function Pedidos() {
   if (error) {
     console.log(error);
   }
+  async function featchOrderAccept(id: string) {
+    console.log(token);
+    const data = await axios.patch<BackendResponse>(
+      `/orders/accept/order/${id}`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
+    const valido = data.data.message;
+    toast.current?.show({
+      severity: "success",
+      summary: "Tudo certo",
+      detail: valido,
+      life: 2000,
+    });
+  }
+  const OrderAccept = useMutation({
+    mutationFn: featchOrderAccept,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["Orders"] });
+    },
+  });
   const filterOrders = totalOrders.filter((item) => {
     const order = searchProduct.toLowerCase();
     return item.consumer.name.toLowerCase().includes(order);
@@ -244,22 +272,31 @@ export default function Pedidos() {
                           </span>
                         </td>
                         <td className="px-6 py-5 text-center">
-                          <span className={`inline-flex items-center px-2.5 py-0 rounded-full text-xs font-medium ${item.status ==="pendent" ? "bg-yellow-100  text-yellow-800 border border-yellow-200": item.status ==="confirmed" ? "bg-green-100  text-green-800 border border-green-200": ""} `}>
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0 rounded-full text-xs font-medium ${item.status === "pendent" ? "bg-yellow-100  text-yellow-800 border border-yellow-200" : item.status === "confirmed" ? "bg-green-100  text-green-800 border border-green-200" : ""} `}
+                          >
                             {item.status}
                           </span>
                         </td>
                         {item.status === "pendent" ? (
                           <td className="px-6 py-5 text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <button className="px-3 py-1.5 text-xs font-semibold text-text-secondary hover:text-red-600 transition-colors">
-                              Rejeitar
-                            </button>
-                            <button className="px-4 py-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-lg shadow-sm transition-all transform active:scale-95">
-                              Aceitar
-                            </button>
-                          </div>
-                        </td>
-                        ): ""}
+                            <div className="flex items-center justify-end gap-2">
+                              <button className="px-3 py-1.5 text-xs font-semibold text-text-secondary hover:text-red-600 transition-colors">
+                                Rejeitar
+                              </button>
+                              <button
+                                onClick={() => {
+                                  OrderAccept.mutate(item.id);
+                                }}
+                                className="px-4 py-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-lg shadow-sm transition-all transform active:scale-95"
+                              >
+                                Aceitar
+                              </button>
+                            </div>
+                          </td>
+                        ) : (
+                          ""
+                        )}
                       </tr>
                     ))
                   ) : (
