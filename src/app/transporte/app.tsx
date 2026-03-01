@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Nav from "../components/nav";
+import Nav from "../../components/nav";
 export default function ContratarTransorte() {
   const [siderAberto, setSiderAberto] = useState(false);
   return (

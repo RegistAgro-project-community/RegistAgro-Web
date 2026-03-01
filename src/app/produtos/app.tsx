@@ -1,10 +1,10 @@
-import Nav from "../components/nav";
-import AddPruduto from "../components/modalAddProduto";
-import EditProduto from "../components/modalEditProduto";
-import DeleteProduto from "../components/modalDeleteProduto";
+import Nav from "../../components/nav";
+import AddPruduto from "../../components/modalAddProduto";
+import EditProduto from "../../components/modalEditProduto";
+import DeleteProduto from "../../components/modalDeleteProduto";
 import { useRef, useState, useEffect } from "react";
 import { AxiosError } from "axios";
-import axios from "../api/axios";
+import axios from "../../api/axios";
 import Cookies from "js-cookie";
 import { Toast } from "primereact/toast";
 import { useNavigate } from "react-router-dom";

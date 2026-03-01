@@ -1,5 +1,5 @@
-import axios from "../api/axios";
-import Nav from "../components/nav";
+import axios from "../../api/axios";
+import Nav from "../../components/nav";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useQuery } from "@tanstack/react-query";

@@ -1,5 +1,5 @@
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import { removeToken } from "../auth";
+import { removeToken } from "../app/auth";
 
 interface NavProps {
   sidebarAberto: boolean;

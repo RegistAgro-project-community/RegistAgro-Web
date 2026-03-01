@@ -1,7 +1,7 @@
-import Nav from "../components/nav";
+import Nav from "../../components/nav";
 import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
-import axios from "../api/axios";
+import axios from "../../api/axios";
 import Cookies from "js-cookie";
 import type { AxiosError } from "axios";
 import { Toast } from "primereact/toast";

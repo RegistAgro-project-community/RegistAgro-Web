@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import Nav from "../components/nav";
+import Nav from "../../components/nav";
 import Cookies from "js-cookie";
-import axios from "../api/axios";
+import axios from "../../api/axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import type { Toast } from "primereact/toast";

@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import Login from "./auth/login/app";
-import Register from "./auth/register/app";
+import Login from "../auth/login/login";
+import Register from "../auth/register/signup";
 import Home from "./dashboard/app";
 import Produtos from "./produtos/app";
 import Pedidos from "./pedidos/app";
@@ -10,28 +10,40 @@ import ContratarTransorte from "./transporte/app";
 import PerfilUsuario from "./perfil/app";
 import Rotas from "./rotas/app";
 import ProdutoDetalhe from "./produto-detalhe/app";
+import Auth from "../auth/auth";
+
 
 export function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route
-          path="/login"
-          element={
-            <PublicRote>
-              <Login />
-            </PublicRote>
-          }
-        ></Route>
-        <Route
-          path="/register"
-          element={
-            <PublicRote>
-              <Register />
-            </PublicRote>
-          }
-        ></Route>
+
+        {/* Layout para Auth */}
+        <Route element={<Auth />}>
+
+          <Route path="/" element={<Navigate to="/login" replace />} />
+
+          <Route
+            path="/login"
+            element={
+              <PublicRote>
+                <Login />
+              </PublicRote>
+            }
+          />
+
+          <Route
+            path="/register"
+            element={
+              <PublicRote>
+                <Register />
+              </PublicRote>
+            }
+          />
+
+        </Route>
+
+        {/* Rotas privadas continuam iguais */}
         <Route
           path="/dashboard"
           element={
@@ -39,7 +51,8 @@ export function AppRoutes() {
               <Home />
             </PrivateRote>
           }
-        ></Route>
+        />
+
         <Route
           path="/produtos"
           element={
@@ -47,7 +60,8 @@ export function AppRoutes() {
               <Produtos />
             </PrivateRote>
           }
-        ></Route>
+        />
+
         <Route
           path="/pedidos"
           element={
@@ -55,7 +69,8 @@ export function AppRoutes() {
               <Pedidos />
             </PrivateRote>
           }
-        ></Route>
+        />
+
         <Route
           path="/pedidos/transporte"
           element={
@@ -63,7 +78,8 @@ export function AppRoutes() {
               <ContratarTransorte />
             </PrivateRote>
           }
-        ></Route>
+        />
+
         <Route
           path="/rotas"
           element={
@@ -71,7 +87,8 @@ export function AppRoutes() {
               <Rotas />
             </PrivateRote>
           }
-        ></Route>
+        />
+
         <Route
           path="/perfil"
           element={
@@ -79,7 +96,8 @@ export function AppRoutes() {
               <PerfilUsuario />
             </PrivateRote>
           }
-        ></Route>
+        />
+
         <Route
           path="/produtos/produto-detalhe/:id"
           element={
@@ -87,7 +105,8 @@ export function AppRoutes() {
               <ProdutoDetalhe />
             </PrivateRote>
           }
-        ></Route>
+        />
+
       </Routes>
     </BrowserRouter>
   );

@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import axios from "../../api/axios";
 import { AxiosError } from "axios";
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
 
 interface ZodIssue {
@@ -26,45 +26,53 @@ interface BackendResponse {
 }
 const FARMSignup_URL = "/auth/farm/signup";
 export default function Register() {
-  const toast = useRef<Toast>(null);
-  const [etapa, setEtapa] = useState<"nif" | "otp" | "dados">("nif");
-  const [nif, setNif] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const [code, setCode] = useState<string[]>(Array(6).fill(""));
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [province, setProvince] = useState("");
-  const [adress, setAdress] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPasssword] = useState("");
-  const [token, setToken] = useState<string | null>(null);
+  const toast = useRef<Toast>(null)
+  const [etapa, setEtapa] = useState<"nif" | "otp" | "dados">("nif")
+  const [nif, setNif] = useState("")
+  const [loading, setLoading] = useState(false)
+const [nifError, setNifError] = useState("")
+  const [code, setCode] = useState<string[]>(Array(6).fill(""))
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [phone, setPhone] = useState("")
+  const [province, setProvince] = useState("")
+  const [adress, setAdress] = useState("")
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPasssword] = useState("")
+  const [token, setToken] = useState<string | null>(null)
 
   const navigate = useNavigate();
   async function CheckNif(event: React.FormEvent) {
     event.preventDefault();
     try {
+      let valid = true;
+
       if (!nif) {
-        toast.current?.show({
-          severity: "error",
-          summary: "Algo de errado",
-          detail: "Preencha o campo",
-          life: 2000,
-        });
-        return;
+        setNifError("O NIF é obrigatório.")
+        valid = false
+      } else if (nif.length !== 9 || !/^\d+$/.test(nif)) {
+        setNifError("NIF inválido!")
+        valid = false
+      } else {
+        setNifError("")
       }
-      setLoading(true);
+
+      if (valid) {
+        setLoading(true)
+        setTimeout(() => {
+          console.log("NIF enviado:", nif)
+          setLoading(false)
+        }, 2000)
+        setLoading(true);
+      }
+
       const res = await axios.get<BackendResponse>(`/auth/signup/nif/${nif}`);
+      console.log(res);
+
       if (res.data.valid === true) {
         console.log(res.data.message);
         const valido = res.data.message;
-        toast.current?.show({
-          severity: "success",
-          summary: "Tudo certo",
-          detail: valido,
-          life: 2000,
-        });
+        console.log("Tudo certo:", valido);
         setLoading(false);
         setTimeout(() => {
           setEtapa("otp");
@@ -103,6 +111,7 @@ export default function Register() {
       }
     }
   }
+
   async function CheckOtp(event: React.FormEvent) {
     event.preventDefault();
     try {
@@ -122,7 +131,7 @@ export default function Register() {
         `/auth/signup/verify/${OTPCODE}`,
       );
       console.log(res);
-      if (res.status === 202) {
+      if (res.status === 200) {
         const mensagem = res.data.message;
         const data = res.data.data;
         toast.current?.show({
@@ -172,6 +181,7 @@ export default function Register() {
       }
     }
   }
+
   async function Sginup(event: React.FormEvent) {
     event.preventDefault();
     try {
@@ -264,87 +274,64 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-background">
-      <Toast ref={toast} position="top-right" />"
+    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 bg-white">
+      <Toast ref={toast} position="top-right" />
       {etapa === "nif" && (
-        <form className="relative z-10 w-full max-w-120 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden">
-          <div className="relative h-48 w-full  overflow-hidden group">
-            <div
-              className="w-full h-full bg-center bg-cover  transition-transform duration-700 group-hover:scale-105"
-              data-alt="Grama verde"
-              style={{
-                backgroundImage: "url('/assets/grama.png')",
-              }}
-            ></div>
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center">
-              <div className=" backdrop-blur-sm p-3 rounded-full shadow-lg mb-3">
-                <img
-                  className="h-13"
-                  src="/public/assets/logo-registagro.png"
-                  alt=""
-                />
-              </div>
-              <h1 className="text-white font-bold text-xl tracking-wide drop-shadow-md">
-                RegistAgro
-              </h1>
-            </div>
-          </div>
-          {loading && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-              <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
-            </div>
-          )}
-          <div className="px-6 py-8 flex-col gap-6">
-            <div className="text-center space-y-2 mb-5">
-              <h2 className="text-text-main tracking-tight text-[28px] font-[550] leading-tight">
-                Verificação de NIF
-              </h2>
-              <p className="text-[#8ba88c]  text-sm">
-                Insira o número de indentificação fiscal da fazenda para acessar
-                o painel adminstrativo.
-              </p>
-            </div>
-            <div className="space-y-4 mb-5">
-              <div className="flex flex-col gap-1.5 ">
-                <label className=" text-text-main text-base fontdim leading-normal flex items-center gap-2">
-                  <span className="material-symbols-outlined text-text-secondary text-[20px]">
-                    {" "}
-                    id_card{" "}
-                  </span>
-                  NIF da Fazenda
-                </label>
-                <div className="relative">
-                  <input
-                    className="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-text-main  placeholder:text-text-secondary focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border bg-white focus:border-primary h-14 px-3.75 text-base font-normal leading-normal transition-all"
-                    placeholder="123456789"
-                    value={nif}
-                    onChange={(event) => setNif(event.target.value)}
-                    type="text"
-                  />
+        <div className="min-h-screen w-full flex items-center justify-center">
+          <div className="flex flex-col md:flex-row justify-center items-center min-h-screen w-full max-w-4xl">
+
+            <div className="auth bg-white min-h-screen w-full md:w-1/2 flex justify-center items-center px-6 py-10">
+              <div className="space-y-5 w-full max-w-sm">
+
+                <div className="flex flex-col justify-center items-center gap-1.5 pb-10">
+                  <img src="/src/assets/image/logo.png" alt="logo" className="h-17 object-contain"/>
+                  <h1 className="font-bold text-[23px] text-[#5F963B]">RegistAgro</h1>
                 </div>
+
+                <div className="space-y-3">
+                  <h1 className="text-2xl font-bold">Cadastrar</h1>
+                  <p className="text-black/60">Bem-vindo ao RegistAgro! Por favor, insira seus dados.</p>
+                </div>
+
+                <form onSubmit={CheckNif} className="space-y-5">
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="nif" className="font-medium">NIF</label>
+                    <input
+                      id="nif"
+                      type="text"
+                      placeholder="1234567890"
+                      value={nif}
+                      onChange={(e) => setNif(e.target.value)}
+                      className={`border border-gray-200 py-2 px-3 w-full rounded-lg outline-green-600 ${
+                        nifError
+                          ? "border-red-500 outline-1 outline-red-400 transition"
+                          : ""
+                      }`}
+                    />
+                    {nifError && (<span className="text-red-500 text-sm">{nifError}</span>)}
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <div className="flex justify-between items-center px-1 pt-1">
+                      <p className="text-sm text-gray-500 flex gap-1">
+                        Já tenho uma conta! 
+                        <Link to="/login" className="text-sm text-green-600 hover:underline transition">Entrar</Link>
+                      </p>
+                    </div>
+                  </div>
+                  <button disabled={loading} type="submit" className={`w-full h-10 flex items-center justify-center bg-green-500 text-white font-semibold rounded-lg mt-4 transition ${loading ? "opacity-70 cursor-not-allowed" : "hover:bg-green-600 cursor-pointer"}`}>
+                    {loading ? (
+                        <div className="flex justify-center items-center gap-2">
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                      ) : ("Validar NIF")}
+                  </button>
+                </form>
+
               </div>
             </div>
-            <div className="pt-2 mb-7">
-              <button
-                onClick={CheckNif}
-                className="relative w-full cursor-pointer flex items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary hover:bg-primary-hover  text-white text-base font-bold leading-normal tracking-[0.015em] transition-colors shadow-lg shadow-primary/20 group "
-              >
-                <span className="material-symbols-outlined mr-2 transition-transform group-hover:scale-110">
-                  verified_user
-                </span>
-                <span className="truncate">Verificar NIF</span>
-              </button>
-            </div>
-            <div className="text-center pt-2 border-t border-gray-100 ">
-              <a
-                href="/login"
-                className="inline-flex items-center justify-center gap1 text-text-secondary hover:text-primary font-medium leading-normal transition-colors"
-              >
-                Já tenho conta <span className="m-2">Entrar</span>
-              </a>
-            </div>
           </div>
-        </form>
+        </div>
       )}
       {etapa === "otp" && (
         <>

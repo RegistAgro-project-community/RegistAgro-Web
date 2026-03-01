@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Nav from "../components/nav";
-import DetalhePedido from "../components/modalDetalhePedido";
+import Nav from "../../components/nav";
+import DetalhePedido from "../../components/modalDetalhePedido";
 export default function Rotas() {
   const [siderAberto, setSiderAberto] = useState(false);
   const [abertoDetalhe, setAbertoDetalhe] = useState(false);

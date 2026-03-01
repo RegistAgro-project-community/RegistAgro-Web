@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
-import axios from "../api/axios";
-import Nav from "../components/nav";
+import axios from "../../api/axios";
+import Nav from "../../components/nav";
 import Cookies from "js-cookie";
 import { AxiosError } from "axios";
-import EditarPerfil from "../components/modalEditPerfil";
+import EditarPerfil from "../../components/modalEditPerfil";
 import { Toast } from "primereact/toast";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
