@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Nav from "../../components/nav";
+import Nav from "../../components/sideBar/sideBar";
 import DetalhePedido from "../../components/modalDetalhePedido";
 export default function Rotas() {
   const [siderAberto, setSiderAberto] = useState(false);

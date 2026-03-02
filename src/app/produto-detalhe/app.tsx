@@ -1,4 +1,4 @@
-import Nav from "../../components/nav";
+import Nav from "../../components/sideBar/sideBar";
 import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "../../api/axios";
@@ -368,7 +368,6 @@ export default function ProdutoDetalhe() {
                     </div>
                   </div>
                 </div>
-                {/* ...  Histórico de Vendas ... */}
               </div>
             </div>
           </main>

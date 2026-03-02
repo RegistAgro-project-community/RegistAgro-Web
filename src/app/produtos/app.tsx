@@ -1,4 +1,4 @@
-import Nav from "../../components/nav";
+import Nav from "../../components/sideBar/sideBar";
 import AddPruduto from "../../components/modalAddProduto";
 import EditProduto from "../../components/modalEditProduto";
 import DeleteProduto from "../../components/modalDeleteProduto";

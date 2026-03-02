@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "../../api/axios";
-import Nav from "../../components/nav";
+import Nav from "../../components/sideBar/sideBar";
 import Cookies from "js-cookie";
 import { AxiosError } from "axios";
 import EditarPerfil from "../../components/modalEditPerfil";

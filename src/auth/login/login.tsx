@@ -154,7 +154,7 @@ export default function Login() {
             <div className="w-full max-w-sm">
 
                 <div className="flex flex-col justify-center items-center gap-1.5 pb-10">
-                    <img src="/src/assets/image/logo.png" alt="logo" className="h-17 object-contain"/>
+                    <img src="/assets/image/logo-registagro.png" alt="logo" className="h-17 object-contain"/>
                     <h1 className="font-bold text-[23px] text-[#5F963B]">RegistAgro</h1>
                 </div>
 

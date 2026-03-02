@@ -1,5 +1,5 @@
 import axios from "../../api/axios";
-import Nav from "../../components/nav";
+import Nav from "../../components/sideBar/sideBar";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useQuery } from "@tanstack/react-query";
@@ -48,7 +48,6 @@ export default function Home() {
   const User_URL = "/users/profile";
   const Order_URL = "/orders/farms/order/get";
   const PRODUTOS_URL = "/products/farms/get/products";
-  // const called = useRef(false);
   const [siderAberto, setSiderAberto] = useState(false);
 
   async function fetchData() {
@@ -127,7 +126,7 @@ export default function Home() {
       setTotalProduto(String(data.product.totalProducts));
       setTotalOrders([...data.order.orders]);
       console.log(token);
-      console.log(data)
+      console.log(data);
     }
   }, [token, data]);
 

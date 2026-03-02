@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import Nav from "../../components/nav";
+import Nav from "../../components/sideBar/sideBar";
 import Cookies from "js-cookie";
 import axios from "../../api/axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

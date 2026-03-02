@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Login from "../auth/login/login";
 import Register from "../auth/register/signup";
-import Home from "./dashboard/app";
+import Home from "./dashboard/dashboard";
 import Produtos from "./produtos/app";
 import Pedidos from "./pedidos/app";
 import { PublicRote } from "./publicRote";
