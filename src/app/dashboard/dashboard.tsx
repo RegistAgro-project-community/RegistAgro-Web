@@ -285,7 +285,8 @@ export default function Home() {
                       </thead>
                       <tbody className="divide-y divide-border-color">
                         {totalOrders && totalOrders.length > 0 ? (
-                          totalOrders
+                          [...totalOrders]
+                            .reverse()
                             ?.slice(startIndex, endIndex)
                             .map((item, i) => (
                               <tr
@@ -294,7 +295,9 @@ export default function Home() {
                               >
                                 <td className="px-6 py-4 text-sm font-medium text-text-main">
                                   {" "}
-                                  <span className="font-mono">{i + 1}</span>
+                                  <span className="font-mono">
+                                    {totalOrders.length - (startIndex + i)}
+                                  </span>
                                 </td>
                                 <td className="px-6 py-4 text-sm text-text-secondary">
                                   {item.consumer.name}
