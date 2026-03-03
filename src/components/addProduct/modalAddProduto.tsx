@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import axios from "../api/axios";
 import Cookies from "js-cookie";
 import type { AxiosError } from "axios";
 import { Toast } from "primereact/toast";
+import { useAddProducts } from "../../hooks/useAddProducts/useAddProduct";
 
 type AddPrudutoProps = {
   open: boolean;
@@ -13,8 +13,7 @@ interface ZodIssue {
   message: string;
   minimum?: number;
 }
-interface BackendResponse {
-  valid?: boolean;
+interface BackendError {
   message?: string;
   info?: string;
   error?: ZodIssue[] | string;
@@ -24,7 +23,8 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setModalOpen] = useState(open);
-  const NewProduto_URL = "/products/create";
+
+  const token = Cookies.get("token");
   const toast = useRef<Toast>(null);
   useEffect(() => {
     setModalOpen(open);
@@ -55,7 +55,6 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
           : value,
     }));
   };
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -73,10 +72,9 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
     setFormData(initialFormData);
     removeImage();
   }
-
-  async function AdcionarProduto(event: React.FormEvent) {
+  const { mutate: addProduct } = useAddProducts(token);
+  function handleAddProduct(event: React.FormEvent) {
     event.preventDefault();
-    const token = Cookies.get("token");
     if (!image) {
       toast.current?.show({
         severity: "warn",
@@ -85,72 +83,62 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
       });
       return;
     }
-    try {
-      setLoading(true);
-      const data = new FormData();
-      data.append("img", image);
-      data.append(
-        "data",
-        JSON.stringify({
-          ...formData,
-        }),
-      );
-      const res = await axios.post<BackendResponse>(NewProduto_URL, data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log(res);
-      const valido = res.data.message;
-      toast.current?.show({
-        severity: "success",
-        summary: "Tudo certo",
-        detail: valido,
-        life: 2000,
-      });
-      if (res.status === 201) {
-        window.dispatchEvent(new Event("perfilAtualizado"));
+
+    setLoading(true);
+    const data = new FormData();
+    data.append("img", image);
+    data.append(
+      "data",
+      JSON.stringify({
+        ...formData,
+      }),
+    );
+    addProduct(data, {
+      onSuccess: (data) => {
+        toast.current?.show({
+          severity: "success",
+          summary: "Tudo certo",
+          detail: data.message,
+          life: 2000,
+        });
         limparFormulario();
-        setLoading(false);
         setModalOpen(false);
-      }
-    } catch (err) {
-      setLoading(false);
-      const error = err as AxiosError<BackendResponse>;
-      if (error.response) {
-        const data = error.response.data;
+        setLoading(false);
+        window.dispatchEvent(new Event("UpdateStatusModal"));
+      },
+      onError: (err) => {
+        setLoading(false);
+        const error = err as AxiosError<BackendError>;
         let mensagem = "";
-        if (Array.isArray(data?.error)) {
-          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
-        } else if (typeof data?.error === "string") {
-          mensagem = data.error;
-        } else if (data?.message) {
-          mensagem = data.message;
-        } else if (data?.info) {
-          mensagem = data.info;
+        if (Array.isArray(error.response?.data.error)) {
+          mensagem = error.response?.data.error
+            .map((e: ZodIssue) => e.message)
+            .join(", ");
+        } else if (typeof error.response?.data.error === "string") {
+          mensagem = error.response?.data.error;
+        } else if (error.response?.data.info) {
+          mensagem = error.response?.data.info;
+        } else if (error.response?.data.message) {
+          mensagem = error.response?.data.message;
         } else {
           mensagem = "erro inesperado.";
         }
-        console.log(data);
-
         toast.current?.show({
           severity: "error",
-          summary: "Algo de errado",
+          summary: "Erro",
           detail: mensagem,
-          life: 2000,
         });
-      } else {
-        toast.current?.show({
-          severity: "error",
-          summary: "Algo de errado",
-          detail: "Erro de conexão com o Servidor",
-          life: 2000,
-        });
-      }
-      console.error("Erro no axios", error);
-    }
+      },
+    });
+
+    // if (res.status === 201) {
+    //   window.dispatchEvent(new Event("perfilAtualizado"));
+    //   limparFormulario();
+    //   setLoading(false);
+    //   setModalOpen(false);
+    // }
   }
+
   return (
     <>
       <Toast ref={toast} position="top-right" />
@@ -341,7 +329,7 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
             <div className="px-8 py-6 border-t border-border-color bg-gray-100/50 flex items-center justify-end gap-6">
               {children}
               <button
-                onClick={AdcionarProduto}
+                onClick={handleAddProduct}
                 className=" bg-primary hover:bg-primary-hover active:scale-93 transition-all text-white md:px-5 px-3 md:py-2.5 py-2 rounded-lg shadow-lg shadow-primary/25 font-bold  text-sm"
                 type="submit"
               >
