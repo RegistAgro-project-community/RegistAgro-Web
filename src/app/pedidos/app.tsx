@@ -2,9 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import Nav from "../../components/sideBar/sideBar";
 import Cookies from "js-cookie";
 import axios from "../../api/axios";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Toast } from "primereact/toast";
+import { useOrders } from "../../hooks/userOrders/useOrders";
 interface Consumer {
   name: string;
 }
@@ -27,11 +27,6 @@ interface BackendResponse {
   ongoing?: number;
   message: string;
 }
-interface BackendError {
-  message?: string;
-  error?: string | { message: string }[];
-  info?: string;
-}
 export default function Pedidos() {
   const token = Cookies.get("token");
   const [totalOrders, setTotalOrders] = useState<OrderData[]>([]);
@@ -43,7 +38,6 @@ export default function Pedidos() {
   const [pendentOrder, setPedentOrder] = useState("");
   const toast = useRef<Toast>(null);
   const [totalOrder, setTotalOrder] = useState("");
-  const Order_URL = "/orders/farms/order/get";
   const [siderAberto, setSiderAberto] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function handleSearch(e: any) {
@@ -51,36 +45,15 @@ export default function Pedidos() {
     setCorrentPage(1);
     console.log(searchProduct);
   }
-  async function fetchOrdersData() {
-    try {
-      const data = await axios.get<BackendResponse>(Order_URL, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      return data;
-    } catch (err) {
-      const error = err as AxiosError<BackendError>;
 
-      if (error.response?.data?.info) {
-        console.log(error.response.data.info);
-      }
-      return null;
-    }
-  }
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["Orders", token],
-    queryFn: fetchOrdersData,
-    enabled: !!token,
-    retry: 1,
-    refetchInterval: 1000 * 30,
-    refetchOnWindowFocus: false,
-  });
+  const { data, isLoading, error } = useOrders(token);
   useEffect(() => {
     if (token && data) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setPedentOrder(String(data.data.pendents));
-      setTotalOrders([...data.data.orders]);
-      setOngoing(String(data.data.ongoing));
-      setTotalOrder(String(data.data.total));
+      setPedentOrder(String(data.pendents));
+      setTotalOrders([...data.orders]);
+      setOngoing(String(data.ongoing));
+      setTotalOrder(String(data.total));
     }
   }, [token, data]);
 
