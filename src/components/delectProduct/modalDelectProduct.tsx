@@ -1,8 +1,8 @@
 import type { AxiosError } from "axios";
-import axios from "../../api/axios";
 import { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import { Toast } from "primereact/toast";
+import { useDelectProducts } from "../../hooks/useDelectProduct/useDelectProducts";
 type AddPrudutoProps = {
   openDelete: boolean;
   produtoId: string;
@@ -15,9 +15,10 @@ interface ZodIssue {
   minimum?: number;
 }
 
-interface BackendResponse {
+interface BackendError {
   valid?: boolean;
   message?: string;
+  info?: string;
   error?: ZodIssue[] | string;
 }
 function DeleteProduto({ openDelete, children, produtoId }: AddPrudutoProps) {
@@ -25,63 +26,53 @@ function DeleteProduto({ openDelete, children, produtoId }: AddPrudutoProps) {
   const [loading, setLoading] = useState(false);
   const toast = useRef<Toast>(null);
   const token = Cookies.get("token");
-  async function deletarProduto() {
-    try {
-      setLoading(true);
-      const res = await axios.delete(`/products/delete/product/${produtoId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log(res);
-      console.log(produtoId);
-      const valido = res.data.message;
-      toast.current?.show({
-        severity: "success",
-        summary: "Tudo certo",
-        detail: valido,
-        life: 2000,
-      });
-      window.dispatchEvent(new Event("perfilAtualizado"));
-      setTimeout(() => {
-        setLoading(false);
+  const { mutate: deleteProduct } = useDelectProducts(token);
+  function handleDeleteProduct() {
+    setLoading(true);
+    deleteProduct(produtoId, {
+      onSuccess: (data) => {
+        toast.current?.show({
+          severity: "success",
+          summary: "Tudo certo",
+          detail: data.message,
+          life: 2000,
+        });
         setModalOpen(false);
-      }, 500);
-    } catch (err) {
-      setLoading(false);
-      const error = err as AxiosError<BackendResponse>;
-      if (error.response) {
-        const data = error.response.data;
+        setLoading(false);
+        window.dispatchEvent(new Event("UpdateStatusModal"));
+      },
+      onError: (err) => {
+        setLoading(false);
+        const error = err as AxiosError<BackendError>;
         let mensagem = "";
-        if (Array.isArray(data?.error)) {
-          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
-        } else if (typeof data?.error === "string") {
-          mensagem = data.error;
-        } else if (data?.message) {
-          mensagem = data.message;
+        if (Array.isArray(error.response?.data.error)) {
+          mensagem = error.response?.data.error
+            .map((e: ZodIssue) => e.message)
+            .join(", ");
+        } else if (typeof error.response?.data.error === "string") {
+          mensagem = error.response?.data.error;
+        } else if (error.response?.data.info) {
+          mensagem = error.response?.data.info;
+        } else if (error.response?.data.message) {
+          mensagem = error.response?.data.message;
         } else {
           mensagem = "erro inesperado.";
         }
-        console.log(data);
-
         toast.current?.show({
           severity: "error",
-          summary: "Algo de errado",
+          summary: "Erro",
           detail: mensagem,
-          life: 2000,
         });
-      } else {
-        toast.current?.show({
-          severity: "error",
-          summary: "Algo de errado",
-          detail: "Erro de conexão com o Servidor",
-          life: 2000,
-        });
-      }
-      console.error("Erro no axios", error);
-    }
+      },
+    });
+
+    // window.dispatchEvent(new Event("perfilAtualizado"));
+    // setTimeout(() => {
+    //   setLoading(false);
+    //   setModalOpen(false);
+    // }, 500);
   }
+
   useEffect(() => {
     setModalOpen(openDelete);
   }, [openDelete]);
@@ -124,7 +115,7 @@ function DeleteProduto({ openDelete, children, produtoId }: AddPrudutoProps) {
                 <div className="flex flex-col  sm:flex-row flex-1 gap-3 max-w-full">
                   {children}
                   <button
-                    onClick={deletarProduto}
+                    onClick={handleDeleteProduct}
                     className="flex-1 min-w-43 h-12 bg-primary hover:bg-primary-hover  items-center justify-center active:scale-93 transition-all text-white md:px-4 px-3 md:py-0 py-3  rounded-lg shadow-lg  font-bold  text-sm leading-normal tracking-[0.015em]"
                   >
                     <span className="truncate">Confirmar Remoção</span>
