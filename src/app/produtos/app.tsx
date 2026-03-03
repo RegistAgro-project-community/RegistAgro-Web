@@ -3,16 +3,10 @@ import AddPruduto from "../../components/modalAddProduto";
 import EditProduto from "../../components/modalEditProduto";
 import DeleteProduto from "../../components/modalDeleteProduto";
 import { useRef, useState, useEffect } from "react";
-import { AxiosError } from "axios";
-import axios from "../../api/axios";
 import Cookies from "js-cookie";
 import { Toast } from "primereact/toast";
 import { useNavigate } from "react-router-dom";
-interface ZodIssue {
-  key: string;
-  message: string;
-  minimum?: number;
-}
+import { useProducts } from "../../hooks/useProducts/useProduct";
 interface Product {
   id: string;
   name: string;
@@ -25,15 +19,6 @@ interface Product {
   unit: string;
   created_at: string;
 }
-interface BackendResponse {
-  totalProducts: number;
-  products: Array<Product>;
-  balance: string;
-  low_stock: number;
-  valid?: boolean;
-  message?: string;
-  error?: ZodIssue[] | string;
-}
 export default function Produtos() {
   const navegate = useNavigate();
   const [siderAberto, setSiderAberto] = useState(false);
@@ -43,7 +28,6 @@ export default function Produtos() {
   const [searchProduct, setSearchProduct] = useState("");
   const [abertoEdit, setAbertoEdit] = useState(false);
   const [abertoDelete, setAbertoDelete] = useState(false);
-  const PRODUTOS_URL = "/products/farms/get/products";
   const [totalProduto, setTotalProduto] = useState("");
   const [estoqueBaixo, setEstoqueBaixo] = useState("");
   const [ganho, setGanho] = useState("");
@@ -66,46 +50,19 @@ export default function Produtos() {
     setCorrentPage(1);
     console.log(searchProduct);
   }
-  async function Produtos() {
-    if (!token) return;
-    try {
-      const res = await axios.get<BackendResponse>(PRODUTOS_URL, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log(res);
-      setTotalProduto(res.data.totalProducts.toString() || "0");
-      setEstoqueBaixo(res.data.low_stock.toString() || "0");
-      setGanho(res.data.balance);
-      setProdutos([...res.data.products]);
-    } catch (err) {
-      const error = err as AxiosError<BackendResponse>;
-      if (error.response) {
-        const data = error.response.data;
-        let mensagem = "";
-        if (Array.isArray(data?.error)) {
-          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
-        }
-        if (Array.isArray(data?.error)) {
-          mensagem = data.error
-            .map((e) => (typeof e === "string" ? e : e.message))
-            .join(", ");
-        } else if (data?.message) {
-          mensagem = data.message;
-        } else {
-          mensagem = "erro inesperado.";
-        }
-        console.log(mensagem);
-      } else {
-        console.log("Erro Server");
-      }
+
+  const { data, isLoading, error } = useProducts(token);
+  useEffect(() => {
+    if (token && data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setTotalProduto(data.totalProducts.toString() || "0");
+      setEstoqueBaixo(data.low_stock.toString() || "0");
+      setGanho(data.balance);
+      setProdutos([...data.products]);
     }
-  }
+  }, [token, data]);
   useEffect(() => {
     const carregarDados = async () => {
-      Produtos();
       setAbertoDelete(false);
       setAbertoEdit(false);
       setAberto(false);
@@ -115,18 +72,21 @@ export default function Produtos() {
     return () => {
       window.removeEventListener("perfilAtualizado", carregarDados);
     };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
   console.log(produtos);
-  const filteredProducts = produtos.filter((item) => {
-    const product = searchProduct.toLowerCase();
-    return (
-      item.name.toLowerCase().includes(product) ||
-      item.type.toLowerCase().includes(product) ||
-      item.transport.toLowerCase().includes(product)
-    );
-  });
+  const filteredProducts = produtos
+    .filter((item) => {
+      const product = searchProduct.toLowerCase();
+      return (
+        item.name.toLowerCase().includes(product) ||
+        item.type.toLowerCase().includes(product) ||
+        item.transport.toLowerCase().includes(product)
+      );
+    })
+    .reverse();
+  if (error) {
+    console.log(error);
+  }
   const totalItems = filteredProducts.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const indexOfLastPage = correntPage * itemsPerPage;
@@ -142,6 +102,11 @@ export default function Produtos() {
         <div className="relative flex h-screen w-full overflow-hidden bg-background">
           <Nav sidebarAberto={siderAberto} setSidebarAberto={setSiderAberto} />
           <main className="flex-1 flex flex-col h-full overflow-hidden relative">
+            {isLoading && (
+              <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40">
+                <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
+              </div>
+            )}
             <div className="h-16 w-full bg-white border-b border-border-color flex items-center justify-between  px-8 shrink-0 z-10">
               <div className="flex items-center gap-2">
                 <button
