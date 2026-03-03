@@ -1,6 +1,6 @@
 import Nav from "../../components/sideBar/sideBar";
 import AddPruduto from "../../components/addProductModal/modalAddProduct";
-import EditProduto from "../../components/modalEditProduto";
+import EditProduto from "../../components/editProductModal/modalEditProduto";
 import DeleteProduto from "../../components/delectProductModal/modalDelectProduct";
 import { useRef, useState, useEffect } from "react";
 import Cookies from "js-cookie";
@@ -61,7 +61,7 @@ export default function Produtos() {
       setProdutos([...data.products]);
     }
   }, [token, data]);
-  
+
   useEffect(() => {
     const modalStatus = async () => {
       setAbertoDelete(false);

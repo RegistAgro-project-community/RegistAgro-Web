@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import axios from "../api/axios";
 import Cookies from "js-cookie";
 import { Toast } from "primereact/toast";
 import type { AxiosError } from "axios";
+import { useEditProducts } from "../../hooks/useEditProduct/useEditProducts";
 interface Product {
   id: string;
   name: string;
@@ -22,13 +22,15 @@ interface ZodIssue {
   minimum?: number;
 }
 
-interface BackendResponse {
+interface BackendError {
   valid?: boolean;
   message?: string;
+  info?: string;
   error?: ZodIssue[] | string;
 }
 
 function Editproduct({ openEdit, children, product }: AddPrudutoProps) {
+  const token = Cookies.get("token");
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(openEdit);
   const toast = useRef<Toast>(null);
@@ -84,74 +86,55 @@ function Editproduct({ openEdit, children, product }: AddPrudutoProps) {
           : value,
     }));
   };
-  const token = Cookies.get("token");
+  const { mutate: editProduct } = useEditProducts(token);
   async function handleProductEdit() {
     setLoading(true);
+    editProduct(
+      {
+        id: product?.id as string,
+        formData,
+      },
+      {
+        onSuccess: (data) => {
+          toast.current?.show({
+            severity: "success",
+            summary: "Tudo certo",
+            detail: data.message,
+            life: 2000,
+          });
 
-    try {
-      const res = await axios.put<BackendResponse>(
-        `/products/update/product/${product?.id}`,
-        {
-          name: formData.name,
-          description: formData.description,
-          price: formData.price,
-          stock: formData.stock,
-          unit: formData.unit,
+          setModalOpen(false);
+          setLoading(false);
+          window.dispatchEvent(new Event("UpdateStatusModal"));
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      console.log(res);
-      console.log(product?.id);
-      const valido = res.data.message;
-      toast.current?.show({
-        severity: "success",
-        summary: "Tudo certo",
-        detail: valido,
-        life: 2000,
-      });
-      setLoading(false);
-      window.dispatchEvent(new Event("perfilAtualizado"));
-      setTimeout(() => {
-        setModalOpen(false);
-      }, 500);
-    } catch (err) {
-      setLoading(false);
-      const error = err as AxiosError<BackendResponse>;
-      if (error.response) {
-        const data = error.response.data;
-        let mensagem = "";
-        if (Array.isArray(data?.error)) {
-          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
-        } else if (typeof data?.error === "string") {
-          mensagem = data.error;
-        } else if (data?.message) {
-          mensagem = data.message;
-        } else {
-          mensagem = "erro inesperado.";
-        }
-        console.log(data);
+        onError: (err) => {
+          setLoading(false);
+          const error = err as AxiosError<BackendError>;
 
-        toast.current?.show({
-          severity: "error",
-          summary: "Algo de errado",
-          detail: mensagem,
-          life: 2000,
-        });
-      } else {
-        toast.current?.show({
-          severity: "error",
-          summary: "Algo de errado",
-          detail: "Erro de conexão com o Servidor",
-          life: 2000,
-        });
-      }
-      console.error("Erro no axios", error);
-    }
+          let mensagem = "";
+
+          if (Array.isArray(error.response?.data.error)) {
+            mensagem = error.response?.data.error
+              .map((e: ZodIssue) => e.message)
+              .join(", ");
+          } else if (typeof error.response?.data.error === "string") {
+            mensagem = error.response?.data.error;
+          } else if (error.response?.data.info) {
+            mensagem = error.response?.data.info;
+          } else if (error.response?.data.message) {
+            mensagem = error.response?.data.message;
+          } else {
+            mensagem = "Erro inesperado.";
+          }
+
+          toast.current?.show({
+            severity: "error",
+            summary: "Erro",
+            detail: mensagem,
+          });
+        },
+      },
+    );
   }
   return (
     <>
