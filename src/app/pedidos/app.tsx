@@ -77,7 +77,7 @@ export default function Pedidos() {
   const filterOrders = totalOrders.filter((item) => {
     const order = searchProduct.toLowerCase();
     return item.consumer.name.toLowerCase().includes(order);
-  });
+  }).reverse();;
   const totalItems = filterOrders.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const indexOfLastPage = correntPage * itemsPerPage;
@@ -176,9 +176,9 @@ export default function Pedidos() {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-background border-b border-border-color uppercase">
-                    <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                    {/* <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
                       ID
-                    </th>
+                    </th> */}
                     <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
                       Consumidor
                     </th>
@@ -207,11 +207,11 @@ export default function Pedidos() {
                         key={i}
                         className="hover:bg-gray-50 transition-colors group"
                       >
-                        <td className="px-6 py-5">
+                        {/* <td className="px-6 py-5">
                           <p className="text-sm font-medium text-text-secondary">
                             #{i + 1}
                           </p>
-                        </td>
+                        </td> */}
                         <td className="px-6 py-5">
                           <span className="text-sm font-semibold text-text-main ">
                             {item.consumer.name}
