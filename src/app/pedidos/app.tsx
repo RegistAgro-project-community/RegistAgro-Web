@@ -74,10 +74,12 @@ export default function Pedidos() {
     });
   }
 
-  const filterOrders = totalOrders.filter((item) => {
-    const order = searchProduct.toLowerCase();
-    return item.consumer.name.toLowerCase().includes(order);
-  }).reverse();;
+  const filterOrders = totalOrders
+    .filter((item) => {
+      const order = searchProduct.toLowerCase();
+      return item.consumer.name.toLowerCase().includes(order);
+    })
+    .reverse();
   const totalItems = filterOrders.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const indexOfLastPage = correntPage * itemsPerPage;
