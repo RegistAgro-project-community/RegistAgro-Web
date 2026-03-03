@@ -1,5 +1,5 @@
 import type { AxiosError } from "axios";
-import axios from "../api/axios";
+import axios from "../../api/axios";
 import { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import { Toast } from "primereact/toast";

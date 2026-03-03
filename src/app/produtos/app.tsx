@@ -1,7 +1,7 @@
 import Nav from "../../components/sideBar/sideBar";
-import AddPruduto from "../../components/addProduct/modalAddProduto";
+import AddPruduto from "../../components/addProduct/modalAddProduct";
 import EditProduto from "../../components/modalEditProduto";
-import DeleteProduto from "../../components/modalDeleteProduto";
+import DeleteProduto from "../../components/delectProduct/modalDelectProduct";
 import { useRef, useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { Toast } from "primereact/toast";
