@@ -61,16 +61,17 @@ export default function Produtos() {
       setProdutos([...data.products]);
     }
   }, [token, data]);
+  
   useEffect(() => {
-    const carregarDados = async () => {
+    const modalStatus = async () => {
       setAbertoDelete(false);
       setAbertoEdit(false);
       setAberto(false);
     };
-    carregarDados();
-    window.addEventListener("perfilAtualizado", carregarDados);
+    modalStatus();
+    window.addEventListener("UpdateStatusModal", modalStatus);
     return () => {
-      window.removeEventListener("perfilAtualizado", carregarDados);
+      window.removeEventListener("UpdateStatusModal", modalStatus);
     };
   }, [token]);
   console.log(produtos);
