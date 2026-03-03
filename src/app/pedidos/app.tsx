@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import Nav from "../../components/sideBar/sideBar";
 import Cookies from "js-cookie";
-import axios from "../../api/axios";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Toast } from "primereact/toast";
 import { useOrders } from "../../hooks/userOrders/useOrders";
+import { useAcceptOrders } from "../../hooks/useAcceptOrder/useAcceptOrders";
 interface Consumer {
   name: string;
 }
@@ -20,13 +19,6 @@ interface OrderData {
   unit: string;
   id: string;
 }
-interface BackendResponse {
-  orders: OrderData[];
-  pendents: number;
-  total: number;
-  ongoing?: number;
-  message: string;
-}
 export default function Pedidos() {
   const token = Cookies.get("token");
   const [totalOrders, setTotalOrders] = useState<OrderData[]>([]);
@@ -34,7 +26,6 @@ export default function Pedidos() {
   const itemsPerPage = 5;
   const [searchProduct, setSearchProduct] = useState("");
   const [ongoing, setOngoing] = useState("");
-  const queryClient = useQueryClient();
   const [pendentOrder, setPedentOrder] = useState("");
   const toast = useRef<Toast>(null);
   const [totalOrder, setTotalOrder] = useState("");
@@ -60,29 +51,28 @@ export default function Pedidos() {
   if (error) {
     console.log(error);
   }
-  async function featchOrderAccept(id: string) {
-    console.log(token);
-    const data = await axios.patch<BackendResponse>(
-      `/orders/accept/order/${id}`,
-      {},
-      {
-        headers: { Authorization: `Bearer ${token}` },
+  const { mutate: acceptOrder } = useAcceptOrders(token);
+  function handleAccept(id: string) {
+    acceptOrder(id, {
+      onSuccess: (data) => {
+        toast.current?.show({
+          severity: "success",
+          summary: "Tudo certo",
+          detail: data.message,
+          life: 2000,
+        });
       },
-    );
-    const valido = data.data.message;
-    toast.current?.show({
-      severity: "success",
-      summary: "Tudo certo",
-      detail: valido,
-      life: 2000,
+      onError: () => {
+        toast.current?.show({
+          severity: "error",
+          summary: "Erro",
+          detail: "Não foi possível aceitar o pedido",
+          life: 2000,
+        });
+      },
     });
   }
-  const OrderAccept = useMutation({
-    mutationFn: featchOrderAccept,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["Orders"] });
-    },
-  });
+
   const filterOrders = totalOrders.filter((item) => {
     const order = searchProduct.toLowerCase();
     return item.consumer.name.toLowerCase().includes(order);
@@ -259,7 +249,7 @@ export default function Pedidos() {
                               </button>
                               <button
                                 onClick={() => {
-                                  OrderAccept.mutate(item.id);
+                                  handleAccept(item.id);
                                 }}
                                 className="px-4 py-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-lg shadow-sm transition-all transform active:scale-95"
                               >
