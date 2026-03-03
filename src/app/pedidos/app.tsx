@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import Nav from "../../components/sideBar/sideBar";
 import Cookies from "js-cookie";
-import type { Toast } from "primereact/toast";
+import { Toast } from "primereact/toast";
 import { useOrders } from "../../hooks/userOrders/useOrders";
 import { useAcceptOrders } from "../../hooks/useAcceptOrder/useAcceptOrders";
 interface Consumer {
@@ -55,6 +55,7 @@ export default function Pedidos() {
   function handleAccept(id: string) {
     acceptOrder(id, {
       onSuccess: (data) => {
+        console.log(data);
         toast.current?.show({
           severity: "success",
           summary: "Tudo certo",
@@ -86,6 +87,7 @@ export default function Pedidos() {
   return (
     <div className="bg-background text-text-main">
       <div className="relative flex h-screen w-full overflow-hidden bg-background">
+        <Toast ref={toast} />
         <Nav sidebarAberto={siderAberto} setSidebarAberto={setSiderAberto} />
         <main className="flex-1 flex flex-col h-full overflow-hidden relative">
           {isLoading && (
