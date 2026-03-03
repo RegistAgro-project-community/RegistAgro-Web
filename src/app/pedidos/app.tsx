@@ -154,6 +154,11 @@ export default function Pedidos() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 {
+                  label: "Total de Pedidos",
+                  total: totalOrder || 0,
+                  icon: "format_list_numbered",
+                },
+                {
                   label: "Pedidos Pendentes",
                   total: pendentOrder || 0,
                   icon: "pending_actions",
@@ -163,15 +168,10 @@ export default function Pedidos() {
                   total: ongoing || 0,
                   icon: "local_shipping",
                 },
-                {
-                  label: "Concluídos Hoje",
-                  total: totalOrder || 0,
-                  icon: "check_circle",
-                },
               ].map((item, i) => (
                 <div
                   key={i}
-                  className={`bg-surface-light p-4 rounded-xl border border-border-color shadow-sm flex items-center justify-between ${item.icon === "pending_actions" ? "hover:border-blue-300/50 " : item.icon === "local_shipping" ? "hover:border-orange-300/50" : item.icon === "check_circle" ? "bg-primary/30 hover:border-green-300/50" : ""} transition-colors`}
+                  className={`bg-surface-light p-4 rounded-xl border border-border-color shadow-sm flex items-center justify-between ${item.icon === "pending_actions" ? "hover:border-blue-300/50 " : item.icon === "local_shipping" ? "hover:border-orange-300/50" : item.icon === "format_list_numbered" ? "bg-primary/30 hover:border-green-300/50" : ""} transition-colors`}
                 >
                   <div>
                     <p className="text-sm text-text-secondary font-medium">
@@ -182,7 +182,7 @@ export default function Pedidos() {
                     </p>
                   </div>
                   <div
-                    className={`h-10 w-10 rounded-full ${item.icon === "pending_actions" ? "text-blue-600 bg-blue-100" : item.icon === "local_shipping" ? "bg-orange-100 text-orange-600" : item.icon === "check_circle" ? "bg-green-50 text-green-600" : ""}  flex items-center justify-center`}
+                    className={`h-10 w-10 rounded-full ${item.icon === "pending_actions" ? "text-blue-600 bg-blue-100" : item.icon === "local_shipping" ? "bg-orange-100 text-orange-600" : item.icon === "format_list_numbered" ? "bg-green-50 text-green-600" : ""}  flex items-center justify-center`}
                   >
                     <span className="material-symbols-outlined">
                       {item.icon}{" "}
