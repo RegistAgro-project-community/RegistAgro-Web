@@ -1,32 +1,32 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 
 const slides = [
   {
-    image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef",
+    image: "/assets/image/carrosel/carrosel-img-1.jpg",
     title: "Irrigação Inteligente no Sul de Angola",
     description:
       "Sistemas automatizados ajudam agricultores do Cunene e Namibe a otimizar o uso da água e aumentar a produtividade mesmo em períodos de seca.",
   },
   {
-    image: "https://images.unsplash.com/photo-1589927986089-35812388d1f4",
+    image: "/assets/image/carrosel/carrosel-img-2.jpg",
     title: "Monitoramento com Drones",
     description:
       "Drones permitem analisar grandes áreas agrícolas no Huambo e Bié, identificando pragas e falhas com precisão.",
   },
   {
-    image: "https://images.unsplash.com/photo-1471193945509-9ad0617afabf",
+    image: "/assets/image/carrosel/carrosel-img-3.jpg",
     title: "Comercialização Digital Rural",
     description:
       "Plataformas conectam produtores angolanos diretamente aos consumidores urbanos, aumentando renda e reduzindo intermediários.",
   },
   {
-    image: "https://images.unsplash.com/photo-1501004318641-b39e6451bec6",
+    image: "/assets/image/carrosel/carrosel-img-4.jpg",
     title: "Mecanização Agrícola Moderna",
     description:
       "Máquinas modernas aumentam eficiência produtiva em províncias como Malanje e Uíge.",
   },
   {
-    image: "https://images.unsplash.com/photo-1592982537447-7440770cbfc9",
+    image: "/assets/image/carrosel-img-5.jpg",
     title: "Sensores Inteligentes no Solo",
     description:
       "Tecnologia de sensores permite monitorar nutrientes e umidade do solo em tempo real.",
@@ -34,20 +34,20 @@ const slides = [
 ];
 
 export default function AgroCarousel() {
-  const [current, setCurrent] = useState(0)
+  const [current, setCurrent] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-        setCurrent((prev) => {
-            if (prev === slides.length - 1) {
-                return 0
-            } else {
-                return prev + 1
-            }
-        });
+      setCurrent((prev) => {
+        if (prev === slides.length - 1) {
+          return 0;
+        } else {
+          return prev + 1;
+        }
+      });
     }, 10000);
 
-    return () => clearInterval(interval)
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -66,7 +66,7 @@ export default function AgroCarousel() {
             alt={slide.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end">
+          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent flex items-end">
             <div
               className={`text-white p-8 md:p-16 max-w-3xl transition-all duration-1000 ${
                 index === current
