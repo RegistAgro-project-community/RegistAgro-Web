@@ -91,7 +91,7 @@ export default function Home() {
                 <div className="h-10 w-10 bg-green-200 rounded-full hidden md:block ">
                   <img
                     src={`${fazendaIgm ? `${fazendaIgm}` : "/assets/image/farm-avatar.png"}`}
-                    alt="Euclénio kkkk"
+                    
                     title="Foto de Perfil"
                     className="aspect-square w-full rounded-full object-cover border border-border-color"
                   />

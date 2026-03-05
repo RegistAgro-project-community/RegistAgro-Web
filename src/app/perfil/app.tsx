@@ -210,7 +210,7 @@ export default function PerfilUsuario() {
                         <div
                           className="size-24 rounded-lg bg-cover bg-center"
                           style={{
-                            backgroundImage: `url(${img ? `${img}` : "https://api-registagro.onrender.com/upload/users/user-30-01-2026_145927.jpg"})`,
+                            backgroundImage: `url(${img ? `${img}` : "/assets/image/farm-avatar.png"})`,
                           }}
                         ></div>
                         <button
