@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import axios from "../../api/axios";
 import Nav from "../../components/sideBar/sideBar";
 import Cookies from "js-cookie";
 import { AxiosError } from "axios";
@@ -8,32 +7,23 @@ import { Toast } from "primereact/toast";
 import { useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
 import { useProfile } from "../../hooks/useProfile/useProfile";
+import { useUploadImg } from "../../hooks/useUploadsImg/useUploadImg";
 interface ZodIssue {
   key: string;
   message: string;
   minimum?: number;
 }
-interface FormData {
-  id: string;
-  name: string;
-  adress: string;
-  email: string;
-  phone: string;
-  province: string;
-  created_at: string;
-  profile: string;
-}
-interface BackendResponse {
+
+interface BackendError {
   valid?: boolean;
   message?: string;
-  data?: FormData;
-  nif?: string;
+  info?: string;
   error?: ZodIssue[] | string;
 }
 export default function PerfilUsuario() {
   const [siderAberto, setSiderAberto] = useState(false);
   const [abertoEdit, setAbertoEdit] = useState(false);
-  const UploadImg_URL = "/users/upload/profile";
+
   const [upload, setUpload] = useState(false);
   const [loading, setLoading] = useState(false);
   const [img, setImg] = useState("");
@@ -74,7 +64,7 @@ export default function PerfilUsuario() {
     }));
     setImg(data.data?.profile || "");
   }, [data, token]);
-
+  const { mutate: uploadImg } = useUploadImg(token);
   async function handleFile(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -82,61 +72,47 @@ export default function PerfilUsuario() {
     formData.append("img", file);
     setLoading(true);
     setUpload(true);
-    try {
-      const res = await axios.post<BackendResponse>(UploadImg_URL, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
+    uploadImg(
+      { formData },
+      {
+        onSuccess: (data) => {
+          toast.current?.show({
+            severity: "success",
+            summary: "Tudo certo",
+            detail: data.message,
+            life: 2000,
+          });
+          setLoading(false);
+          setUpload(false);
+          window.dispatchEvent(new Event("UpdateStatusModal"));
         },
-      });
-      if (res.status === 201) {
-        console.log(res);
-        const valido = res.data.message;
-        setUpload(false);
-        setLoading(false);
-        toast.current?.show({
-          severity: "success",
-          summary: "Tudo certo",
-          detail: valido,
-          life: 3000,
-        });
-      }
-    } catch (err) {
-      setLoading(false);
-      setUpload(false);
-      const error = err as AxiosError<BackendResponse>;
-      if (error.response) {
-        const data = error.response.data;
-        let mensagem = "";
-        if (Array.isArray(data?.error)) {
-          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
-        } else if (typeof data?.error === "string") {
-          mensagem = data.error;
-        } else if (data?.message) {
-          mensagem = data.message;
-        } else {
-          mensagem = "erro inesperado.";
-        }
-        console.log(data);
-
-        toast.current?.show({
-          severity: "error",
-          summary: "Algo de errado",
-          detail: mensagem,
-          life: 2000,
-        });
-      } else {
-        toast.current?.show({
-          severity: "error",
-          summary: "Algo de errado",
-          detail: "Erro de conexão com o Servidor",
-          life: 2000,
-        });
-      }
-      console.error("Erro no axios", error);
-    }
+        onError: (err) => {
+          setLoading(false);
+          setUpload(false);
+          const error = err as AxiosError<BackendError>;
+          let mensagem = "";
+          if (Array.isArray(error.response?.data.error)) {
+            mensagem = error.response?.data.error
+              .map((e: ZodIssue) => e.message)
+              .join(", ");
+          } else if (typeof error.response?.data.error === "string") {
+            mensagem = error.response?.data.error;
+          } else if (error.response?.data.info) {
+            mensagem = error.response?.data.info;
+          } else if (error.response?.data.message) {
+            mensagem = error.response?.data.message;
+          } else {
+            mensagem = "Erro inesperado.";
+          }
+          toast.current?.show({
+            severity: "error",
+            summary: "Erro",
+            detail: mensagem,
+          });
+        },
+      },
+    );
   }
-
   useEffect(() => {
     const fecharModal = async () => {
       setAbertoEdit(false);
