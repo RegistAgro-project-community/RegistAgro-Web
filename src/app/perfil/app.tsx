@@ -5,8 +5,9 @@ import Cookies from "js-cookie";
 import { AxiosError } from "axios";
 import EditarPerfil from "../../components/EditProfile/modalEditProfile";
 import { Toast } from "primereact/toast";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
+import { useProfile } from "../../hooks/useProfile/useProfile";
 interface ZodIssue {
   key: string;
   message: string;
@@ -32,7 +33,6 @@ interface BackendResponse {
 export default function PerfilUsuario() {
   const [siderAberto, setSiderAberto] = useState(false);
   const [abertoEdit, setAbertoEdit] = useState(false);
-  const User_URL = "/users/profile";
   const UploadImg_URL = "/users/upload/profile";
   const [upload, setUpload] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -52,84 +52,29 @@ export default function PerfilUsuario() {
     dataISO: "",
     nif: "",
   });
-  async function fetchPerfil() {
-    if (!token) return;
-    try {
-      const res = await axios.get<BackendResponse>(User_URL, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log(res);
-      return res.data;
-      setFormData((prev) => ({
-        ...prev,
-        name: res.data.data?.name || "",
-        phone: res.data.data?.phone || "",
-        email: res.data.data?.email || "",
-        province: res.data.data?.province || "",
-        adress: res.data.data?.adress || "",
-        dataISO: res.data.data?.created_at || "",
-        nif: res.data.nif || "",
-      }));
-      setImg(res.data.data?.profile || "");
-    } catch (err) {
-      const error = err as AxiosError<BackendResponse>;
-      if (error.response) {
-        const data = error.response.data;
-        let mensagem = "";
-        if (Array.isArray(data?.error)) {
-          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
-        }
-        if (Array.isArray(data?.error)) {
-          mensagem = data.error
-            .map((e) => (typeof e === "string" ? e : e.message))
-            .join(", ");
-        } else if (data?.message) {
-          mensagem = data.message;
-        } else {
-          mensagem = "erro inesperado.";
-        }
-        console.log(mensagem);
-      } else {
-        console.log("Erro Server");
-      }
-    }
-  }
-  const {
-    data: Perfil,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["Perfil", token],
-    queryFn: fetchPerfil,
-    enabled: !!token,
-    retry: 1,
-    staleTime: 1000 * 60 * 6,
-    refetchOnWindowFocus: false,
-  });
+
+  const { data, isLoading, error } = useProfile(token);
   const userImgMutation = useMutation({
     mutationFn: handleFile,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["Perfil"] });
-      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+      queryClient.invalidateQueries({ queryKey: ["Profile"] });
+     
     },
   });
   useEffect(() => {
-    if (!Perfil) return;
+    if (!data) return;
     setFormData((prev) => ({
       ...prev,
-      name: Perfil.data?.name || "",
-      phone: Perfil.data?.phone || "",
-      email: Perfil.data?.email || "",
-      province: Perfil.data?.province || "",
-      adress: Perfil.data?.adress || "",
-      dataISO: Perfil.data?.created_at || "",
-      nif: Perfil.nif || "",
+      name: data.data?.name || "",
+      phone: data.data?.phone || "",
+      email: data.data?.email || "",
+      province: data.data?.province || "",
+      adress: data.data?.adress || "",
+      dataISO: data.data?.created_at || "",
+      nif: data.nif || "",
     }));
-    setImg(Perfil.data?.profile || "");
-  }, [Perfil]);
+    setImg(data.data?.profile || "");
+  }, [data, token]);
 
   async function handleFile(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -205,8 +150,8 @@ export default function PerfilUsuario() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
-  const data = new Date(formData.dataISO);
-  const dataFormat = data.toLocaleDateString("pt-PT", {
+  const date = new Date(formData.dataISO);
+  const dataFormat = date.toLocaleDateString("pt-PT", {
     day: "numeric",
     month: "long",
     year: "numeric",
