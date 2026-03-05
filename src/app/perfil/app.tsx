@@ -58,7 +58,6 @@ export default function PerfilUsuario() {
     mutationFn: handleFile,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["Profile"] });
-     
     },
   });
   useEffect(() => {
@@ -144,9 +143,9 @@ export default function PerfilUsuario() {
       console.log(abertoEdit);
     };
     fecharModal();
-    window.addEventListener("AtualizarStatusModal", fecharModal);
+    window.addEventListener("UpdateStatusModal", fecharModal);
     return () => {
-      window.removeEventListener("AtualizarStatusModal", fecharModal);
+      window.removeEventListener("UpdateStatusModal", fecharModal);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);

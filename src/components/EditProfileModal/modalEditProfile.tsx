@@ -1,9 +1,9 @@
 import type { AxiosError } from "axios";
-import axios from "../../api/axios";
 import { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import { Toast } from "primereact/toast";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useProfile } from "../../hooks/useProfile/useProfile";
+import { useUpdateData } from "../../hooks/useUpdateData/useUpdateData";
 type DetalhePros = {
   openEditPerfil: boolean;
   children?: React.ReactNode;
@@ -13,19 +13,11 @@ interface ZodIssue {
   message: string;
   minimum?: number;
 }
-interface FormData {
-  id: string;
-  name: string;
-  adress: string;
-  email: string;
-  phone: string;
-  province: string;
-  created_at: string;
-}
-interface BackendResponse {
+interface BackendError {
   valid?: boolean;
   message?: string;
-  data?: FormData;
+
+  info?: string;
   error?: ZodIssue[] | string;
 }
 function EditarPerfil({ openEditPerfil, children }: DetalhePros) {
@@ -38,142 +30,71 @@ function EditarPerfil({ openEditPerfil, children }: DetalhePros) {
   useEffect(() => {
     setIsModalOpen(openEditPerfil);
   }, [openEditPerfil]);
-  const queryClient = useQueryClient();
   const toast = useRef<Toast>(null);
-  const User_URL = "/users/profile";
-  const UserUPDATE_URL = "/users/update";
   const token = Cookies.get("token");
   const [loading, setLoading] = useState(false);
-
-  async function fetchPerfil() {
-    try {
-      const res = await axios.get<BackendResponse>(User_URL, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log(res);
-      return res.data;
-    } catch (err) {
-      const error = err as AxiosError<BackendResponse>;
-      if (error.response) {
-        const data = error.response.data;
-        let mensagem = "";
-        if (Array.isArray(data?.error)) {
-          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
-        }
-        if (Array.isArray(data?.error)) {
-          mensagem = data.error
-            .map((e) => (typeof e === "string" ? e : e.message))
-            .join(", ");
-        } else if (data?.message) {
-          mensagem = data.message;
-        } else {
-          mensagem = "erro inesperado.";
-        }
-        console.log(mensagem);
-      } else {
-        console.log("Erro Server");
-      }
-    }
-  }
-  const { data: Perfil } = useQuery({
-    queryKey: ["editPerfil", token],
-    queryFn: fetchPerfil,
-    retry: 1,
-  });
+  const { data } = useProfile(token);
   useEffect(() => {
-    if (!Perfil) return;
+    if (!data) return;
     setFormData((prev) => ({
       ...prev,
-      name: Perfil.data?.name || "",
-      province: Perfil.data?.province || "",
-      adress: Perfil.data?.adress || "",
+      name: data.data?.name || "",
+      province: data.data?.province || "",
+      adress: data.data?.adress || "",
     }));
-  }, [Perfil]);
-
-  async function AtualizarDados(event: React.FormEvent) {
+  }, [data]);
+  const { mutate: updateProfile } = useUpdateData(token);
+  async function handleUpdateData(event: React.FormEvent) {
     event.preventDefault();
     console.log(formData);
-    try {
-      setLoading(true);
-      const res = await axios.put<BackendResponse>(
-        UserUPDATE_URL,
-        {
-          name: formData.name,
-          adress: formData.adress,
-          province: formData.province,
+    setLoading(true);
+    updateProfile(
+      { formData },
+      {
+        onSuccess: (data) => {
+          toast.current?.show({
+            severity: "success",
+            summary: "Tudo certo",
+            detail: data.message,
+            life: 2000,
+          });
+          setIsModalOpen(false);
+          setLoading(false);
+          window.dispatchEvent(new Event("UpdateStatusModal"));
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+        onError: (err) => {
+          setLoading(false);
+          const error = err as AxiosError<BackendError>;
+          let mensagem = "";
+          if (Array.isArray(error.response?.data.error)) {
+            mensagem = error.response?.data.error
+              .map((e: ZodIssue) => e.message)
+              .join(", ");
+          } else if (typeof error.response?.data.error === "string") {
+            mensagem = error.response?.data.error;
+          } else if (error.response?.data.info) {
+            mensagem = error.response?.data.info;
+          } else if (error.response?.data.message) {
+            mensagem = error.response?.data.message;
+          } else {
+            mensagem = "Erro inesperado.";
+          }
+          toast.current?.show({
+            severity: "error",
+            summary: "Erro",
+            detail: mensagem,
+          });
         },
-      );
-      console.log(res);
-      const valido = res.data.message;
-      toast.current?.show({
-        severity: "success",
-        summary: "Tudo certo",
-        detail: valido,
-        life: 2000,
-      });
-
-      if (res.status === 200) {
-        window.dispatchEvent(new Event("AtualizarStatusModal"));
-        setLoading(false);
-        setIsModalOpen(false);
-      }
-    } catch (err) {
-      setLoading(false);
-      const error = err as AxiosError<BackendResponse>;
-      if (error.response) {
-        const data = error.response.data;
-        let mensagem = "";
-        if (Array.isArray(data?.error)) {
-          mensagem = data.error.map((e: ZodIssue) => e.message).join(", ");
-        } else if (typeof data?.error === "string") {
-          mensagem = data.error;
-        } else if (data?.message) {
-          mensagem = data.message;
-        } else {
-          mensagem = "erro inesperado.";
-        }
-        console.log(data);
-
-        toast.current?.show({
-          severity: "error",
-          summary: "Algo de errado",
-          detail: mensagem,
-          life: 2000,
-        });
-      } else {
-        toast.current?.show({
-          severity: "error",
-          summary: "Algo de errado",
-          detail: "Erro de conexão com o Servidor",
-          life: 2000,
-        });
-      }
-      console.error("Erro no axios", error);
-    }
+      },
+    );
   }
-  function PegarDados(e: React.ChangeEvent<HTMLInputElement>) {
+  function takeData(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   }
-  const userEdit = useMutation({
-    mutationFn: AtualizarDados,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["Perfil"] });
-      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-    },
-  });
 
   return (
     <>
@@ -205,7 +126,7 @@ function EditarPerfil({ openEditPerfil, children }: DetalhePros) {
                 type="text"
                 name="name"
                 value={formData.name}
-                onChange={PegarDados}
+                onChange={takeData}
               />
             </div>
             <div className="space-y-2">
@@ -217,7 +138,7 @@ function EditarPerfil({ openEditPerfil, children }: DetalhePros) {
                 placeholder="Digite a província"
                 type="text"
                 name="province"
-                onChange={PegarDados}
+                onChange={takeData}
                 value={formData.province}
               />
             </div>
@@ -235,14 +156,14 @@ function EditarPerfil({ openEditPerfil, children }: DetalhePros) {
                   type="text"
                   value={formData.adress}
                   name="adress"
-                  onChange={PegarDados}
+                  onChange={takeData}
                 />
               </div>
             </div>
             <div className="pt-4 flex flex-col gap-3">
               <button
                 onClick={(e) => {
-                  userEdit.mutate(e)
+                  handleUpdateData(e);
                 }}
                 className="w-full py-3.5 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl shadow-lg  transition-all active:scale-90"
                 type="submit"
