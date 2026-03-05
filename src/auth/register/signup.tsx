@@ -131,7 +131,7 @@ const [nifError, setNifError] = useState("")
         `/auth/signup/verify/${OTPCODE}`,
       );
       console.log(res);
-      if (res.status === 200) {
+      if (res.status === 202) {
         const mensagem = res.data.message;
         const data = res.data.data;
         toast.current?.show({
