@@ -3,7 +3,7 @@ import axios from "../../api/axios";
 import Nav from "../../components/sideBar/sideBar";
 import Cookies from "js-cookie";
 import { AxiosError } from "axios";
-import EditarPerfil from "../../components/EditProfile/modalEditProfile";
+import EditarPerfil from "../../components/EditProfileModal/modalEditProfile";
 import { Toast } from "primereact/toast";
 import { useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
