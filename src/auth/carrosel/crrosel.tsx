@@ -26,7 +26,7 @@ const slides = [
       "Máquinas modernas aumentam eficiência produtiva em províncias como Malanje e Uíge.",
   },
   {
-    image: "/assets/image/carrosel-img-5.jpg",
+    image: "/assets/image/carrosel/carrosel-img-5.jpg",
     title: "Sensores Inteligentes no Solo",
     description:
       "Tecnologia de sensores permite monitorar nutrientes e umidade do solo em tempo real.",
