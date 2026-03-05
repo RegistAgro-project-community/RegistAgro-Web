@@ -1,15 +1,11 @@
-import axios from "../../api/axios";
 import Nav from "../../components/sideBar/sideBar";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
-import { useQuery } from "@tanstack/react-query";
-import type { AxiosError, AxiosResponse } from "axios";
 import { Link } from "react-router-dom";
+import { useProfile } from "../../hooks/useProfile/useProfile";
+import { useOrders } from "../../hooks/userOrders/useOrders";
+import { useProducts } from "../../hooks/useProducts/useProduct";
 
-interface FormData {
-  name: string;
-  profile: string;
-}
 interface Comsumer {
   name: string;
 }
@@ -23,18 +19,7 @@ interface OrderData {
   status: string;
   value: number;
 }
-interface BackendResponse {
-  totalProducts?: number;
-  data?: FormData;
-  pendents?: string;
-  ongoing?: string;
-  orders: OrderData[];
-}
-interface BackendError {
-  message?: string;
-  error?: string | { message: string }[];
-  info?: string;
-}
+
 export default function Home() {
   const token = Cookies.get("token");
   const [fazendaName, setFazendaName] = useState("");
@@ -45,94 +30,24 @@ export default function Home() {
   const [ongoing, setOngoing] = useState("");
   const [pendentOrder, setPedentOrder] = useState("");
   const [totalProduto, setTotalProduto] = useState("");
-  const User_URL = "/users/profile";
-  const Order_URL = "/orders/farms/order/get";
-  const PRODUTOS_URL = "/products/farms/get/products";
   const [siderAberto, setSiderAberto] = useState(false);
+  const { data: orders, isLoading } = useOrders(token);
+  const { data: profile } = useProfile(token);
+  const { data: products } = useProducts(token);
 
-  async function fetchData() {
-    const semOrder: BackendResponse = {
-      orders: [],
-      pendents: "0",
-      ongoing: "0",
-    };
-
-    const semProduct: BackendResponse = {
-      orders: [],
-      totalProducts: 0,
-    };
-    try {
-      const [userRes, orderRes, productRes] = await Promise.allSettled([
-        axios.get<BackendResponse>(User_URL, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.get<BackendResponse>(Order_URL, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.get<BackendResponse>(PRODUTOS_URL, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-      ]);
-      const orderData =
-        orderRes.status === "fulfilled" ? orderRes.value.data : semOrder;
-
-      const productData =
-        productRes.status === "fulfilled" ? productRes.value.data : semProduct;
-      return {
-        user: (
-          userRes as PromiseFulfilledResult<AxiosResponse<BackendResponse>>
-        ).value.data,
-        order: orderData,
-        product: productData,
-      };
-    } catch (err) {
-      const error = err as AxiosError<BackendError>;
-
-      if (error.response) {
-        const data = error.response.data;
-        if (Array.isArray(data?.error)) {
-          const messagem = data.error.map((e) => e.message).join(", ");
-          console.log(messagem);
-        }
-        if (typeof data?.error === "string") {
-          console.log(data.error);
-        }
-
-        if (data?.message) {
-          console.log(data.message);
-        }
-        if (data.info) {
-          console.log(data.info);
-        }
-      }
-    }
-  }
-
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["dashboard", token],
-    queryFn: fetchData,
-    enabled: !!token,
-    retry: 1,
-    staleTime: 1000 * 60 * 6,
-    refetchOnWindowFocus: false,
-  });
   useEffect(() => {
-    if (token && data) {
+    if (token && orders && profile && products) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setFazendaName(data.user.data?.name || "");
-      setFazendaImg(data.user.data?.profile || "");
-      setPedentOrder(data.order?.pendents || "");
-      setOngoing(data.order?.ongoing || "");
-      setTotalProduto(String(data.product.totalProducts));
-      setTotalOrders([...data.order.orders]);
+      setFazendaName(profile.data.name || "");
+      setFazendaImg(profile.data.profile || "");
+      setPedentOrder(orders.pendents || "");
+      setOngoing(orders.ongoing || "");
+      setTotalProduto(String(products.totalProducts));
+      setTotalOrders([...orders.orders]);
       console.log(token);
-      console.log(data);
     }
-  }, [token, data]);
+  }, [token, orders, profile, products]);
 
-  if (error) {
-    console.log(error);
-  }
   const startIndex = (correntPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
@@ -173,9 +88,9 @@ export default function Home() {
                     Produtor Verificado
                   </span>
                 </div>
-                <div className="h-10 w-10 bg-amber-200 rounded-full hidden md:block ">
+                <div className="h-10 w-10 bg-green-200 rounded-full hidden md:block ">
                   <img
-                    src={`${fazendaIgm ? `${fazendaIgm}` : "http://localhost:5500/upload/users/user-30-01-2026_145927.jpg"}`}
+                    src={`${fazendaIgm ? `${fazendaIgm}` : "/assets/image/farm-avatar.png"}`}
                     alt="Euclénio kkkk"
                     title="Foto de Perfil"
                     className="aspect-square w-full rounded-full object-cover border border-border-color"
@@ -183,7 +98,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            {/* Conteudo */}
+            
             <div className="flex-1 overflow-y-auto p-8">
               <div className="space-y-2">
                 <h1 className="text-2xl md:text-2xl font-bold text-text-main tracking-tight">
