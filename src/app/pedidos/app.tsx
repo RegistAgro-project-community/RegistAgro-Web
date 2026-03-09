@@ -248,7 +248,7 @@ export default function Pedidos() {
                           </td>
                           <td className="px-6 py-5 text-center">
                             <span
-                              className={`inline-flex items-center px-2.5 py-0 rounded-full text-xs font-medium ${item.status === "pendent" ? "bg-yellow-100  text-yellow-800 border border-yellow-200" : item.status === "confirmed" ? "bg-green-100  text-green-800 border border-green-200" : ""} `}
+                              className={`inline-flex items-center px-2.5 py-0 rounded-full text-xs font-medium ${item.status === "pendent" ? "bg-yellow-100  text-yellow-800 border border-yellow-200" : item.status === "confirmed" ? "bg-green-100  text-green-800 border border-green-200" : item.status === "rejected" ? "bg-red-100  text-red-800 border border-red-200" : ""} `}
                             >
                               {item.status}
                             </span>
