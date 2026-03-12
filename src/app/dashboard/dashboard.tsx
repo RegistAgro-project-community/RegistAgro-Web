@@ -82,7 +82,7 @@ export default function Home() {
                 <div className="flex flex-col items-end">
                   <span className="text-sm font-bold text-text-main">
                     {" "}
-                    {fazendaName || "Problema"}
+                    {fazendaName || "Carregando..."}
                   </span>
                   <span className="text-xs text-text-secondary">
                     Produtor Verificado
