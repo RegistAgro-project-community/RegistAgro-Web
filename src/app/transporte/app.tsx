@@ -2,6 +2,57 @@ import { useState } from "react";
 import Nav from "../../components/sideBar/sideBar";
 export default function ContratarTransorte() {
   const [siderAberto, setSiderAberto] = useState(false);
+  const carriers = [
+    {
+      title: "TransAgro Express",
+      type: "Carga Geral",
+      availability: " Disponível em 24h",
+      forecast: "2 dias úteis",
+      capacity: "12 Toneladas",
+    },
+    {
+      title: "Luanda Express",
+      type: "Carga Geral",
+      availability: " Disponível em 24h",
+      forecast: "2 dias úteis",
+      capacity: "12 Toneladas",
+    },
+    {
+      title: "TransAgro Express",
+      type: "Carga Geral",
+      availability: " Disponível em 24h",
+      forecast: "2 dias úteis",
+      capacity: "12 Toneladas",
+    },
+    {
+      title: "Bengo Express",
+      type: "Carga Geral",
+      availability: " Disponível em 24h",
+      forecast: "2 dias úteis",
+      capacity: "12 Toneladas",
+    },
+    {
+      title: "TransAgro Express",
+      type: "Carga Geral",
+      availability: " Disponível em 24h",
+      forecast: "2 dias úteis",
+      capacity: "12 Toneladas",
+    },
+    {
+      title: "TransAgro Express",
+      type: "Carga Geral",
+      availability: " Disponível em 24h",
+      forecast: "2 dias úteis",
+      capacity: "12 Toneladas",
+    },
+    {
+      title: "TransAgro Express",
+      type: "Carga Geral",
+      availability: " Disponível em 24h",
+      forecast: "2 dias úteis",
+      capacity: "12 Toneladas",
+    },
+  ];
   return (
     <>
       <div className="bg-background text-text-main">
@@ -20,10 +71,10 @@ export default function ContratarTransorte() {
                 </button>
                 <div>
                   <h2 className="md:text-2xl text-sm md:font-bold font-medium  text-text-main tracking-tight">
-                    Contratar Tranportadora
+                    Contratar Transportadora
                   </h2>
                   <p className="text-[11px] md:text-sm text-text-secondary ">
-                    Contrate ptasportadora a sua escolha para inciar a entrega
+                    Contrate transportadora a sua escolha para inciar a entrega
                   </p>
                 </div>
               </div>
@@ -45,7 +96,7 @@ export default function ContratarTransorte() {
                 <div className="relative w-full h-2.5 bg-border-color  rounded-full overflow-hidden">
                   <div
                     className="absolute top-0 left-0 h-full bg-primary"
-                    style={{ width: "66%" }}
+                    style={{ width: "44%" }}
                   ></div>
                 </div>
                 <div className="flex justify-between mt-3 text-sm">
@@ -86,339 +137,52 @@ export default function ContratarTransorte() {
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="bg-white  border border-[#f1f3f1]  rounded-xl overflow-hidden hover:border-primary/50 transition-all flex flex-col group shadow-sm hover:shadow-md">
+                {carriers.map((item, i) => (
                   <div
-                    className="h-40 bg-center bg-no-repeat bg-cover relative"
-                    style={{ backgroundImage: "url('/assets/carrinha.png')" }}
-                  ></div>
-                  <div className="p-5 flex flex-col flex-1">
-                    <div className="mb-4">
-                      <h3 className="text-lg font-bold leading-tight mb-1">
-                        TransAgro Express
-                      </h3>
-                      <div className="flex items-center gap-2">
-                        <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
-                          Carga Geral
-                        </span>
-                        <span className="text-text-secondary2 text-xs">
-                          • Disponível em 24h
-                        </span>
+                    key={i}
+                    className="bg-white  border border-[#f1f3f1]  rounded-xl overflow-hidden hover:border-primary/50 transition-all flex flex-col group shadow-sm hover:shadow-md"
+                  >
+                    <div
+                      className="h-40 bg-center bg-no-repeat bg-cover relative"
+                      style={{
+                        backgroundImage: "url('/assets/image/carrinha.png')",
+                      }}
+                    ></div>
+                    <div className="p-5 flex flex-col flex-1">
+                      <div className="mb-4">
+                        <h3 className="text-lg font-bold leading-tight mb-1">
+                          {item.title}
+                        </h3>
+                        <div className="flex items-center gap-2">
+                          <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
+                            {item.type}
+                          </span>
+                          <span className="text-text-secondary2 text-xs">
+                            • {item.availability}
+                          </span>
+                        </div>
                       </div>
+                      <div className="space-y-2 mb-6 flex-1">
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-text-secondary2">
+                            Capacidade
+                          </span>
+                          <span className="font-medium">{item.capacity}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-text-secondary2">Previsão</span>
+                          <span className="font-medium">{item.forecast}</span>
+                        </div>
+                      </div>
+                      <button className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 group-hover:scale-[1.02] active:scale-[0.98]">
+                        <span className="material-symbols-outlined text-sm">
+                          local_shipping
+                        </span>{" "}
+                        Confirmar Transportadora
+                      </button>
                     </div>
-                    <div className="space-y-2 mb-6 flex-1">
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-text-secondary2">Capacidade</span>
-                        <span className="font-medium">12 Toneladas</span>
-                      </div>
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-text-secondary2">Previsão</span>
-                        <span className="font-medium">2 dias úteis</span>
-                      </div>
-                    </div>
-                    <button className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 group-hover:scale-[1.02] active:scale-[0.98]">
-                      <span className="material-symbols-outlined text-sm">
-                        local_shipping
-                      </span>{" "}
-                      Confirmar Transportadora
-                    </button>
                   </div>
-                </div>
-                <div className="bg-white  border border-[#f1f3f1]  rounded-xl overflow-hidden hover:border-primary/50 transition-all flex flex-col group shadow-sm hover:shadow-md">
-                  <div
-                    className="h-40 bg-center bg-no-repeat bg-cover relative"
-                    style={{ backgroundImage: "url('/assets/image/carrinha.png')" }}
-                  ></div>
-                  <div className="p-5 flex flex-col flex-1">
-                    <div className="mb-4">
-                      <h3 className="text-lg font-bold leading-tight mb-1">
-                        TransAgro Express
-                      </h3>
-                      <div className="flex items-center gap-2">
-                        <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
-                          Carga Geral
-                        </span>
-                        <span className="text-text-secondary2 text-xs">
-                          • Disponível em 24h
-                        </span>
-                      </div>
-                    </div>
-                    <div className="space-y-2 mb-6 flex-1">
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-text-secondary2">Capacidade</span>
-                        <span className="font-medium">12 Toneladas</span>
-                      </div>
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-text-secondary2">Previsão</span>
-                        <span className="font-medium">2 dias úteis</span>
-                      </div>
-                    </div>
-                    <button className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 group-hover:scale-[1.02] active:scale-[0.98]">
-                      <span className="material-symbols-outlined text-sm">
-                        local_shipping
-                      </span>{" "}
-                      Confirmar Transportadora
-                    </button>
-                  </div>
-                </div>
-                <div className="bg-white  border border-[#f1f3f1]  rounded-xl overflow-hidden hover:border-primary/50 transition-all flex flex-col group shadow-sm hover:shadow-md">
-                  <div
-                    className="h-40 bg-center bg-no-repeat bg-cover relative"
-                    style={{ backgroundImage: "url('/assets/carrinha.png')" }}
-                  ></div>
-                  <div className="p-5 flex flex-col flex-1">
-                    <div className="mb-4">
-                      <h3 className="text-lg font-bold leading-tight mb-1">
-                        TransAgro Express
-                      </h3>
-                      <div className="flex items-center gap-2">
-                        <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
-                          Carga Geral
-                        </span>
-                        <span className="text-text-secondary2 text-xs">
-                          • Disponível em 24h
-                        </span>
-                      </div>
-                    </div>
-                    <div className="space-y-2 mb-6 flex-1">
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-text-secondary2">Capacidade</span>
-                        <span className="font-medium">12 Toneladas</span>
-                      </div>
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-text-secondary2">Previsão</span>
-                        <span className="font-medium">2 dias úteis</span>
-                      </div>
-                    </div>
-                    <button className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 group-hover:scale-[1.02] active:scale-[0.98]">
-                      <span className="material-symbols-outlined text-sm">
-                        local_shipping
-                      </span>{" "}
-                      Confirmar Transportadora
-                    </button>
-                  </div>
-                </div>
-                <div className="bg-white  border border-[#f1f3f1]  rounded-xl overflow-hidden hover:border-primary/50 transition-all flex flex-col group shadow-sm hover:shadow-md">
-                  <div
-                    className="h-40 bg-center bg-no-repeat bg-cover relative"
-                    style={{ backgroundImage: "url('/assets/carrinha.png')" }}
-                  ></div>
-                  <div className="p-5 flex flex-col flex-1">
-                    <div className="mb-4">
-                      <h3 className="text-lg font-bold leading-tight mb-1">
-                        TransAgro Express
-                      </h3>
-                      <div className="flex items-center gap-2">
-                        <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
-                          Carga Geral
-                        </span>
-                        <span className="text-text-secondary2 text-xs">
-                          • Disponível em 24h
-                        </span>
-                      </div>
-                    </div>
-                    <div className="space-y-2 mb-6 flex-1">
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-text-secondary2">Capacidade</span>
-                        <span className="font-medium">12 Toneladas</span>
-                      </div>
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-text-secondary2">Previsão</span>
-                        <span className="font-medium">2 dias úteis</span>
-                      </div>
-                    </div>
-                    <button className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 group-hover:scale-[1.02] active:scale-[0.98]">
-                      <span className="material-symbols-outlined text-sm">
-                        local_shipping
-                      </span>{" "}
-                      Confirmar Transportadora
-                    </button>
-                  </div>
-                </div>
-                <div className="bg-white  border border-[#f1f3f1]  rounded-xl overflow-hidden hover:border-primary/50 transition-all flex flex-col group shadow-sm hover:shadow-md">
-                  <div
-                    className="h-40 bg-center bg-no-repeat bg-cover relative"
-                    style={{ backgroundImage: "url('/assets/carrinha.png')" }}
-                  ></div>
-                  <div className="p-5 flex flex-col flex-1">
-                    <div className="mb-4">
-                      <h3 className="text-lg font-bold leading-tight mb-1">
-                        TransAgro Express
-                      </h3>
-                      <div className="flex items-center gap-2">
-                        <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
-                          Carga Geral
-                        </span>
-                        <span className="text-text-secondary2 text-xs">
-                          • Disponível em 24h
-                        </span>
-                      </div>
-                    </div>
-                    <div className="space-y-2 mb-6 flex-1">
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-text-secondary2">Capacidade</span>
-                        <span className="font-medium">12 Toneladas</span>
-                      </div>
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-text-secondary2">Previsão</span>
-                        <span className="font-medium">2 dias úteis</span>
-                      </div>
-                    </div>
-                    <button className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 group-hover:scale-[1.02] active:scale-[0.98]">
-                      <span className="material-symbols-outlined text-sm">
-                        local_shipping
-                      </span>{" "}
-                      Confirmar Transportadora
-                    </button>
-                  </div>
-                </div>
-                <div className="bg-white  border border-[#f1f3f1]  rounded-xl overflow-hidden hover:border-primary/50 transition-all flex flex-col group shadow-sm hover:shadow-md">
-                  <div
-                    className="h-40 bg-center bg-no-repeat bg-cover relative"
-                    style={{ backgroundImage: "url('/assets/carrinha.png')" }}
-                  ></div>
-                  <div className="p-5 flex flex-col flex-1">
-                    <div className="mb-4">
-                      <h3 className="text-lg font-bold leading-tight mb-1">
-                        TransAgro Express
-                      </h3>
-                      <div className="flex items-center gap-2">
-                        <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
-                          Carga Geral
-                        </span>
-                        <span className="text-text-secondary2 text-xs">
-                          • Disponível em 24h
-                        </span>
-                      </div>
-                    </div>
-                    <div className="space-y-2 mb-6 flex-1">
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-text-secondary2">Capacidade</span>
-                        <span className="font-medium">12 Toneladas</span>
-                      </div>
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-text-secondary2">Previsão</span>
-                        <span className="font-medium">2 dias úteis</span>
-                      </div>
-                    </div>
-                    <button className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 group-hover:scale-[1.02] active:scale-[0.98]">
-                      <span className="material-symbols-outlined text-sm">
-                        local_shipping
-                      </span>{" "}
-                      Confirmar Transportadora
-                    </button>
-                  </div>
-                </div>
-                <div className="bg-white  border border-[#f1f3f1]  rounded-xl overflow-hidden hover:border-primary/50 transition-all flex flex-col group shadow-sm hover:shadow-md">
-                  <div
-                    className="h-40 bg-center bg-no-repeat bg-cover relative"
-                    style={{ backgroundImage: "url('/assets/carrinha.png')" }}
-                  ></div>
-                  <div className="p-5 flex flex-col flex-1">
-                    <div className="mb-4">
-                      <h3 className="text-lg font-bold leading-tight mb-1">
-                        TransAgro Express
-                      </h3>
-                      <div className="flex items-center gap-2">
-                        <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
-                          Carga Geral
-                        </span>
-                        <span className="text-text-secondary2 text-xs">
-                          • Disponível em 24h
-                        </span>
-                      </div>
-                    </div>
-                    <div className="space-y-2 mb-6 flex-1">
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-text-secondary2">Capacidade</span>
-                        <span className="font-medium">12 Toneladas</span>
-                      </div>
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-text-secondary2">Previsão</span>
-                        <span className="font-medium">2 dias úteis</span>
-                      </div>
-                    </div>
-                    <button className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 group-hover:scale-[1.02] active:scale-[0.98]">
-                      <span className="material-symbols-outlined text-sm">
-                        local_shipping
-                      </span>{" "}
-                      Confirmar Transportadora
-                    </button>
-                  </div>
-                </div>
-                <div className="bg-white  border border-[#f1f3f1]  rounded-xl overflow-hidden hover:border-primary/50 transition-all flex flex-col group shadow-sm hover:shadow-md">
-                  <div
-                    className="h-40 bg-center bg-no-repeat bg-cover relative"
-                    style={{ backgroundImage: "url('/assets/carrinha.png')" }}
-                  ></div>
-                  <div className="p-5 flex flex-col flex-1">
-                    <div className="mb-4">
-                      <h3 className="text-lg font-bold leading-tight mb-1">
-                        TransAgro Express
-                      </h3>
-                      <div className="flex items-center gap-2">
-                        <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
-                          Carga Geral
-                        </span>
-                        <span className="text-text-secondary2 text-xs">
-                          • Disponível em 24h
-                        </span>
-                      </div>
-                    </div>
-                    <div className="space-y-2 mb-6 flex-1">
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-text-secondary2">Capacidade</span>
-                        <span className="font-medium">12 Toneladas</span>
-                      </div>
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-text-secondary2">Previsão</span>
-                        <span className="font-medium">2 dias úteis</span>
-                      </div>
-                    </div>
-                    <button className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 group-hover:scale-[1.02] active:scale-[0.98]">
-                      <span className="material-symbols-outlined text-sm">
-                        local_shipping
-                      </span>{" "}
-                      Confirmar Transportadora
-                    </button>
-                  </div>
-                </div>
-                <div className="bg-white  border border-[#f1f3f1]  rounded-xl overflow-hidden hover:border-primary/50 transition-all flex flex-col group shadow-sm hover:shadow-md">
-                  <div
-                    className="h-40 bg-center bg-no-repeat bg-cover relative"
-                    style={{ backgroundImage: "url('/assets/carrinha.png')" }}
-                  ></div>
-                  <div className="p-5 flex flex-col flex-1">
-                    <div className="mb-4">
-                      <h3 className="text-lg font-bold leading-tight mb-1">
-                        TransAgro Express
-                      </h3>
-                      <div className="flex items-center gap-2">
-                        <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
-                          Carga Geral
-                        </span>
-                        <span className="text-text-secondary2 text-xs">
-                          • Disponível em 24h
-                        </span>
-                      </div>
-                    </div>
-                    <div className="space-y-2 mb-6 flex-1">
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-text-secondary2">Capacidade</span>
-                        <span className="font-medium">12 Toneladas</span>
-                      </div>
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-text-secondary2">Previsão</span>
-                        <span className="font-medium">2 dias úteis</span>
-                      </div>
-                    </div>
-                    <button className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 group-hover:scale-[1.02] active:scale-[0.98]">
-                      <span className="material-symbols-outlined text-sm">
-                        local_shipping
-                      </span>{" "}
-                      Confirmar Transportadora
-                    </button>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </main>
