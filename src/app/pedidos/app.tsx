@@ -250,7 +250,13 @@ export default function Pedidos() {
                             <span
                               className={`inline-flex items-center px-2.5 py-0 rounded-full text-xs font-medium ${item.status === "pendent" ? "bg-yellow-100  text-yellow-800 border border-yellow-200" : item.status === "confirmed" ? "bg-green-100  text-green-800 border border-green-200" : item.status === "rejected" ? "bg-red-100  text-red-800 border border-red-200" : ""} `}
                             >
-                              {item.status}
+                              {item.status === "pendent"
+                                ? "pendente"
+                                : item.status === "confirmed"
+                                  ? "confirmado"
+                                  : item.status === "rejected"
+                                    ? "rejeitado"
+                                    : item.status}
                             </span>
                           </td>
                           {item.status === "pendent" ? (
@@ -271,6 +277,12 @@ export default function Pedidos() {
                                   Aceitar
                                 </button>
                               </div>
+                            </td>
+                          ) : item.status === "confirmed" ? (
+                            <td className="px-6 py-5 text-right">
+                              <button className="px-4 py-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-lg shadow-sm transition-all transform active:scale-95">
+                                Constratar Transporte
+                              </button>
                             </td>
                           ) : (
                             ""
