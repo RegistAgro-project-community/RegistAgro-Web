@@ -126,7 +126,7 @@ export default function ContratarTransorte() {
                 <div className="bg-white  border border-[#f1f3f1]  rounded-xl overflow-hidden hover:border-primary/50 transition-all flex flex-col group shadow-sm hover:shadow-md">
                   <div
                     className="h-40 bg-center bg-no-repeat bg-cover relative"
-                    style={{ backgroundImage: "url('/assets/carrinha.png')" }}
+                    style={{ backgroundImage: "url('/assets/image/carrinha.png')" }}
                   ></div>
                   <div className="p-5 flex flex-col flex-1">
                     <div className="mb-4">
