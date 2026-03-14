@@ -1,39 +1,46 @@
 {
-  "tracking": [
-    {
-      "id": 1,
-      "cliente": "Restaurante Sabor",
-      "transportadora": "TransAgro Rápido",
-      "data": "2023-10-14",
-      "status": "Aguardando Coleta"
+  "tracking": {
+    "cardsData": {
+      "waitingPickup": 2,
+      "inTransit": 2,
+      "delivered": 1
     },
-    {
-      "id": 2,
-      "cliente": "Maria Fernandes",
-      "transportadora": "Logística Verde",
-      "data": "2023-10-14",
-      "status": "Em Trânsito"
-    },
-    {
-      "id": 3,
-      "cliente": "Carlos Mendes",
-      "transportadora": "TransAgro Rápido",
-      "data": "2023-10-04",
-      "status": "Entregue"
-    },
-    {
-      "id": 4,
-      "cliente": "Ana Paula",
-      "transportadora": "Logística Verde",
-      "data": "2023-10-14",
-      "status": "Em Trânsito"
-    },
-    {
-      "id": 5,
-      "cliente": "João Victor",
-      "transportadora": "Expresso Rural",
-      "data": "2023-10-14",
-      "status": "Aguardando Coleta"
-    }
-  ]
+    "orders": [
+      {
+        "id": 1,
+        "client": "Restaurante Sabor",
+        "carrier": "TransAgro Rápido",
+        "date": "2023-10-14",
+        "status": "waitingPickup"
+      },
+      {
+        "id": 2,
+        "client": "Maria Fernandes",
+        "carrier": "Logística Verde",
+        "date": "2023-10-14",
+        "status": "inTransit"
+      },
+      {
+        "id": 3,
+        "client": "Carlos Mendes",
+        "carrier": "TransAgro Rápido",
+        "date": "2023-10-04",
+        "status": "delivered"
+      },
+      {
+        "id": 4,
+        "client": "Ana Paula",
+        "carrier": "Logística Verde",
+        "date": "2023-10-14",
+        "status": "inTransit"
+      },
+      {
+        "id": 5,
+        "client": "João Victor",
+        "carrier": "Expresso Rural",
+        "date": "2023-10-14",
+        "status": "waitingPickup"
+      }
+    ]
+  }
 }
