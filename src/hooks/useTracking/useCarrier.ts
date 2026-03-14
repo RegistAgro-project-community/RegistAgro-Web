@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "../../api/axios";
 
-const CARRIERS_URL = "";
+const TRACKINGS_URL = "http://localhost:8000/tracking";
 
-export function useCarrier(token: string | undefined) {
-  async function fetchCarrierData() {
+export function useTracking(token: string | undefined) {
+  async function fetchTrackingData() {
     try {
-      const { data } = await axios.get(CARRIERS_URL, {
+      const { data } = await axios.get(TRACKINGS_URL, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return data;
@@ -18,7 +18,7 @@ export function useCarrier(token: string | undefined) {
   }
   return useQuery({
     queryKey: ["Corriers", token],
-    queryFn: fetchCarrierData,
+    queryFn: fetchTrackingData,
     enabled: !!token,
     retry: 1,
   });
