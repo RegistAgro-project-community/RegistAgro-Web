@@ -95,7 +95,7 @@ export default function Rotas() {
                     icon: "local_shipping",
                   },
                   {
-                    label: "Entregues Hoje",
+                    label: "Entregues",
                     total: delivered || 0,
                     icon: "done_all",
                   },
