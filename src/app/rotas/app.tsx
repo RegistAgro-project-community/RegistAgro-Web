@@ -185,7 +185,7 @@ export default function Rotas() {
 
                           <td className="px-6 py-5 text-center">
                             <span
-                              className={`inline-flex items-center px-2.5 py-0 rounded-full text-xs font-medium ${item.status === "delivered" ? "bg-gray-100 text-gray-600  border-gray-200" : item.status === "inTransit" ? "bg-blue-50 text-blue-600 border-blue-100" : item.status === "waitingPickup" ? "bg-green-100 text-green-800 border-green-200" : ""}  border  capitalize`}
+                              className={`inline-flex items-center px-2.5 py-0 rounded-full text-xs font-medium ${item.status === "delivered" ? "bg-gray-100 text-gray-600  border-gray-200" : item.status === "inTransit" ? "bg-blue-50 text-blue-600 border-blue-100" : item.status === "waitingPickup" ? "bg-green-100 text-green-800 border-green-200" : item.status === "canceled" ? "bg-red-100 text-red-800 border-red-200" : ""}  border  capitalize`}
                             >
                               {item.status === "delivered"
                                 ? "entregue"
@@ -193,14 +193,17 @@ export default function Rotas() {
                                   ? "aguardado  coleta"
                                   : item.status === "inTransit"
                                     ? "Em Trânsito"
-                                    : ""}
+                                    : item.status === "canceled"
+                                      ? "cancelado"
+                                      : ""}
                             </span>
                           </td>
                           <td className="px-6 py-4 ">
                             <div
                               className={`flex items-center  justify-end  gap-2`}
                             >
-                              {item.status === "delivered" ? null : (
+                              {item.status === "delivered" ||
+                              item.status === "canceled" ? null : (
                                 <>
                                   <button className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white  border active:scale-93 border-border-color hover:border-primary hover:text-primary text-text-secondary text-xs font-medium rounded-lg transition-all">
                                     <span className="material-symbols-outlined text-[16px]">
@@ -216,7 +219,8 @@ export default function Rotas() {
                                   </button>
                                 </>
                               )}
-                              {item.status !== "delivered" ? null : (
+                              {item.status !== "delivered" &&
+                              item.status !== "canceled" ? null : (
                                 <button
                                   onClick={() => setAbertoDetalhe(true)}
                                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-surface-dark border active:scale-93  border-border-color hover:bg-gray-50 text-text-secondary text-xs font-medium rounded-lg transition-all`}
