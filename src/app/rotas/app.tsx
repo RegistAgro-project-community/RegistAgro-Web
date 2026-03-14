@@ -187,7 +187,7 @@ export default function Rotas() {
                             <span
                               className={`inline-flex items-center px-2.5 py-0 rounded-full text-xs font-medium ${item.status === "delivered" ? "bg-gray-100 text-gray-600  border-gray-200" : item.status === "inTransit" ? "bg-blue-50 text-blue-600 border-blue-100" : item.status === "waitingPickup" ? "bg-green-100 text-green-800 border-green-200" : ""}  border  capitalize`}
                             >
-                              {item.status}
+                              {item.status === "delivered" ? "entregue": item.status === "waitingPickup" ? "aguardado  coleta": item.status === "inTransit" ? "Em Trânsito": ""}
                             </span>
                           </td>
                           <td className="px-6 py-4 ">
