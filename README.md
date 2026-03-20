@@ -25,6 +25,9 @@ npm run dev
 ```bash
 npm run build
 ```
+## JSON-SERVER
+Deve ser executado no porta 8000
+- npx json-server --watch data/db.json --port 8000
 
 ## Acesse no navegador
 __http://localhost:5173__
