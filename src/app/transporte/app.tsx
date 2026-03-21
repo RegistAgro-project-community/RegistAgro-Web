@@ -1,7 +1,11 @@
 import { useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import Nav from "../../components/sideBar/sideBar";
 export default function ContratarTransorte() {
   const [siderAberto, setSiderAberto] = useState(false);
+  const { id } = useParams();
+  const { state } = useLocation();
+  console.log(id, state.transportType, state.consumerName);
   const carriers = [
     {
       title: "TransAgro Express",
@@ -129,7 +133,7 @@ export default function ContratarTransorte() {
               </div>
               <div className="mb-8">
                 <h1 className="text-[16px] md:text-3xl text-text-main font-semibold tracking-tight mb-2">
-                  Contratar Transportadora para o Pedido #1234
+                  Contratar Transportadora para {state.consumerName}
                 </h1>
                 <p className="text-[14px] md:text-[16px] text-text-secondary2">
                   Analise as opções de logística disponíveis e selecione a
