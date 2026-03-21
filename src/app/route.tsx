@@ -12,15 +12,12 @@ import Rotas from "./rotas/app";
 import ProdutoDetalhe from "./produto-detalhe/app";
 import Auth from "../auth/auth";
 
-
 export function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-
         {/* Layout para Auth */}
         <Route element={<Auth />}>
-
           <Route path="/" element={<Navigate to="/login" replace />} />
 
           <Route
@@ -40,7 +37,6 @@ export function AppRoutes() {
               </PublicRote>
             }
           />
-
         </Route>
 
         {/* Rotas privadas continuam iguais */}
@@ -72,7 +68,7 @@ export function AppRoutes() {
         />
 
         <Route
-          path="/pedidos/transporte"
+          path="/pedidos/transporte/:id"
           element={
             <PrivateRote>
               <ContratarTransorte />
@@ -106,7 +102,6 @@ export function AppRoutes() {
             </PrivateRote>
           }
         />
-
       </Routes>
     </BrowserRouter>
   );
