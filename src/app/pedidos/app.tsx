@@ -54,7 +54,7 @@ export default function Pedidos() {
       setTotalOrder(String(data.total));
     }
   }, [token, data]);
-
+ console.log(totalOrders)
   if (error) {
     console.log(error);
   }
@@ -281,7 +281,7 @@ export default function Pedidos() {
                           ) : item.status === "confirmed" ? (
                             <td className="px-6 py-5 text-right">
                               <button className="px-4 py-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-lg shadow-sm transition-all transform active:scale-95">
-                                Constratar Transporte
+                                Contratar Transporte
                               </button>
                             </td>
                           ) : (
