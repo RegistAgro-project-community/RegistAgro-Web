@@ -1,11 +1,16 @@
 import { useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
+import Cookies from "js-cookie";
+import { useSearchTransport } from "../../hooks/useSearchTransport/useSearchTransports";
 import Nav from "../../components/sideBar/sideBar";
 export default function ContratarTransorte() {
   const [siderAberto, setSiderAberto] = useState(false);
+  const token = Cookies.get("token");
   const { id } = useParams();
   const { state } = useLocation();
   console.log(id, state.transportType, state.consumerName);
+  const { data } = useSearchTransport(token, state.transportType);
+  console.log(data);
   const carriers = [
     {
       title: "TransAgro Express",
