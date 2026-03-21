@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import Nav from "../../components/sideBar/sideBar";
 import Cookies from "js-cookie";
 import { Toast } from "primereact/toast";
+import { useNavigate } from "react-router-dom";
 import { useOrders } from "../../hooks/userOrders/useOrders";
 import { useAcceptOrders } from "../../hooks/useAcceptOrder/useAcceptOrders";
 import RejectOrder from "../../components/rejectOrderModal/modalRejectModal";
@@ -10,6 +11,7 @@ interface Consumer {
 }
 interface Product {
   name: string;
+  transport: string;
 }
 interface OrderData {
   consumer: Consumer;
@@ -32,6 +34,7 @@ export default function Pedidos() {
   const [totalOrder, setTotalOrder] = useState("");
   const [siderAberto, setSiderAberto] = useState(false);
   const [rejectOpen, setIsRejectOpen] = useState(false);
+  const navegate = useNavigate();
   const [select, setIsSelect] = useState({ id: "" });
   function TakeOrderId(id: string) {
     setIsSelect({ id });
@@ -54,7 +57,7 @@ export default function Pedidos() {
       setTotalOrder(String(data.total));
     }
   }, [token, data]);
- console.log(totalOrders)
+  console.log(totalOrders);
   if (error) {
     console.log(error);
   }
@@ -77,6 +80,14 @@ export default function Pedidos() {
           detail: "Não foi possível aceitar o pedido",
           life: 2000,
         });
+      },
+    });
+  }
+  function handleSearchTransport(item: OrderData) {
+    navegate(`/pedidos/transporte/${item.id}`, {
+      state: {
+        transportType: item.product.transport,
+        consumerName: item.consumer.name,
       },
     });
   }
@@ -280,7 +291,10 @@ export default function Pedidos() {
                             </td>
                           ) : item.status === "confirmed" ? (
                             <td className="px-6 py-5 text-right">
-                              <button className="px-4 py-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-lg shadow-sm transition-all transform active:scale-95">
+                              <button
+                                onClick={() => handleSearchTransport(item)}
+                                className="px-4 py-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-lg shadow-sm transition-all transform active:scale-95"
+                              >
                                 Contratar Transporte
                               </button>
                             </td>
