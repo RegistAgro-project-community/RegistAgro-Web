@@ -29,6 +29,7 @@ function useNormalizedVehicles(data: CarrierGroup[]) {
         carrierId: group.carrier.id,
         phone: group.carrier.phone,
         photo: vehicle.photo,
+        brand: vehicle.brand,
       })),
     );
   }, [data]);
