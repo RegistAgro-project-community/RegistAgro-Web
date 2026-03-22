@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useSearchTransport } from "../../hooks/useSearchTransport/useSearchTransports";
+import useNormalizedVehicles from "../../hooks/useNormalizedVehicle/useNormalizedVehicles";
+import TransportCard from "../../components/transportCards/transportCard";
 import Nav from "../../components/sideBar/sideBar";
 export default function ContratarTransorte() {
   const [siderAberto, setSiderAberto] = useState(false);
@@ -11,57 +13,58 @@ export default function ContratarTransorte() {
   console.log(id, state.transportType, state.consumerName);
   const { data } = useSearchTransport(token, state.transportType);
   console.log(data);
-  const carriers = [
-    {
-      title: "TransAgro Express",
-      type: "Carga Geral",
-      availability: " Disponível em 24h",
-      forecast: "2 dias úteis",
-      capacity: "12 Toneladas",
-    },
-    {
-      title: "Luanda Express",
-      type: "Carga Geral",
-      availability: " Disponível em 24h",
-      forecast: "2 dias úteis",
-      capacity: "12 Toneladas",
-    },
-    {
-      title: "TransAgro Express",
-      type: "Carga Geral",
-      availability: " Disponível em 24h",
-      forecast: "2 dias úteis",
-      capacity: "12 Toneladas",
-    },
-    {
-      title: "Bengo Express",
-      type: "Carga Geral",
-      availability: " Disponível em 24h",
-      forecast: "2 dias úteis",
-      capacity: "12 Toneladas",
-    },
-    {
-      title: "TransAgro Express",
-      type: "Carga Geral",
-      availability: " Disponível em 24h",
-      forecast: "2 dias úteis",
-      capacity: "12 Toneladas",
-    },
-    {
-      title: "TransAgro Express",
-      type: "Carga Geral",
-      availability: " Disponível em 24h",
-      forecast: "2 dias úteis",
-      capacity: "12 Toneladas",
-    },
-    {
-      title: "TransAgro Express",
-      type: "Carga Geral",
-      availability: " Disponível em 24h",
-      forecast: "2 dias úteis",
-      capacity: "12 Toneladas",
-    },
-  ];
+  const carriers = useNormalizedVehicles(data.vehicles);
+  // const carriers = [
+  //   {
+  //     title: "TransAgro Express",
+  //     type: "Carga Geral",
+  //     availability: " Disponível em 24h",
+  //     forecast: "2 dias úteis",
+  //     capacity: "12 Toneladas",
+  //   },
+  //   {
+  //     title: "Luanda Express",
+  //     type: "Carga Geral",
+  //     availability: " Disponível em 24h",
+  //     forecast: "2 dias úteis",
+  //     capacity: "12 Toneladas",
+  //   },
+  //   {
+  //     title: "TransAgro Express",
+  //     type: "Carga Geral",
+  //     availability: " Disponível em 24h",
+  //     forecast: "2 dias úteis",
+  //     capacity: "12 Toneladas",
+  //   },
+  //   {
+  //     title: "Bengo Express",
+  //     type: "Carga Geral",
+  //     availability: " Disponível em 24h",
+  //     forecast: "2 dias úteis",
+  //     capacity: "12 Toneladas",
+  //   },
+  //   {
+  //     title: "TransAgro Express",
+  //     type: "Carga Geral",
+  //     availability: " Disponível em 24h",
+  //     forecast: "2 dias úteis",
+  //     capacity: "12 Toneladas",
+  //   },
+  //   {
+  //     title: "TransAgro Express",
+  //     type: "Carga Geral",
+  //     availability: " Disponível em 24h",
+  //     forecast: "2 dias úteis",
+  //     capacity: "12 Toneladas",
+  //   },
+  //   {
+  //     title: "TransAgro Express",
+  //     type: "Carga Geral",
+  //     availability: " Disponível em 24h",
+  //     forecast: "2 dias úteis",
+  //     capacity: "12 Toneladas",
+  //   },
+  // ];
   return (
     <>
       <div className="bg-background text-text-main">
@@ -146,7 +149,7 @@ export default function ContratarTransorte() {
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {carriers.map((item, i) => (
+                {/* {carriers.map((item, i) => (
                   <div
                     key={i}
                     className="bg-white  border border-[#f1f3f1]  rounded-xl overflow-hidden hover:border-primary/50 transition-all flex flex-col group shadow-sm hover:shadow-md"
@@ -191,6 +194,9 @@ export default function ContratarTransorte() {
                       </button>
                     </div>
                   </div>
+                ))} */}
+                {carriers.map((item) => (
+                  <TransportCard key={item.id} item={item} />
                 ))}
               </div>
             </div>
