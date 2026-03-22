@@ -13,7 +13,7 @@ export default function ContratarTransorte() {
   console.log(id, state.transportType, state.consumerName);
   const { data } = useSearchTransport(token, state.transportType);
   console.log(data);
-  const carriers = useNormalizedVehicles(data.vehicles);
+  const carriers = useNormalizedVehicles(data?.vehicles);
   // const carriers = [
   //   {
   //     title: "TransAgro Express",
