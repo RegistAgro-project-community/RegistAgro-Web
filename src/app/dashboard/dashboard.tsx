@@ -19,6 +19,7 @@ interface OrderData {
   status: string;
   value: number;
   created_at: string;
+  transport_status: string;
 }
 
 export default function Home() {
@@ -187,13 +188,13 @@ export default function Home() {
                           <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
                             Pedido
                           </th>
-                          <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                          <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary text-center">
                             Consumidor
                           </th>
-                          <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                          <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary text-center">
                             Valor
                           </th>
-                          <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                          <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary text-center">
                             Status
                           </th>
                         </tr>
@@ -218,30 +219,38 @@ export default function Home() {
                                     {totalOrders.length - (startIndex + i)}
                                   </span>
                                 </td>
-                                <td className="px-6 py-4 text-sm text-text-secondary">
+                                <td className="px-6 py-4 text-sm text-text-secondary text-center">
                                   {item.consumer.name}
                                 </td>
-                                <td className="px-6 py-4 text-sm font-semibold text-text-main">
+                                <td className="px-6 py-4 text-sm font-semibold text-text-main text-center">
                                   {item.value.toLocaleString("pt-AO", {
                                     style: "currency",
                                     currency: "AOA",
                                   })}
                                 </td>
-                                <td className="px-6 py-4">
+                                <td className="px-6 py-4 text-center">
                                   <span
                                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                      item.status === "pendent"
-                                        ? "bg-yellow-100 text-yellow-800 border-yellow-200"
-                                        : item.status === "confirmed"
-                                          ? "bg-green-100 text-green-800 border-green-200"
-                                          : item.status === "enviado"
-                                            ? "bg-blue-100 text-blue-800 border-blue-200"
-                                            : item.status === "entregue"
-                                              ? "bg-gray-200 text-gray-600"
+                                      item.transport_status === "pendente"
+                                        ? "bg-blue-100 text-blue-800 border border-blue-200"
+                                        : item.status === "pendent"
+                                          ? "bg-yellow-100 text-yellow-800 border border-yellow-200"
+                                          : item.status === "confirmed"
+                                            ? "bg-green-100 text-green-800 border border-green-200"
+                                            : item.status === "rejected"
+                                              ? "bg-red-100 text-red-800 border border-red-200"
                                               : ""
                                     }`}
                                   >
-                                    {item.status}
+                                    {item.transport_status === "pendente"
+                                      ? "Aguardando resposta do transporte"
+                                      : item.status === "pendent"
+                                        ? "pendente"
+                                        : item.status === "confirmed"
+                                          ? "confirmado"
+                                          : item.status === "rejected"
+                                            ? "rejeitado"
+                                            : item.status}
                                   </span>
                                 </td>
                               </tr>
