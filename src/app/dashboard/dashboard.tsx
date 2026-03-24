@@ -18,6 +18,7 @@ interface OrderData {
   product: Product;
   status: string;
   value: number;
+  created_at: string;
 }
 
 export default function Home() {
@@ -91,14 +92,13 @@ export default function Home() {
                 <div className="h-10 w-10 bg-green-200 rounded-full hidden md:block ">
                   <img
                     src={`${fazendaIgm ? `${fazendaIgm}` : "/assets/image/farm-avatar.png"}`}
-                    
                     title="Foto de Perfil"
                     className="aspect-square w-full rounded-full object-cover border border-border-color"
                   />
                 </div>
               </div>
             </div>
-            
+
             <div className="flex-1 overflow-y-auto p-8">
               <div className="space-y-2">
                 <h1 className="text-2xl md:text-2xl font-bold text-text-main tracking-tight">
@@ -201,7 +201,11 @@ export default function Home() {
                       <tbody className="divide-y divide-border-color">
                         {totalOrders && totalOrders.length > 0 ? (
                           [...totalOrders]
-                            .reverse()
+                            .sort(
+                              (a, b) =>
+                                new Date(b.created_at).getTime() -
+                                new Date(a.created_at).getTime(),
+                            )
                             ?.slice(startIndex, endIndex)
                             .map((item, i) => (
                               <tr
