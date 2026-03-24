@@ -148,8 +148,9 @@ export default function ContratarTransorte() {
                   melhor alternativa para o seu frete.
                 </p>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* {carriers.map((item, i) => (
+              {carriers && carriers.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {/* {carriers.map((item, i) => (
                   <div
                     key={i}
                     className="bg-white  border border-[#f1f3f1]  rounded-xl overflow-hidden hover:border-primary/50 transition-all flex flex-col group shadow-sm hover:shadow-md"
@@ -195,10 +196,15 @@ export default function ContratarTransorte() {
                     </div>
                   </div>
                 ))} */}
-                {carriers.map((item) => (
-                  <TransportCard key={item.id} item={item} />
-                ))}
-              </div>
+                  {carriers.map((item) => (
+                    <TransportCard key={item.id} item={item} />
+                  ))}
+                </div>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-3xl">
+                  Sem Transporte Disponível
+                </div>
+              )}
             </div>
           </main>
         </div>
