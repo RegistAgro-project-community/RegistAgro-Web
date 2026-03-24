@@ -267,13 +267,13 @@ export default function Produtos() {
                             <div className="flex items-center justify-start gap-2">
                               <button
                                 onClick={() => handleEdit(item)}
-                                className="material-symbols-outlined text-[20px] p-2 text-gray-500 hover:text-green-600 hover:bg-green-600/10 rounded-lg transition-colors active:scale-90"
+                                className="material-symbols-outlined text-[20px] p-2 text-gray-500 hover:text-green-600 hover:bg-green-600/10 rounded-lg transition-colors active:scale-90 cursor-pointer"
                               >
                                 edit
                               </button>
                               <button
                                 onClick={() => preparacaoDelete(item.id)}
-                                className="material-symbols-outlined text-[20px] p-2 text-gray-500 hover:text-red-600 hover:bg-red-600/10 rounded-lg transition-colors active:scale-90"
+                                className="material-symbols-outlined text-[20px] p-2 text-gray-500 hover:text-red-600 hover:bg-red-600/10 rounded-lg transition-colors active:scale-90 cursor-pointer"
                               >
                                 delete
                               </button>
@@ -318,7 +318,7 @@ export default function Produtos() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => setCorrentPage((prev) => prev - 1)}
-                      className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 disabled:opacity-50 active:scale-90"
+                      className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 disabled:opacity-50 active:scale-90 cursor-pointer"
                       disabled={correntPage === 1}
                     >
                       Anterior
@@ -327,7 +327,7 @@ export default function Produtos() {
                     <button
                       onClick={() => setCorrentPage((prev) => prev + 1)}
                       disabled={correntPage === totalPages || totalPages === 0}
-                      className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 active:scale-90 disabled:opacity-50"
+                      className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 active:scale-90 disabled:opacity-50 cursor-pointer"
                     >
                       Próximo
                     </button>
