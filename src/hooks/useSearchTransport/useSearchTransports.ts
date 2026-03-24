@@ -25,7 +25,6 @@ export function useSearchTransport(
     queryFn: fetchSearchTransport,
     enabled: !!token,
     retry: 1,
-    staleTime: 1000 * 60 * 6,
     refetchOnWindowFocus: false,
   });
 }
