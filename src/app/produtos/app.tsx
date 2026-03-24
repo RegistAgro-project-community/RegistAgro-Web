@@ -84,7 +84,10 @@ export default function Produtos() {
         item.transport.toLowerCase().includes(product)
       );
     })
-    .reverse();
+    .sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    );
   if (error) {
     console.log(error);
   }
