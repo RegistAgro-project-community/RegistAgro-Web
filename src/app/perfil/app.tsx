@@ -182,7 +182,7 @@ export default function PerfilUsuario() {
                 </div>
                 <div className="flex gap-3">
                   <button
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-hover text-white font-bold text-sm transition-all shadow-lg active:scale-90"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-hover text-white font-bold text-sm transition-all shadow-lg active:scale-90 cursor-pointer"
                     onClick={() => setAbertoEdit(true)}
                   >
                     <span className="material-symbols-outlined text-[20px]">
@@ -280,9 +280,9 @@ export default function PerfilUsuario() {
                   <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-gray-100  shadow-soft overflow-hidden flex flex-col h-40">
                     <div className="p-5 border-b border-gray-100  flex items-center justify-between">
                       <h3 className="font-bold text-text-main ">Localização</h3>
-                      <button className="text-primary hover:text-green-600 text-xs font-bold uppercase tracking-wide">
+                      {/* <button className="text-primary hover:text-green-600 text-xs font-bold uppercase tracking-wide">
                         Ver no mapa
-                      </button>
+                      </button> */}
                     </div>
                     <div className="p-5 bg-white ">
                       <div className="flex gap-3">
