@@ -17,10 +17,12 @@ interface OrderData {
   consumer: Consumer;
   product: Product;
   status: string;
+  transport_status: string | null;
   value: number;
   qtd: number;
   unit: string;
   id: string;
+  created_at: string;
 }
 export default function Pedidos() {
   const token = Cookies.get("token");
@@ -92,12 +94,16 @@ export default function Pedidos() {
     });
   }
 
-  const filterOrders = totalOrders
+  const filterOrders = [...totalOrders]
     .filter((item) => {
       const order = searchProduct.toLowerCase();
       return item.consumer.name.toLowerCase().includes(order);
     })
-    .reverse();
+    .sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    );
+
   const totalItems = filterOrders.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const indexOfLastPage = correntPage * itemsPerPage;
@@ -259,15 +265,28 @@ export default function Pedidos() {
                           </td>
                           <td className="px-6 py-5 text-center">
                             <span
-                              className={`inline-flex items-center px-2.5 py-0 rounded-full text-xs font-medium ${item.status === "pendent" ? "bg-yellow-100  text-yellow-800 border border-yellow-200" : item.status === "confirmed" ? "bg-green-100  text-green-800 border border-green-200" : item.status === "rejected" ? "bg-red-100  text-red-800 border border-red-200" : ""} `}
+                              className={`inline-flex items-center px-2.5 py-0 rounded-full text-xs font-medium 
+                                        ${
+                                          item.transport_status === "pendente"
+                                            ? "bg-blue-100 text-blue-800 border border-blue-200"
+                                            : item.status === "pendent"
+                                              ? "bg-yellow-100 text-yellow-800 border border-yellow-200"
+                                              : item.status === "confirmed"
+                                                ? "bg-green-100 text-green-800 border border-green-200"
+                                                : item.status === "rejected"
+                                                  ? "bg-red-100 text-red-800 border border-red-200"
+                                                  : ""
+                                        }`}
                             >
-                              {item.status === "pendent"
-                                ? "pendente"
-                                : item.status === "confirmed"
-                                  ? "confirmado"
-                                  : item.status === "rejected"
-                                    ? "rejeitado"
-                                    : item.status}
+                              {item.transport_status === "pendente"
+                                ? "Aguardando resposta do transporte"
+                                : item.status === "pendent"
+                                  ? "pendente"
+                                  : item.status === "confirmed"
+                                    ? "confirmado"
+                                    : item.status === "rejected"
+                                      ? "rejeitado"
+                                      : item.status}
                             </span>
                           </td>
                           {item.status === "pendent" ? (
@@ -289,7 +308,8 @@ export default function Pedidos() {
                                 </button>
                               </div>
                             </td>
-                          ) : item.status === "confirmed" ? (
+                          ) : item.status === "confirmed" &&
+                            item.transport_status !== "pendente" ? (
                             <td className="px-6 py-5 text-right">
                               <button
                                 onClick={() => handleSearchTransport(item)}
