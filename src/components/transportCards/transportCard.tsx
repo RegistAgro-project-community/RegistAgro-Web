@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 import type { AxiosError } from "axios";
 import { Toast } from "primereact/toast";
 import { useHideTransport } from "../../hooks/useHideTransport/useHideTransport";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useRef } from "react";
 type ProsTransport = {
   id: string;
@@ -35,7 +35,7 @@ function TransportCard({ item }: Props) {
   const token = Cookies.get("token");
   const { id } = useParams();
   const toast = useRef<Toast>(null);
-  // const navegate = useNavigate();
+  const navegate = useNavigate();
   const { mutate: hideTransport } = useHideTransport(token);
 
   async function handleHideTransport(vehicleId: string) {
@@ -50,7 +50,7 @@ function TransportCard({ item }: Props) {
             detail: data.message,
             life: 2000,
           });
-          // navegate("/rotas");
+          navegate("/pedidos");
         },
         onError: (err) => {
           const error = err as AxiosError<BackendError>;
