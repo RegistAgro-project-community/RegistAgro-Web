@@ -294,7 +294,7 @@ export default function Pedidos() {
                               <div className="flex items-center justify-end gap-2">
                                 <button
                                   onClick={() => TakeOrderId(item.id)}
-                                  className="px-3 py-1.5 text-xs font-semibold text-text-secondary hover:text-red-600 transition-colors"
+                                  className="px-3 py-1.5 text-xs font-semibold text-text-secondary hover:text-red-600 transition-colors active:scale-90 cursor-pointer"
                                 >
                                   Rejeitar
                                 </button>
@@ -302,7 +302,7 @@ export default function Pedidos() {
                                   onClick={() => {
                                     handleAccept(item.id);
                                   }}
-                                  className="px-4 py-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-lg shadow-sm transition-all transform active:scale-95"
+                                  className="px-4 py-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-lg shadow-sm transition-all transform active:scale-95 cursor-pointer"
                                 >
                                   Aceitar
                                 </button>
@@ -313,7 +313,7 @@ export default function Pedidos() {
                             <td className="px-6 py-5 text-right">
                               <button
                                 onClick={() => handleSearchTransport(item)}
-                                className="px-4 py-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-lg shadow-sm transition-all transform active:scale-95"
+                                className="px-4 py-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-lg shadow-sm transition-all transform active:scale-95 cursor-pointer"
                               >
                                 Contratar Transporte
                               </button>
@@ -355,12 +355,12 @@ export default function Pedidos() {
                     <span className="font-medium text-text-main">
                       {totalItems}
                     </span>{" "}
-                    Produtos
+                    Pedidos
                   </p>
                   <div className="flex gap-2">
                     <button
                       onClick={() => setCorrentPage((prev) => prev - 1)}
-                      className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 disabled:opacity-50 active:scale-90"
+                      className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 disabled:opacity-50 active:scale-90 cursor-pointer"
                       disabled={correntPage === 1}
                     >
                       Anterior
@@ -369,7 +369,7 @@ export default function Pedidos() {
                     <button
                       onClick={() => setCorrentPage((prev) => prev + 1)}
                       disabled={correntPage === totalPages || totalPages === 0}
-                      className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 active:scale-90 disabled:opacity-50"
+                      className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 active:scale-90 disabled:opacity-50 cursor-pointer"
                     >
                       Próximo
                     </button>
