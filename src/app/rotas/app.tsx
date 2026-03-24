@@ -267,12 +267,12 @@ export default function Rotas() {
                     <span className="font-medium text-text-main">
                       {totalItems}
                     </span>{" "}
-                    Produtos
+                    Transportes
                   </p>
                   <div className="flex gap-2">
                     <button
                       onClick={() => setIsCorrentPage((prev) => prev - 1)}
-                      className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 disabled:opacity-50 active:scale-90"
+                      className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 disabled:opacity-50 active:scale-90 cursor-pointer"
                       disabled={correntPage === 1}
                     >
                       Anterior
@@ -281,7 +281,7 @@ export default function Rotas() {
                     <button
                       onClick={() => setIsCorrentPage((prev) => prev + 1)}
                       disabled={correntPage === totalPages || totalPages === 0}
-                      className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 active:scale-90 disabled:opacity-50"
+                      className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 active:scale-90 disabled:opacity-50 cursor-pointer"
                     >
                       Próximo
                     </button>
