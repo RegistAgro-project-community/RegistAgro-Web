@@ -7,5 +7,5 @@ interface PrivateRotePros {
 }
 
 export function PrivateRote({ children }: PrivateRotePros) {
-  return isAuth() ? children : <Navigate to={"/auth"} replace />;
+  return isAuth() ? children : <Navigate to={"/login"} replace />;
 }
