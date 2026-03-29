@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import Nav from "../../components/sideBar/sideBar";
 import DetalhePedido from "../../components/modalDetalhePedido";
@@ -34,6 +35,7 @@ export default function Rotas() {
 
   useEffect(() => {
     if (data && token) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsInTrasit(data.cardsData.inTransit.toString() || "0");
       setIsWaitingPickup(data.cardsData.waitingPickup.toString() || "0");
       setIsDelivered(data.cardsData.delivered.toString() || "0");
@@ -159,7 +161,7 @@ export default function Rotas() {
                       correntItems.map((item, i) => (
                         <tr key={i} className="hover:bg-gray-50 transition-colors group">
                           <td className="px-6 py-5">
-                            <span className="text-sm font-semibold text-text-main">{item.client}</span>
+
                           </td>
                           <td className="px-6 py-5">
                             <p className="text-base font-medium text-text-secondary leading-relaxed capitalize">{item.carrier}</p>
