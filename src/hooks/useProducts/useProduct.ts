@@ -20,7 +20,7 @@ export function useProducts(token: string | undefined) {
     queryKey: ["Products", token],
     queryFn: fetchPruductData,
     enabled: !!token,
-    staleTime: 1000 * 60 * 30,
+    refetchInterval: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
   });
 }

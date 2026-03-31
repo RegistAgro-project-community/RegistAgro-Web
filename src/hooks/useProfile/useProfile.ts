@@ -20,7 +20,7 @@ export function useProfile(token: string | undefined) {
     queryFn: fetchProfileData,
     enabled: !!token,
     retry: 1,
-    staleTime: 1000 * 60 * 6,
+    refetchInterval: 1000 * 60 * 6,
     refetchOnWindowFocus: false,
   });
 }
