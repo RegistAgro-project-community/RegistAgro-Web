@@ -78,12 +78,35 @@ export default function Home() {
               </div>
 
               {isLoading ? (
-                <Stack spacing={1} direction="row" alignItems="center" justifyContent="flex-end">
+                <Stack
+                  spacing={1}
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="flex-end"
+                >
                   <Stack spacing={0.5} alignItems="flex-end">
-                    <Skeleton variant="text" width={100} height={20} animation="wave" sx={{ bgcolor: '#f0f0f0' }} />
-                    <Skeleton variant="text" width={70}  height={16} animation="wave" sx={{ bgcolor: '#f0f0f0' }} />
+                    <Skeleton
+                      variant="text"
+                      width={100}
+                      height={20}
+                      animation="wave"
+                      sx={{ bgcolor: "#f0f0f0" }}
+                    />
+                    <Skeleton
+                      variant="text"
+                      width={70}
+                      height={16}
+                      animation="wave"
+                      sx={{ bgcolor: "#f0f0f0" }}
+                    />
                   </Stack>
-                  <Skeleton variant="circular" width={40} height={40} animation="wave" sx={{ bgcolor: '#f0f0f0' }} />
+                  <Skeleton
+                    variant="circular"
+                    width={40}
+                    height={40}
+                    animation="wave"
+                    sx={{ bgcolor: "#f0f0f0" }}
+                  />
                 </Stack>
               ) : (
                 <div className="flex items-center gap-4">
@@ -123,20 +146,33 @@ export default function Home() {
                         variant="rectangular"
                         height={90}
                         animation="wave"
-                        sx={{ bgcolor: '#f0f0f0', borderRadius: '8px' }}
+                        sx={{ bgcolor: "#f0f0f0", borderRadius: "8px" }}
                       />
                     ))}
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-4">
                     {[
-                      { icon: "inventory_2", label: "Total de produtos cadastrados", total: totalProduto || 0 },
-                      { icon: "pending_actions", label: "Pedidos pendentes", total: pendentOrder || 0 },
-                      { icon: "local_shipping", label: "Entregas em andamento", total: ongoing || 0 },
+                      {
+                        icon: "inventory_2",
+                        label: "Total de produtos cadastrados",
+                        total: totalProduto || 0,
+                      },
+                      {
+                        icon: "pending_actions",
+                        label: "Pedidos pendentes",
+                        total: pendentOrder || 0,
+                      },
+                      {
+                        icon: "local_shipping",
+                        label: "Entregas em andamento",
+                        total: ongoing || 0,
+                      },
                     ].map((item, i) => (
                       <div
                         key={i}
-                        className={`bg-white p-4 rounded-lg border flex items-center justify-between border-gray-200 z-50`}>
+                        className={`bg-white p-4 rounded-lg border flex items-center justify-between border-gray-200 z-50`}
+                      >
                         <div>
                           <p className="text-text-secondary text-sm font-medium mb-1">
                             {item.label}
@@ -146,15 +182,17 @@ export default function Home() {
                           </h3>
                         </div>
                         <div className="flex justify-between items-start">
-                          <div className={`flex items-center p-2 rounded-lg ${
-                            item.icon === "inventory_2"
-                              ? "bg-green-50 text-green-600"
-                              : item.icon === "pending_actions"
-                                ? "bg-yellow-50 text-yellow-600"
-                                : item.icon === "local_shipping"
-                                  ? "bg-blue-50 text-blue-600"
-                                  : ""
-                          }`}>
+                          <div
+                            className={`flex items-center p-2 rounded-lg ${
+                              item.icon === "inventory_2"
+                                ? "bg-green-50 text-green-600"
+                                : item.icon === "pending_actions"
+                                  ? "bg-yellow-50 text-yellow-600"
+                                  : item.icon === "local_shipping"
+                                    ? "bg-blue-50 text-blue-600"
+                                    : ""
+                            }`}
+                          >
                             <span className="material-symbols-outlined text-[28px]">
                               {item.icon}
                             </span>
@@ -165,82 +203,154 @@ export default function Home() {
                   </div>
                 )}
               </div>
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-bold  text-text-main">
-                      Resumo dos Últimos Pedidos
-                    </h3>
-                    <Link
-                      className="text-sm font-semibold text-primary hover:text-primary-hover transition-colors"
-                      to="/pedidos"
-                    >
-                      Ver todos os pedidos
-                    </Link>
-                  </div>
-                  <div className="bg-white rounded-xl border border-border-color shadow-sm overflow-hidden overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="bg-background border-b border-border-color">
-
-                          <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">Pedido</th>
-                          <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">Consumidor</th>
-                          <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">Valor</th>
-                          <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">Status</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-border-color">
-                        {isLoading ? (
-                          [...Array(5)].map((_, i) => (
-                            <tr key={i}>
-                              <td className="px-6 py-4"><Skeleton variant="text" height={25} width={50}  animation="wave" sx={{ bgcolor: '#f0f0f0' }} /></td>
-                              <td className="px-6 py-4"><Skeleton variant="text" height={25} width={120} animation="wave" sx={{ bgcolor: '#f0f0f0' }} /></td>
-                              <td className="px-6 py-4"><Skeleton variant="text" height={25} width={80}  animation="wave" sx={{ bgcolor: '#f0f0f0' }} /></td>
-                              <td className="px-6 py-4"><Skeleton variant="rounded" height={22} width={70} animation="wave" sx={{ bgcolor: '#f0f0f0', borderRadius: '999px' }} /></td>
-                            </tr>
-                          ))
-                        ) : totalOrders && totalOrders.length > 0 ? (
-                          [...totalOrders]
-                            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-                            ?.slice(startIndex, endIndex)
-                            .map((item, i) => (
-                              <tr key={i} className="hover:bg-background/50 transition-colors">
-                                <td className="px-6 py-4 text-sm font-medium text-text-main">
-                                  <span className="font-mono">{totalOrders.length - (startIndex + i)}</span>
-                                </td>
-                                <td className="px-6 py-4 text-sm text-text-secondary">{item.consumer.name}</td>
-                                <td className="px-6 py-4 text-sm font-semibold text-text-main">
-                                  {item.value.toLocaleString("pt-AO", { style: "currency", currency: "AOA" })}
-                                </td>
-                                <td className="px-6 py-4">
-                                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                    item.status === "pendent"   ? "bg-yellow-100 text-yellow-800 border-yellow-200" :
-                                    item.status === "confirmed" ? "bg-green-100 text-green-800 border-green-200"    :
-                                    item.status === "enviado"   ? "bg-blue-100 text-blue-800 border-blue-200"       :
-                                    item.status === "entregue"  ? "bg-gray-200 text-gray-600"                       : ""
-                                  }`}>
-                                    {item.status}
-                                  </span>
-                                </td>
-                              </tr>
-                            ))
-                          ) : (
-                            <tr>
-                              <td colSpan={8} className="py-20 text-center">
-                                <div className="flex flex-col items-center justify-center w-full">
-                                  <p className="text-gray-400 font-medium">Nenhum pedido encontrado</p>
-                                </div>
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-bold  text-text-main">
+                    Resumo dos Últimos Pedidos
+                  </h3>
+                  <Link
+                    className="text-sm font-semibold text-primary hover:text-primary-hover transition-colors"
+                    to="/pedidos"
+                  >
+                    Ver todos os pedidos
+                  </Link>
+                </div>
+                <div className="bg-white rounded-xl border border-border-color shadow-sm overflow-hidden overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="bg-background border-b border-border-color">
+                        <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                          Pedido
+                        </th>
+                        <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary text-center">
+                          Consumidor
+                        </th>
+                        <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary text-center">
+                          Valor
+                        </th>
+                        <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary text-center">
+                          Status
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border-color">
+                      {isLoading ? (
+                        [...Array(5)].map((_, i) => (
+                          <tr key={i}>
+                            <td className="px-6 py-4">
+                              <Skeleton
+                                variant="text"
+                                height={25}
+                                width={50}
+                                animation="wave"
+                                sx={{ bgcolor: "#f0f0f0" }}
+                              />
+                            </td>
+                            <td className="px-6 py-4">
+                              <Skeleton
+                                variant="text"
+                                height={25}
+                                width={120}
+                                animation="wave"
+                                sx={{ bgcolor: "#f0f0f0" }}
+                              />
+                            </td>
+                            <td className="px-6 py-4">
+                              <Skeleton
+                                variant="text"
+                                height={25}
+                                width={80}
+                                animation="wave"
+                                sx={{ bgcolor: "#f0f0f0" }}
+                              />
+                            </td>
+                            <td className="px-6 py-4">
+                              <Skeleton
+                                variant="rounded"
+                                height={22}
+                                width={70}
+                                animation="wave"
+                                sx={{
+                                  bgcolor: "#f0f0f0",
+                                  borderRadius: "999px",
+                                }}
+                              />
+                            </td>
+                          </tr>
+                        ))
+                      ) : totalOrders && totalOrders.length > 0 ? (
+                        [...totalOrders]
+                          .sort(
+                            (a, b) =>
+                              new Date(b.created_at).getTime() -
+                              new Date(a.created_at).getTime(),
+                          )
+                          ?.slice(startIndex, endIndex)
+                          .map((item, i) => (
+                            <tr
+                              key={i}
+                              className="hover:bg-background/50 transition-colors"
+                            >
+                              <td className="px-6 py-4 text-sm font-medium text-text-main">
+                                <span className="font-mono">
+                                  {totalOrders.length - (startIndex + i)}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4 text-sm text-text-secondary text-center">
+                                {item.consumer.name}
+                              </td>
+                              <td className="px-6 py-4 text-sm font-semibold text-text-main text-center">
+                                {item.value.toLocaleString("pt-AO", {
+                                  style: "currency",
+                                  currency: "AOA",
+                                })}
+                              </td>
+                              <td className="px-6 py-4 text-center">
+                                <span
+                                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                    item.transport_status === "pendente"
+                                      ? "bg-blue-100 text-blue-800 border border-blue-200"
+                                      : item.status === "pendent"
+                                        ? "bg-yellow-100 text-yellow-800 border border-yellow-200"
+                                        : item.status === "confirmed"
+                                          ? "bg-green-100 text-green-800 border border-green-200"
+                                          : item.status === "rejected"
+                                            ? "bg-red-100 text-red-800 border border-red-200"
+                                            : ""
+                                  }`}
+                                >
+                                  {item.transport_status === "pendente"
+                                    ? "Aguardando resposta do transporte"
+                                    : item.status === "pendent"
+                                      ? "pendente"
+                                      : item.status === "confirmed"
+                                        ? "confirmado"
+                                        : item.status === "rejected"
+                                          ? "rejeitado"
+                                          : item.status}
+                                </span>
                               </td>
                             </tr>
-                          )
-                        }
-                      </tbody>
-                    </table>
-                  </div>
+                          ))
+                      ) : (
+                        <tr>
+                          <td colSpan={8} className="py-20 text-center">
+                            <div className="flex flex-col items-center justify-center w-full">
+                              <p className="text-gray-400 font-medium">
+                                Nenhum pedido encontrado
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
                 </div>
               </div>
-            </main>
-          </div>
+            </div>
+          </main>
         </div>
       </div>
- );
+    </div>
+  );
 }
