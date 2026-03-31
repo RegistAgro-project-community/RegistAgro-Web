@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import { Toast } from "primereact/toast";
 import { useNavigate } from "react-router-dom";
 import { useProducts } from "../../hooks/useProducts/useProduct";
+import Skeleton from "@mui/material/Skeleton";
 interface Product {
   id: string;
   name: string;
@@ -106,11 +107,6 @@ export default function Produtos() {
         <div className="relative flex h-screen w-full overflow-hidden bg-background">
           <Nav sidebarAberto={siderAberto} setSidebarAberto={setSiderAberto} />
           <main className="flex-1 flex flex-col h-full overflow-hidden relative">
-            {isLoading && (
-              <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40">
-                <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
-              </div>
-            )}
             <div className="h-16 w-full bg-white border-b border-border-color flex items-center justify-between  px-8 shrink-0 z-10">
               <div className="flex items-center gap-2">
                 <button
@@ -142,12 +138,25 @@ export default function Produtos() {
               </button>
             </div>
             <div className="flex-1 overflow-auto p-8  bg-background">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {[
-                  {
-                    label: "Total de Produtos",
-                    total: totalProduto || 0,
-                    icon: "grass",
+              {isLoading ? (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {[...Array(3)].map((_, i) => (
+                    <Skeleton
+                      key={i}
+                      variant="rectangular"
+                      height={90}
+                      animation="wave"
+                      sx={{ bgcolor: '#f0f0f0', borderRadius: '8px' }}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {[
+                    {
+                      label: "Total de Produtos",
+                      total: totalProduto || 0,
+                      icon: "grass",
                   },
                   {
                     label: "Baixo Estoque",
@@ -162,7 +171,7 @@ export default function Produtos() {
                 ].map((item, i) => (
                   <div
                     key={i}
-                    className={`bg-surface-light p-4 rounded-xl border border-border-color shadow-sm flex items-center justify-between ${item.icon === "attach_money" ? "hover:border-blue-300/50 " : item.icon === "warning" ? "hover:border-orange-300/50" : item.icon === "grass" ? "bg-primary/30 hover:border-green-300/50" : ""} transition-colors`}
+                    className={`bg-surface-light p-4 rounded-xl border border-gray-300 flex items-center justify-between `}
                   >
                     <div>
                       <p className="text-sm text-text-secondary font-medium">
@@ -181,66 +190,55 @@ export default function Produtos() {
                     </div>
                   </div>
                 ))}
-              </div>
+              </div>)}
               <div className="bg-white rounded-xl border border-border-color shadow-sm overflow-hidden overflow-x-auto mt-5">
-                {/*Search*/}
-                <div className="  p-4  border-b border-border-color flex gap-4 items-center">
+                <div className="  p-4  border border-border-color flex gap-4 items-center">
                   <div className="relative flex-1 max-w-md">
                     <span className="material-symbols-outlined absolute left-5 top-1/2 -translate-1/2 text-gray-400 text-[20px]">
                       search
                     </span>
                     <input
                       type="text"
-                      className="w-full pl-10 pr-4 py-2 bg-background border-none rounded-lg text-sm focus:ring-2 focus:ring-primary/50 text-text-main placeholder-gray-400"
+                      className="w-full pl-10 pr-4 py-2 bg-background border border-gray-200 rounded-full text-sm focus:ring-2 focus:ring-gray-400 text-text-main placeholder-gray-500"
                       placeholder="Buscar produto..."
                       value={searchProduct}
                       onChange={handleSearch}
                     />
                   </div>
                 </div>
-                {/* Tabela */}
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-background border-b border-border-color uppercase">
-                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
-                        Nome do Produto
-                      </th>
-                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
-                        Categoria
-                      </th>
-                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
-                        Estoque
-                      </th>
-                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
-                        Preço
-                      </th>
-
-                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
-                        Transporte
-                      </th>
-                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
-                        Ações
-                      </th>
+                    <tr className="bg-background uppercase">
+                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">Nome do Produto</th>
+                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">Categoria</th>
+                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">Estoque</th>
+                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">Preço</th>
+                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">Transporte</th>
+                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">Ações</th>
                     </tr>
                   </thead>
-
                   <tbody className="divide-y divide-border-color">
-                    {correntItems && correntItems.length > 0 ? (
+                    {isLoading ? (
+                      [...Array(5)].map((_, i) => (
+                        <tr key={i}>
+                          <td className="px-6 py-5"><Skeleton variant="text" height={20} width={140} animation="wave" sx={{ bgcolor: '#f0f0f0' }} /></td>
+                          <td className="px-6 py-5"><Skeleton variant="rounded" height={22} width={80} animation="wave" sx={{ bgcolor: '#f0f0f0', borderRadius: '999px' }} /></td>
+                          <td className="px-6 py-5"><Skeleton variant="text" height={20} width={40}  animation="wave" sx={{ bgcolor: '#f0f0f0' }} /></td>
+                          <td className="px-6 py-5"><Skeleton variant="text" height={20} width={80}  animation="wave" sx={{ bgcolor: '#f0f0f0' }} /></td>
+                          <td className="px-6 py-5"><Skeleton variant="text" height={20} width={90}  animation="wave" sx={{ bgcolor: '#f0f0f0' }} /></td>
+                          <td className="px-6 py-5">
+                            <div className="flex items-center gap-2">
+                              <Skeleton variant="rounded" height={32} width={32} animation="wave" sx={{ bgcolor: '#f0f0f0', borderRadius: '8px' }} />
+                              <Skeleton variant="rounded" height={32} width={32} animation="wave" sx={{ bgcolor: '#f0f0f0', borderRadius: '8px' }} />
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : correntItems && correntItems.length > 0 ? (
                       correntItems.map((item, i) => (
-                        <tr
-                          key={i}
-                          className="hover:bg-gray-50 transition-colors group"
-                        >
-                          <td
-                            className="px-6 py-5 cursor-pointer"
-                            onClick={() =>
-                              navegate(`/produtos/produto-detalhe/${item.id}`)
-                            }
-                          >
-                            <p className="font-bold text-text-main text-sm">
-                              {item.name}
-                            </p>
-                            {/* <p className="text-xs text-gray-500">{item.lote}</p> */}
+                        <tr key={i} className="hover:bg-gray-50 transition-colors group">
+                          <td className="px-6 py-5 cursor-pointer" onClick={() => navegate(`/produtos/produto-detalhe/${item.id}`)}>
+                            <p className="font-bold text-text-main text-sm">{item.name}</p>
                           </td>
                           <td className="px-6 py-5">
                             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-200 text-green-600">
@@ -248,20 +246,13 @@ export default function Produtos() {
                             </span>
                           </td>
                           <td className="px-6 py-5">
-                            <p className="text-sm font-medium text-fw-medium">
-                              {item.qtd}
-                            </p>
+                            <p className="text-sm font-medium text-fw-medium">{item.qtd}</p>
                           </td>
                           <td className="px-6 py-5">
-                            <p className="text-sm font-medium text-text-main">
-                              {item.price}
-                              <span className="text-xs  text-gray-500"></span>
-                            </p>
+                            <p className="text-sm font-medium text-text-main">{item.price}</p>
                           </td>
                           <td className="px-6 py-5">
-                            <span className="text-sm text-text-secondary capitalize">
-                              {item.transport}
-                            </span>
+                            <span className="text-sm text-text-secondary capitalize">{item.transport}</span>
                           </td>
                           <td className="px-6 py-5 text-right">
                             <div className="flex items-center justify-start gap-2">
@@ -298,7 +289,6 @@ export default function Produtos() {
                     )}
                   </tbody>
                 </table>
-                {/* Paginação */}
                 <div className="px-6 py-4 border-t border-border-color flex items-center justify-between">
                   <p className="text-medium text-gray-600">
                     Mostrando{" "}
