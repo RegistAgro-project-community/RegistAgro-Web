@@ -39,11 +39,7 @@ export default function Pedidos() {
   const [siderAberto, setSiderAberto] = useState(false);
   const [rejectOpen, setIsRejectOpen] = useState(false);
   const navegate = useNavigate();
-  const [select, setIsSelect] = useState({ id: "" });
-  function TakeOrderId(id: string) {
-    setIsSelect({ id });
-    setIsRejectOpen(true);
-  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function handleSearch(e: any) {
     setSearchProduct(e.target.value);

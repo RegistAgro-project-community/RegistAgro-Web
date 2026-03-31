@@ -145,11 +145,6 @@ export default function PerfilUsuario() {
           userImgMutation.mutate(e);
         }}
       />
-      {loading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-700 border-t-transparent"></div>
-        </div>
-      )}
       <div className="bg-background text-text-main">
         <div className="relative flex h-screen w-full overflow-hidden bg-background">
           <Nav sidebarAberto={siderAberto} setSidebarAberto={setSiderAberto} />
