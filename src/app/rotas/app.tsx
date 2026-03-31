@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import Nav from "../../components/sideBar/sideBar";
-import DetalhePedido from "../../components/modalDetalhePedido";
+import DetalhePedido from "../../components/PedidoDetalheModal/modalDetalhePedido";
 import Cookies from "js-cookie";
 import { useTracking } from "../../hooks/useTracking/useCarrier";
 import Skeleton from "@mui/material/Skeleton";
@@ -402,7 +402,7 @@ export default function Rotas() {
       <DetalhePedido openDetalhe={abertoDetalhe}>
         <button
           onClick={() => setAbertoDetalhe(false)}
-          className="flex-1 min-w-30 h-12 bg-gray-100 border border-border-color active:scale-93 transition-all hover:text-primary text-text-secondary md:px-4 px-3 md:py-5 py-3 rounded-lg shadow-lg font-bold text-sm leading-normal tracking-[0.015em]"
+          className="flex-1 min-w-30 h-12 bg-gray-100 border border-border-color active:scale-93 transition-all hover:text-primary text-text-secondary md:px-4 px-3 md:py-5 py-3 rounded-lg shadow-lg font-bold text-sm leading-normal tracking-[0.015em] cursor-pointer"
         >
           Fechar Detalhes
         </button>
