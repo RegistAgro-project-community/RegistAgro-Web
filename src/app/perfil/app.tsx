@@ -397,7 +397,10 @@ export default function PerfilUsuario() {
           </main>
         </div>
       </div>
-      <EditarPerfil openEditPerfil={abertoEdit}>
+      <EditarPerfil
+        onClose={() => setAbertoEdit(false)}
+        openEditPerfil={abertoEdit}
+      >
         <button
           onClick={() => setAbertoEdit(false)}
           className="w-full py-2 text-text-muted hover:text-primary font-medium text-sm transition-all underline underline-offset-4 decoration-text-muted/30 active:scale-90"

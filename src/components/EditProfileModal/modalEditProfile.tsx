@@ -6,6 +6,7 @@ import { useProfile } from "../../hooks/useProfile/useProfile";
 import { useUpdateData } from "../../hooks/useUpdateData/useUpdateData";
 type DetalhePros = {
   openEditPerfil: boolean;
+  onClose: () => void;
   children?: React.ReactNode;
 };
 interface ZodIssue {
@@ -20,7 +21,7 @@ interface BackendError {
   info?: string;
   error?: ZodIssue[] | string;
 }
-function EditarPerfil({ openEditPerfil, children }: DetalhePros) {
+function EditarPerfil({ openEditPerfil, onClose, children }: DetalhePros) {
   const [formData, setFormData] = useState({
     name: "",
     adress: "",
@@ -100,7 +101,8 @@ function EditarPerfil({ openEditPerfil, children }: DetalhePros) {
     <>
       <Toast ref={toast} position="top-right" />
       <div
-        className={`
+        onClick={onClose}
+        className={` 
     fixed inset-0  overflow-y-auto flex  items-center justify-center p-4 ${isModalOpen ? "scale-100 opacity-100 visible bg-black/20  backdrop-blur-sm transition-opacity z-60" : "scale-125 opacity-0 invisible"}`}
       >
         {loading && (
@@ -109,7 +111,10 @@ function EditarPerfil({ openEditPerfil, children }: DetalhePros) {
           </div>
         )}
 
-        <div className="bg-surface-light  rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="bg-surface-light  rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300"
+        >
           <div className="p-6 border-b border-gray-100  flex justify-between items-center">
             <h3 className="text-xl font-bold text-text-main ">
               Editar Nome e Endereço
