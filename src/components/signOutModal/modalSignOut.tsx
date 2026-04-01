@@ -4,22 +4,28 @@ import { useNavigate } from "react-router-dom";
 
 type SignOutProps = {
   openSignOut: boolean;
+  onClose: () => void;
   children?: React.ReactNode;
 };
 
-function SignOut({ openSignOut, children }: SignOutProps) {
+function SignOut({ openSignOut, onClose, children }: SignOutProps) {
   const [modalOpen, setModalOpen] = useState(openSignOut);
   const navegate = useNavigate();
   useEffect(() => {
     setModalOpen(openSignOut);
   }, [openSignOut]);
+  if (!openSignOut) return null;
   return (
     <>
       <div
+        onClick={onClose}
         className={`
       fixed inset-0  overflow-y-auto flex  items-center justify-center p-4 ${modalOpen ? "scale-100 opacity-100 visible bg-black/20  backdrop-blur-sm transition-opacity z-60" : "scale-125 opacity-0 invisible"}`}
       >
-        <div className="w-full max-w-120 bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col ">
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="w-full max-w-120 bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col "
+        >
           <div className="flex justify-center pt-7 ">
             {" "}
             <div className="p-4 w-13 h-13  bg-red-50 rounded-full flex items-center justify-center">
