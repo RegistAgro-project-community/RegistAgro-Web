@@ -1,14 +1,19 @@
 type DetalhePros = {
   openDetalhe: boolean;
+  onClose: () => void;
   children?: React.ReactNode;
 };
-function DetalhePedido({ openDetalhe, children }: DetalhePros) {
+function DetalhePedido({ openDetalhe, onClose, children }: DetalhePros) {
   return (
     <div
+      onClick={onClose}
       className={`
     fixed inset-0  overflow-y-auto flex  items-center justify-center p-4 ${openDetalhe ? "scale-100 opacity-100 visible bg-black/20  backdrop-blur-sm transition-opacity z-60" : "scale-125 opacity-0 invisible"}`}
     >
-      <div className="bg-surface-light  w-full max-w-xl rounded-2xl shadow-modal overflow-hidden animate-in fade-in zoom-in duration-200">
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-surface-light  w-full max-w-xl rounded-2xl shadow-modal overflow-hidden animate-in fade-in zoom-in duration-200"
+      >
         <div className="px-8 py-6 border-b border-border-color flex justify-between items-start">
           <div>
             <h3 className="text-xl font-bold text-text-main ">

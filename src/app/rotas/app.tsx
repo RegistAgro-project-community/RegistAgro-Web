@@ -399,7 +399,10 @@ export default function Rotas() {
         </div>
       </div>
 
-      <DetalhePedido openDetalhe={abertoDetalhe}>
+      <DetalhePedido
+        onClose={() => setAbertoDetalhe(false)}
+        openDetalhe={abertoDetalhe}
+      >
         <button
           onClick={() => setAbertoDetalhe(false)}
           className="flex-1 min-w-30 h-12 bg-gray-100 border border-border-color active:scale-93 transition-all hover:text-primary text-text-secondary md:px-4 px-3 md:py-5 py-3 rounded-lg shadow-lg font-bold text-sm leading-normal tracking-[0.015em] cursor-pointer"
