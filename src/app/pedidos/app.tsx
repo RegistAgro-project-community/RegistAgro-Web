@@ -446,7 +446,11 @@ export default function Pedidos() {
           </main>
         </div>
       </div>
-      <RejectOrder openReject={rejectOpen} orderId={select.id}>
+      <RejectOrder
+        openReject={rejectOpen}
+        onClose={() => setIsRejectOpen(false)}
+        orderId={select.id}
+      >
         <button
           className=" flex-1 min-w-30 h-12  bg-red-500 hover:bg-red-600 active:scale-93 transition-all text-white md:px-4 px-3 md:py-0 py-3  rounded-lg shadow-lg  font-bold  text-sm leading-normal tracking-[0.015em]"
           onClick={() => setIsRejectOpen(false)}
