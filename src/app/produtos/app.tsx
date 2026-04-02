@@ -146,7 +146,7 @@ export default function Produtos() {
                       variant="rectangular"
                       height={90}
                       animation="wave"
-                      sx={{ bgcolor: '#f0f0f0', borderRadius: '8px' }}
+                      sx={{ bgcolor: "#f0f0f0", borderRadius: "8px" }}
                     />
                   ))}
                 </div>
@@ -157,40 +157,41 @@ export default function Produtos() {
                       label: "Total de Produtos",
                       total: totalProduto || 0,
                       icon: "grass",
-                  },
-                  {
-                    label: "Baixo Estoque",
-                    total: estoqueBaixo || 0,
-                    icon: "warning",
-                  },
-                  {
-                    label: "Ganhos",
-                    total: ganho || "0Kz",
-                    icon: "attach_money",
-                  },
-                ].map((item, i) => (
-                  <div
-                    key={i}
-                    className={`bg-surface-light p-4 rounded-xl border border-gray-300 flex items-center justify-between `}
-                  >
-                    <div>
-                      <p className="text-sm text-text-secondary font-medium">
-                        {item.label}
-                      </p>
-                      <p className="text-2xl font-bold text-text-main mt-2">
-                        {item.total} {item.icon === "attach_money"}
-                      </p>
-                    </div>
+                    },
+                    {
+                      label: "Baixo Estoque",
+                      total: estoqueBaixo || 0,
+                      icon: "warning",
+                    },
+                    {
+                      label: "Ganhos",
+                      total: ganho || "0Kz",
+                      icon: "attach_money",
+                    },
+                  ].map((item, i) => (
                     <div
-                      className={`h-10 w-10 rounded-full ${item.icon === "attach_money" ? "text-blue-600 bg-blue-100" : item.icon === "warning" ? "bg-orange-100 text-orange-600" : item.icon === "grass" ? "bg-primary/30 text-primary" : ""}  flex items-center justify-center`}
+                      key={i}
+                      className={`bg-surface-light p-4 rounded-xl border border-gray-300 flex items-center justify-between `}
                     >
-                      <span className="material-symbols-outlined">
-                        {item.icon}{" "}
-                      </span>
+                      <div>
+                        <p className="text-sm text-text-secondary font-medium">
+                          {item.label}
+                        </p>
+                        <p className="text-2xl font-bold text-text-main mt-2">
+                          {item.total} {item.icon === "attach_money"}
+                        </p>
+                      </div>
+                      <div
+                        className={`h-10 w-10 rounded-full ${item.icon === "attach_money" ? "text-blue-600 bg-blue-100" : item.icon === "warning" ? "bg-orange-100 text-orange-600" : item.icon === "grass" ? "bg-primary/30 text-primary" : ""}  flex items-center justify-center`}
+                      >
+                        <span className="material-symbols-outlined">
+                          {item.icon}{" "}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>)}
+                  ))}
+                </div>
+              )}
               <div className="bg-white rounded-xl border border-border-color shadow-sm overflow-hidden overflow-x-auto mt-5">
                 <div className="  p-4  border border-border-color flex gap-4 items-center">
                   <div className="relative flex-1 max-w-md">
@@ -209,36 +210,110 @@ export default function Produtos() {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-background uppercase">
-                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">Nome do Produto</th>
-                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">Categoria</th>
-                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">Estoque</th>
-                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">Preço</th>
-                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">Transporte</th>
-                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">Ações</th>
+                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                        Nome do Produto
+                      </th>
+                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                        Categoria
+                      </th>
+                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                        Estoque
+                      </th>
+                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                        Preço
+                      </th>
+                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                        Transporte
+                      </th>
+                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                        Ações
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border-color">
                     {isLoading ? (
                       [...Array(5)].map((_, i) => (
                         <tr key={i}>
-                          <td className="px-6 py-5"><Skeleton variant="text" height={20} width={140} animation="wave" sx={{ bgcolor: '#f0f0f0' }} /></td>
-                          <td className="px-6 py-5"><Skeleton variant="rounded" height={22} width={80} animation="wave" sx={{ bgcolor: '#f0f0f0', borderRadius: '999px' }} /></td>
-                          <td className="px-6 py-5"><Skeleton variant="text" height={20} width={40}  animation="wave" sx={{ bgcolor: '#f0f0f0' }} /></td>
-                          <td className="px-6 py-5"><Skeleton variant="text" height={20} width={80}  animation="wave" sx={{ bgcolor: '#f0f0f0' }} /></td>
-                          <td className="px-6 py-5"><Skeleton variant="text" height={20} width={90}  animation="wave" sx={{ bgcolor: '#f0f0f0' }} /></td>
+                          <td className="px-6 py-5">
+                            <Skeleton
+                              variant="text"
+                              height={20}
+                              width={140}
+                              animation="wave"
+                              sx={{ bgcolor: "#f0f0f0" }}
+                            />
+                          </td>
+                          <td className="px-6 py-5">
+                            <Skeleton
+                              variant="rounded"
+                              height={22}
+                              width={80}
+                              animation="wave"
+                              sx={{ bgcolor: "#f0f0f0", borderRadius: "999px" }}
+                            />
+                          </td>
+                          <td className="px-6 py-5">
+                            <Skeleton
+                              variant="text"
+                              height={20}
+                              width={40}
+                              animation="wave"
+                              sx={{ bgcolor: "#f0f0f0" }}
+                            />
+                          </td>
+                          <td className="px-6 py-5">
+                            <Skeleton
+                              variant="text"
+                              height={20}
+                              width={80}
+                              animation="wave"
+                              sx={{ bgcolor: "#f0f0f0" }}
+                            />
+                          </td>
+                          <td className="px-6 py-5">
+                            <Skeleton
+                              variant="text"
+                              height={20}
+                              width={90}
+                              animation="wave"
+                              sx={{ bgcolor: "#f0f0f0" }}
+                            />
+                          </td>
                           <td className="px-6 py-5">
                             <div className="flex items-center gap-2">
-                              <Skeleton variant="rounded" height={32} width={32} animation="wave" sx={{ bgcolor: '#f0f0f0', borderRadius: '8px' }} />
-                              <Skeleton variant="rounded" height={32} width={32} animation="wave" sx={{ bgcolor: '#f0f0f0', borderRadius: '8px' }} />
+                              <Skeleton
+                                variant="rounded"
+                                height={32}
+                                width={32}
+                                animation="wave"
+                                sx={{ bgcolor: "#f0f0f0", borderRadius: "8px" }}
+                              />
+                              <Skeleton
+                                variant="rounded"
+                                height={32}
+                                width={32}
+                                animation="wave"
+                                sx={{ bgcolor: "#f0f0f0", borderRadius: "8px" }}
+                              />
                             </div>
                           </td>
                         </tr>
                       ))
                     ) : correntItems && correntItems.length > 0 ? (
                       correntItems.map((item, i) => (
-                        <tr key={i} className="hover:bg-gray-50 transition-colors group">
-                          <td className="px-6 py-5 cursor-pointer" onClick={() => navegate(`/produtos/produto-detalhe/${item.id}`)}>
-                            <p className="font-bold text-text-main text-sm">{item.name}</p>
+                        <tr
+                          key={i}
+                          className="hover:bg-gray-50 transition-colors group"
+                        >
+                          <td
+                            className="px-6 py-5 cursor-pointer"
+                            onClick={() =>
+                              navegate(`/produtos/produto-detalhe/${item.id}`)
+                            }
+                          >
+                            <p className="font-bold text-text-main text-sm">
+                              {item.name}
+                            </p>
                           </td>
                           <td className="px-6 py-5">
                             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-200 text-green-600">
@@ -246,13 +321,19 @@ export default function Produtos() {
                             </span>
                           </td>
                           <td className="px-6 py-5">
-                            <p className="text-sm font-medium text-fw-medium">{item.qtd}</p>
+                            <p className="text-sm font-medium text-fw-medium">
+                              {item.qtd}
+                            </p>
                           </td>
                           <td className="px-6 py-5">
-                            <p className="text-sm font-medium text-text-main">{item.price}</p>
+                            <p className="text-sm font-medium text-text-main">
+                              {item.price}
+                            </p>
                           </td>
                           <td className="px-6 py-5">
-                            <span className="text-sm text-text-secondary capitalize">{item.transport}</span>
+                            <span className="text-sm text-text-secondary capitalize">
+                              {item.transport}
+                            </span>
                           </td>
                           <td className="px-6 py-5 text-right">
                             <div className="flex items-center justify-start gap-2">
@@ -344,7 +425,11 @@ export default function Produtos() {
           Cencelar
         </button>
       </EditProduto>
-      <DeleteProduto openDelete={abertoDelete} produtoId={selecionado.id}>
+      <DeleteProduto
+        onClose={() => setAbertoDelete(false)}
+        openDelete={abertoDelete}
+        produtoId={selecionado.id}
+      >
         <button
           className=" flex-1 min-w-30 h-12  bg-red-500 hover:bg-red-600 active:scale-93 transition-all text-white md:px-4 px-3 md:py-0 py-3  rounded-lg shadow-lg  font-bold  text-sm leading-normal tracking-[0.015em]"
           onClick={() => setAbertoDelete(false)}

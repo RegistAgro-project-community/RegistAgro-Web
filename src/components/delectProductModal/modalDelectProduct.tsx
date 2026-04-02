@@ -6,6 +6,7 @@ import { useDelectProducts } from "../../hooks/useDelectProduct/useDelectProduct
 type AddPrudutoProps = {
   openDelete: boolean;
   produtoId: string;
+  onClose: () => void;
   children?: React.ReactNode;
 };
 
@@ -21,7 +22,12 @@ interface BackendError {
   info?: string;
   error?: ZodIssue[] | string;
 }
-function DeleteProduto({ openDelete, children, produtoId }: AddPrudutoProps) {
+function DeleteProduto({
+  openDelete,
+  children,
+  onClose,
+  produtoId,
+}: AddPrudutoProps) {
   const [modalOpen, setModalOpen] = useState(openDelete);
   const [loading, setLoading] = useState(false);
   const toast = useRef<Toast>(null);
@@ -81,6 +87,7 @@ function DeleteProduto({ openDelete, children, produtoId }: AddPrudutoProps) {
     <>
       <Toast ref={toast} position="top-right" />
       <div
+        onClick={onClose}
         className={`
     fixed inset-0  overflow-y-auto flex  items-center justify-center p-4 ${modalOpen ? "scale-100 opacity-100 visible bg-black/20  backdrop-blur-sm transition-opacity z-60" : "scale-125 opacity-0 invisible"}`}
       >
