@@ -120,7 +120,7 @@ function RejectOrder({
                   {children}
                   <button
                     onClick={handleRejectOrder}
-                    className="flex-1 min-w-43 h-12 bg-primary hover:bg-primary-hover  items-center justify-center active:scale-93 transition-all text-white md:px-4 px-3 md:py-0 py-3  rounded-lg shadow-lg  font-bold  text-sm leading-normal tracking-[0.015em]"
+                    className="flex-1 min-w-43 h-12 bg-primary hover:bg-primary-hover  items-center justify-center active:scale-93 transition-all text-white md:px-4 px-3 md:py-0 py-3  rounded-lg shadow-lg  font-bold  text-sm leading-normal tracking-[0.015em] cursor-pointer"
                   >
                     <span className="truncate">Confirmar Rejeição</span>
                   </button>

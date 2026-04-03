@@ -403,7 +403,7 @@ export default function PerfilUsuario() {
       >
         <button
           onClick={() => setAbertoEdit(false)}
-          className="w-full py-2 text-text-muted hover:text-primary font-medium text-sm transition-all underline underline-offset-4 decoration-text-muted/30 active:scale-90"
+          className="w-full py-3.5 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl shadow-lg  transition-all active:scale-90 cursor-pointer"
           type="button"
         >
           Cancelar

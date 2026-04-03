@@ -170,7 +170,7 @@ function EditarPerfil({ openEditPerfil, onClose, children }: DetalhePros) {
                 onClick={(e) => {
                   handleUpdateData(e);
                 }}
-                className="w-full py-3.5 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl shadow-lg  transition-all active:scale-90"
+                className="w-full py-3.5 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl shadow-lg  transition-all active:scale-90 cursor-pointer"
                 type="submit"
               >
                 Guardar Alterações

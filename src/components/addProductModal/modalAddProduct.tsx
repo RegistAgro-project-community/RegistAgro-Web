@@ -330,7 +330,7 @@ function AddPruduto({ open, children }: AddPrudutoProps) {
               {children}
               <button
                 onClick={handleAddProduct}
-                className=" bg-primary hover:bg-primary-hover active:scale-93 transition-all text-white md:px-5 px-3 md:py-2.5 py-2 rounded-lg shadow-lg shadow-primary/25 font-bold  text-sm"
+                className=" bg-primary hover:bg-primary-hover active:scale-93 transition-all text-white md:px-5 px-3 md:py-2.5 py-2 rounded-lg shadow-lg shadow-primary/25 font-bold  text-sm cursor-pointer"
                 type="submit"
               >
                 Salvar Produto

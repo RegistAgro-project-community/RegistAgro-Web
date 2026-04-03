@@ -422,7 +422,7 @@ export default function Pedidos() {
                     <span className="font-medium text-text-main">
                       {totalItems}
                     </span>{" "}
-                    Produtos
+                    Pedidos
                   </p>
                   <div className="flex gap-2">
                     <button
@@ -452,7 +452,7 @@ export default function Pedidos() {
         orderId={select.id}
       >
         <button
-          className=" flex-1 min-w-30 h-12  bg-red-500 hover:bg-red-600 active:scale-93 transition-all text-white md:px-4 px-3 md:py-0 py-3  rounded-lg shadow-lg  font-bold  text-sm leading-normal tracking-[0.015em]"
+          className=" flex-1 min-w-30 h-12  bg-red-500 hover:bg-red-600 active:scale-93 transition-all text-white md:px-4 px-3 md:py-0 py-3  rounded-lg shadow-lg  font-bold  text-sm leading-normal tracking-[0.015em] cursor-pointer"
           onClick={() => setIsRejectOpen(false)}
         >
           <span className="truncate">Cancelar</span>
