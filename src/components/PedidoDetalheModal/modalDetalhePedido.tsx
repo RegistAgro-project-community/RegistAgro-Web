@@ -15,6 +15,7 @@ interface OrderData {
   carrier: string;
   date: string;
   status: string;
+  driver: string;
   deliveryAddress: DeliveryAddress;
   products: Products;
 }
@@ -109,7 +110,7 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
                   Motorista Responsável
                 </p>
                 <p className="text-sm font-semibold text-text-main ">
-                  Ricardo Oliveira
+                  {order?.driver}
                 </p>
               </div>
             </div>
