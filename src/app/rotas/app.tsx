@@ -21,6 +21,7 @@ interface OrderData {
   client: string;
   carrier: string;
   date: string;
+  driver: string;
   status: string;
   deliveryAddress: DeliveryAddress;
   products: Products;
