@@ -5,13 +5,25 @@ import DetalhePedido from "../../components/PedidoDetalheModal/modalDetalhePedid
 import Cookies from "js-cookie";
 import { useTracking } from "../../hooks/useTracking/useCarrier";
 import Skeleton from "@mui/material/Skeleton";
-
+interface DeliveryAddress {
+  street: string;
+  neighborhood: string;
+  city: string;
+  province: string;
+}
+interface Products {
+  name: string;
+  weight: string;
+  qty: number;
+}
 interface OrderData {
   id: string;
   client: string;
   carrier: string;
   date: string;
   status: string;
+  deliveryAddress: DeliveryAddress;
+  products: Products;
 }
 
 export default function Rotas() {
@@ -26,8 +38,14 @@ export default function Rotas() {
   const [correntPage, setIsCorrentPage] = useState(1);
   const itemsPerPage = 5;
   const [searchOrder, setIsSearchOrder] = useState("");
+  const [orderSelected, setIsOrderSelected] = useState<OrderData | null>(null);
   const { data } = useTracking(token);
 
+  function handleShowDetail(order: OrderData) {
+    setIsOrderSelected(order);
+    console.log(orderSelected);
+    setAbertoDetalhe(true);
+  }
   function handleSearch(e: any) {
     setIsSearchOrder(e.target.value);
     setIsCorrentPage(1);
@@ -256,7 +274,7 @@ export default function Rotas() {
                                 item.status === "delivered" ||
                                 item.status === "canceled"
                                   ? undefined
-                                  : () => setAbertoDetalhe(true)
+                                  : () => handleShowDetail(item)
                               }
                               className={`text-sm font-semibold text-text-main ${
                                 item.status === "delivered" ||
@@ -328,7 +346,7 @@ export default function Rotas() {
                                 {item.status !== "delivered" &&
                                 item.status !== "canceled" ? null : (
                                   <button
-                                    onClick={() => setAbertoDetalhe(true)}
+                                    onClick={() => handleShowDetail(item)}
                                     className={`inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-surface-dark border active:scale-93  border-border-color hover:bg-gray-50 text-text-secondary text-xs font-medium rounded-lg transition-all cursor-pointer`}
                                   >
                                     <span className="material-symbols-outlined text-[16px] ">
@@ -402,6 +420,7 @@ export default function Rotas() {
       <DetalhePedido
         onClose={() => setAbertoDetalhe(false)}
         openDetalhe={abertoDetalhe}
+        order={orderSelected}
       >
         <button
           onClick={() => setAbertoDetalhe(false)}

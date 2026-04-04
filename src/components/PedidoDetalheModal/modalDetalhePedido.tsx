@@ -1,9 +1,30 @@
+interface DeliveryAddress {
+  street: string;
+  neighborhood: string;
+  city: string;
+  province: string;
+}
+interface Products {
+  name: string;
+  weight: string;
+  qty: number;
+}
+interface OrderData {
+  id: string;
+  client: string;
+  carrier: string;
+  date: string;
+  status: string;
+  deliveryAddress: DeliveryAddress;
+  products: Products;
+}
 type DetalhePros = {
   openDetalhe: boolean;
   onClose: () => void;
   children?: React.ReactNode;
+  order: OrderData | null;
 };
-function DetalhePedido({ openDetalhe, onClose, children }: DetalhePros) {
+function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
   return (
     <div
       onClick={onClose}
@@ -24,7 +45,7 @@ function DetalhePedido({ openDetalhe, onClose, children }: DetalhePros) {
             </p>
           </div>
           <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200">
-            Entregue
+            {order?.status}
           </span>
         </div>
         <div className="p-8">
