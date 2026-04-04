@@ -44,8 +44,28 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
               Pedido <span className="text-primary font-semibold">#1234</span>
             </p>
           </div>
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200">
-            {order?.status}
+          <span
+            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold  border  ${
+              order?.status === "delivered"
+                ? "bg-gray-100 text-gray-600 border-gray-200"
+                : order?.status === "inTransit"
+                  ? "bg-blue-50 text-blue-600 border-blue-100"
+                  : order?.status === "waitingPickup"
+                    ? "bg-green-100 text-green-800 border-green-200"
+                    : order?.status === "canceled"
+                      ? "bg-red-100 text-red-800 border-red-200"
+                      : ""
+            }`}
+          >
+            {order?.status === "delivered"
+              ? "entregue"
+              : order?.status === "waitingPickup"
+                ? "aguardando coleta"
+                : order?.status === "inTransit"
+                  ? "Em Trânsito"
+                  : order?.status === "canceled"
+                    ? "cancelado"
+                    : ""}
           </span>
         </div>
         <div className="p-8">
@@ -56,7 +76,7 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
                   Cliente
                 </p>
                 <p className="text-sm font-semibold text-text-main ">
-                  Maria Silva
+                  {order?.client}
                 </p>
               </div>
               <div>
@@ -64,12 +84,13 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
                   Endereço de Entrega
                 </p>
                 <p className="text-sm text-text-main  leading-relaxed">
-                  Rua das Flores, 123
+                  {order?.deliveryAddress.street}
                   <br />
-                  Jardim Paulistano
+                  {order?.deliveryAddress.neighborhood}
                   <br />
                   <span className="font-semibold text-primary">
-                    São Paulo, SP
+                    {order?.deliveryAddress.city},{" "}
+                    {order?.deliveryAddress.province}
                   </span>
                 </p>
               </div>
@@ -80,7 +101,7 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
                   Transportadora
                 </p>
                 <p className="text-sm font-semibold text-text-main ">
-                  TransAgro Rápido
+                  {order?.carrier}
                 </p>
               </div>
               <div>
@@ -93,27 +114,35 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
               </div>
             </div>
           </div>
-          <div className="bg-green-50/50  border border-green-100  rounded-xl p-4 mb-6">
-            <p className="text-[10px] uppercase tracking-wider font-bold text-primary mb-2 flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[16px]">
-                verified
-              </span>
-              Comprovativo de Entrega
-            </p>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-green-600">
-                  event_available
-                </span>
-                <div>
-                  <p className="text-xs text-text-secondary">Entregue em:</p>
-                  <p className="text-sm font-bold text-text-main ">
-                    20/05/2024 às 14:30
-                  </p>
+          {order?.status === "delivered" ? (
+            <>
+              <div className="bg-green-50/50  border border-green-100  rounded-xl p-4 mb-6">
+                <p className="text-[10px] uppercase tracking-wider font-bold text-primary mb-2 flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-[16px]">
+                    verified
+                  </span>
+                  Comprovativo de Entrega
+                </p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="material-symbols-outlined text-green-600">
+                      event_available
+                    </span>
+                    <div>
+                      <p className="text-xs text-text-secondary">
+                        Entregue em:
+                      </p>
+                      <p className="text-sm font-bold text-text-main ">
+                        {order?.date} às 14:30
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </>
+          ) : (
+            ""
+          )}
           <div className="mb-8">
             <p className="text-[10px] uppercase tracking-wider font-bold text-text-secondary mb-3">
               Produtos na Entrega
@@ -123,13 +152,19 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
                 <thead className="bg-background-light und-dark text-text-secondary border-b border-border-color">
                   <tr>
                     <th className="px-4 py-2 font-semibold">Item</th>
-                    <th className="px-4 py-2 font-semibold text-right">Qtd</th>
+                    <th className="px-4 py-2 font-semibold text-right">
+                      Quantidade
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border-color text-text-main ">
                   <tr>
-                    <td className="px-4 py-3">Sacas de Milho Híbrido (60kg)</td>
-                    <td className="px-4 py-3 text-right font-medium">15</td>
+                    <td className="px-4 py-3">
+                      {order?.products.name} ({order?.products.weight})
+                    </td>
+                    <td className="px-4 py-3 text-right font-medium">
+                      {order?.products.qty}
+                    </td>
                   </tr>
                 </tbody>
               </table>
