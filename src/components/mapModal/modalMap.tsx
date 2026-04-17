@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useJsApiLoader, GoogleMap } from "@react-google-maps/api";
 type MapPros = {
   openMap: boolean;
   onClose: () => void;
@@ -7,6 +8,19 @@ type MapPros = {
 
 function MapModal({ openMap, onClose, children }: MapPros) {
   const [expanded, setIsExpanded] = useState(false);
+  //   Luanda A Bengo
+  //   const initialPosition = {
+  //     lat: -9.1042,
+  //     lng: 13.7289,
+  //   }; Luanda
+  const initialPosition = {
+    lat: -8.8383,
+    lng: 13.2344,
+  };
+
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API_KEY,
+  });
   useEffect(() => {
     const expandedFalse = async () => {
       setIsExpanded(false);
@@ -44,7 +58,22 @@ function MapModal({ openMap, onClose, children }: MapPros) {
               {children}
             </div>
           </div>
-          <div className="flex-1 bg-orange-500" />
+          <div className="flex-1  bg-orange-500" />
+          {!isLoaded && <div className="text-white">Carregando mapa...</div>}
+          {isLoaded && (
+            <GoogleMap
+              center={initialPosition}
+              mapContainerStyle={{ width: "100%", height: "100%" }}
+              zoom={15}
+              options={{
+                fullscreenControl: false,
+                draggable: false,
+                streetViewControl: false,
+                keyboardShortcuts: false,
+                mapTypeControl: false,
+              }}
+            ></GoogleMap>
+          )}
         </div>
       </div>
     </>
