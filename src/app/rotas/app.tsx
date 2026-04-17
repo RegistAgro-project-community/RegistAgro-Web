@@ -5,6 +5,7 @@ import DetalhePedido from "../../components/PedidoDetalheModal/modalDetalhePedid
 import Cookies from "js-cookie";
 import { useTracking } from "../../hooks/useTracking/useCarrier";
 import Skeleton from "@mui/material/Skeleton";
+import MapModal from "../../components/mapModal/modalMap";
 interface DeliveryAddress {
   street: string;
   neighborhood: string;
@@ -31,6 +32,7 @@ export default function Rotas() {
   const [isLoading, setIsLoading] = useState(true);
   const [siderAberto, setSiderAberto] = useState(false);
   const [abertoDetalhe, setAbertoDetalhe] = useState(false);
+  const [openMap, setIsOpenMap] = useState(false);
   const [waitingPickup, setIsWaitingPickup] = useState("");
   const [inTransit, setIsInTrasit] = useState("");
   const [delivered, setIsDelivered] = useState("");
@@ -336,7 +338,10 @@ export default function Rotas() {
                                       </span>
                                       Entrar em contacto com o motorista
                                     </button>
-                                    <button className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white  border  active:scale-93 border-border-color hover:border-primary hover:text-primary text-text-secondary text-xs font-medium rounded-lg transition-all cursor-pointer">
+                                    <button
+                                      onClick={() => setIsOpenMap(true)}
+                                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white  border  active:scale-93 border-border-color hover:border-primary hover:text-primary text-text-secondary text-xs font-medium rounded-lg transition-all cursor-pointer"
+                                    >
                                       <span className="material-symbols-outlined text-[16px]">
                                         map
                                       </span>
@@ -430,6 +435,14 @@ export default function Rotas() {
           Fechar Detalhes
         </button>
       </DetalhePedido>
+      <MapModal openMap={openMap} onClose={() => setIsOpenMap(false)}>
+        <button
+          onClick={() => setIsOpenMap(false)}
+          className="px-2 py-1 flex items-center justify-center hover:text-gray-600 hover:bg-red-200 rounded cursor-pointer"
+        >
+          <span className="material-symbols-outlined">close</span>
+        </button>
+      </MapModal>
     </>
   );
 }
