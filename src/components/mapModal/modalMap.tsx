@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useJsApiLoader, GoogleMap } from "@react-google-maps/api";
+import { useJsApiLoader, GoogleMap, Marker } from "@react-google-maps/api";
 type MapPros = {
   openMap: boolean;
   onClose: () => void;
@@ -17,7 +17,20 @@ function MapModal({ openMap, onClose, children }: MapPros) {
     lat: -8.8383,
     lng: 13.2344,
   };
-
+  const [userLocation, setUserLocation] = useState(initialPosition);
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      },
+      (error) => {
+        console.error("Erro:", error);
+      },
+    );
+  }, []);
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API_KEY,
   });
@@ -62,17 +75,17 @@ function MapModal({ openMap, onClose, children }: MapPros) {
           {!isLoaded && <div className="text-white">Carregando mapa...</div>}
           {isLoaded && (
             <GoogleMap
-              center={initialPosition}
+              center={userLocation}
               mapContainerStyle={{ width: "100%", height: "100%" }}
               zoom={15}
               options={{
                 fullscreenControl: false,
-                draggable: false,
+                
                 streetViewControl: false,
                 keyboardShortcuts: false,
                 mapTypeControl: false,
               }}
-            ></GoogleMap>
+            ><Marker position={userLocation} /></GoogleMap>
           )}
         </div>
       </div>
