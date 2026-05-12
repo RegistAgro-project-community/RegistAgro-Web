@@ -386,6 +386,18 @@ export default function Pedidos() {
                                 Contratar Transporte
                               </button>
                             </td>
+                          ) : item.status === "confirmed" &&
+                            item.transport_status === "inconllection" ? (
+                            <>
+                              <td className="px-6 py-5 text-right">
+                                <button
+                                  // onClick={}
+                                  className="px-4 py-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-lg shadow-sm transition-all transform active:scale-95 cursor-pointer"
+                                >
+                                  Começar o escoamento
+                                </button>
+                              </td>
+                            </>
                           ) : (
                             ""
                           )}
