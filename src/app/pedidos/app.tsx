@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import Nav from "../../components/sideBar/sideBar";
 import Cookies from "js-cookie";
 import { Toast } from "primereact/toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useOrders } from "../../hooks/userOrders/useOrders";
 import { useAcceptOrders } from "../../hooks/useAcceptOrder/useAcceptOrders";
 import RejectOrder from "../../components/rejectOrderModal/modalRejectModal";
@@ -32,7 +32,7 @@ export default function Pedidos() {
   const [correntPage, setCorrentPage] = useState(1);
   const itemsPerPage = 5;
   const [searchProduct, setSearchProduct] = useState("");
-  const [ongoing, setOngoing] = useState("");
+  const [incollection, setIncollection] = useState("");
   const [pendentOrder, setPedentOrder] = useState("");
   const toast = useRef<Toast>(null);
   const [totalOrder, setTotalOrder] = useState("");
@@ -58,7 +58,7 @@ export default function Pedidos() {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setPedentOrder(String(data.pendents));
       setTotalOrders([...data.orders]);
-      setOngoing(String(data.ongoing));
+      setIncollection(String(data.incollection));
       setTotalOrder(String(data.total));
     }
   }, [token, data]);
@@ -168,7 +168,7 @@ export default function Pedidos() {
                     },
                     {
                       label: "Aguardando Coleta",
-                      total: ongoing || 0,
+                      total: incollection || 0,
                       icon: "local_shipping",
                     },
                   ].map((item, i) => (
@@ -337,24 +337,28 @@ export default function Pedidos() {
                               className={`inline-flex items-center px-2.5 py-0 rounded-full text-xs font-medium ${
                                 item.transport_status === "pendente"
                                   ? "bg-blue-100 text-blue-800 border border-blue-200"
-                                  : item.status === "pendent"
-                                    ? "bg-yellow-100 text-yellow-800 border border-yellow-200"
-                                    : item.status === "confirmed"
-                                      ? "bg-green-100 text-green-800 border border-green-200"
-                                      : item.status === "rejected"
-                                        ? "bg-red-100 text-red-800 border border-red-200"
-                                        : ""
+                                  : item.status === "incollection"
+                                    ? "bg-teal-100 text-teal-800 border border-teal-200"
+                                    : item.status === "pendent"
+                                      ? "bg-yellow-100 text-yellow-800 border border-yellow-200"
+                                      : item.status === "confirmed"
+                                        ? "bg-green-100 text-green-800 border border-green-200"
+                                        : item.status === "rejected"
+                                          ? "bg-red-100 text-red-800 border border-red-200"
+                                          : ""
                               }`}
                             >
                               {item.transport_status === "pendente"
                                 ? "Aguardando resposta do transporte"
-                                : item.status === "pendent"
-                                  ? "pendente"
-                                  : item.status === "confirmed"
-                                    ? "confirmado"
-                                    : item.status === "rejected"
-                                      ? "rejeitado"
-                                      : item.status}
+                                : item.status === "incollection"
+                                  ? "aguardando à coleta"
+                                  : item.status === "pendent"
+                                    ? "pendente"
+                                    : item.status === "confirmed"
+                                      ? "confirmado"
+                                      : item.status === "rejected"
+                                        ? "rejeitado"
+                                        : item.status}
                             </span>
                           </td>
                           {item.status === "pendent" ? (
@@ -377,7 +381,7 @@ export default function Pedidos() {
                               </div>
                             </td>
                           ) : item.status === "confirmed" &&
-                            item.transport_status !== "pendente" ? (
+                            item.transport_status ? (
                             <td className="px-6 py-5 text-right">
                               <button
                                 onClick={() => handleSearchTransport(item)}
@@ -386,18 +390,19 @@ export default function Pedidos() {
                                 Contratar Transporte
                               </button>
                             </td>
-                          ) : item.status === "confirmed" &&
-                            item.transport_status === "inconllection" ? (
-                            <>
-                              <td className="px-6 py-5 text-right">
-                                <button
-                                  // onClick={}
-                                  className="px-4 py-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-lg shadow-sm transition-all transform active:scale-95 cursor-pointer"
-                                >
-                                  Começar o escoamento
-                                </button>
-                              </td>
-                            </>
+                          ) : item.status === "incollection" &&
+                            item.transport_status === "aguardando_coleta" ? (
+                            <td className="px-6 py-5 text-right">
+                              <Link
+                                // onClick={}
+                                to={"/rotas"}
+                                className={
+                                  "px-4 py-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-lg shadow-sm transition-all transform active:scale-95 cursor-pointer"
+                                }
+                              >
+                                Ir para rastreamento
+                              </Link>
+                            </td>
                           ) : (
                             ""
                           )}
