@@ -444,7 +444,7 @@ export default function Pedidos() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => setCorrentPage((prev) => prev - 1)}
-                      className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 disabled:opacity-50 active:scale-90"
+                      className="px-3 py-1 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 disabled:opacity-50 active:scale-90 cursor-pointer"
                       disabled={correntPage === 1}
                     >
                       Anterior
