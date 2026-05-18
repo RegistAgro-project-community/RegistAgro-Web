@@ -32,6 +32,7 @@ export default function Home() {
   const [correntPage] = useState(1);
   const [fazendaIgm, setFazendaImg] = useState("");
   const [ongoing, setOngoing] = useState("");
+  const [balance, setIsBalance] = useState("");
   const [pendentOrder, setPedentOrder] = useState("");
   const [totalProduto, setTotalProduto] = useState("");
   const [siderAberto, setSiderAberto] = useState(false);
@@ -47,6 +48,7 @@ export default function Home() {
       setPedentOrder(orders.pendents || "");
       setOngoing(orders.ongoing || "");
       setTotalProduto(String(products.totalProducts));
+      setIsBalance(profile.balance || "");
       setTotalOrders([...orders.orders]);
       console.log(token);
     }
@@ -139,7 +141,7 @@ export default function Home() {
                   hoje.
                 </p>
                 {isLoading ? (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6 my-4">
                     {[...Array(4)].map((_, i) => (
                       <Skeleton
                         key={i}
@@ -171,7 +173,7 @@ export default function Home() {
                       {
                         icon: "attach_money",
                         label: "Receita total",
-                        total: 0,
+                        total: balance || 0,
                       },
                     ].map((item, i) => (
                       <div
