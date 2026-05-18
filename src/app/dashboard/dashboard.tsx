@@ -140,7 +140,7 @@ export default function Home() {
                 </p>
                 {isLoading ? (
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-4">
-                    {[...Array(3)].map((_, i) => (
+                    {[...Array(4)].map((_, i) => (
                       <Skeleton
                         key={i}
                         variant="rectangular"
@@ -151,7 +151,7 @@ export default function Home() {
                     ))}
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6 my-4">
                     {[
                       {
                         icon: "inventory_2",
@@ -168,6 +168,11 @@ export default function Home() {
                         label: "Entregas em andamento",
                         total: ongoing || 0,
                       },
+                      {
+                        icon: "attach_money",
+                        label: "Receita total",
+                        total: 0,
+                      },
                     ].map((item, i) => (
                       <div
                         key={i}
@@ -178,7 +183,12 @@ export default function Home() {
                             {item.label}
                           </p>
                           <h3 className="text-3xl font-bold text-text-main">
-                            {item.total}
+                            {item.label === "Receita total"
+                              ? item.total.toLocaleString("pt-AO", {
+                                  style: "currency",
+                                  currency: "AOA",
+                                })
+                              : item.total}
                           </h3>
                         </div>
                         <div className="flex justify-between items-start">
@@ -190,7 +200,9 @@ export default function Home() {
                                   ? "bg-yellow-50 text-yellow-600"
                                   : item.icon === "local_shipping"
                                     ? "bg-blue-50 text-blue-600"
-                                    : ""
+                                    : item.icon === "attach_money"
+                                      ? "bg-emerald-50 text-emerald-600"
+                                      : ""
                             }`}
                           >
                             <span className="material-symbols-outlined text-[28px]">
@@ -310,24 +322,28 @@ export default function Home() {
                                   className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                                     item.transport_status === "pendente"
                                       ? "bg-blue-100 text-blue-800 border border-blue-200"
-                                      : item.status === "pendent"
-                                        ? "bg-yellow-100 text-yellow-800 border border-yellow-200"
-                                        : item.status === "confirmed"
-                                          ? "bg-green-100 text-green-800 border border-green-200"
-                                          : item.status === "rejected"
-                                            ? "bg-red-100 text-red-800 border border-red-200"
-                                            : ""
+                                      : item.status === "incollection"
+                                        ? "bg-teal-100 text-teal-800 border border-teal-200"
+                                        : item.status === "pendent"
+                                          ? "bg-yellow-100 text-yellow-800 border border-yellow-200"
+                                          : item.status === "confirmed"
+                                            ? "bg-green-100 text-green-800 border border-green-200"
+                                            : item.status === "rejected"
+                                              ? "bg-red-100 text-red-800 border border-red-200"
+                                              : ""
                                   }`}
                                 >
                                   {item.transport_status === "pendente"
                                     ? "Aguardando resposta do transporte"
                                     : item.status === "pendent"
                                       ? "pendente"
-                                      : item.status === "confirmed"
-                                        ? "confirmado"
-                                        : item.status === "rejected"
-                                          ? "rejeitado"
-                                          : item.status}
+                                      : item.status === "incollection"
+                                        ? "aguardando à coleta"
+                                        : item.status === "confirmed"
+                                          ? "confirmado"
+                                          : item.status === "rejected"
+                                            ? "rejeitado"
+                                            : item.status}
                                 </span>
                               </td>
                             </tr>
