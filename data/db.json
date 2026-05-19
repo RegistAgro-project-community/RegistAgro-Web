@@ -1,8 +1,8 @@
 {
   "tracking": {
     "cardsData": {
-      "waitingPickup": 28,
-      "inTransit": 31,
+      "incollection": 28,
+      "ongoing": 31,
       "delivered": 14
     },
     "orders": [
@@ -11,7 +11,7 @@
         "client": "Restaurante Sabor",
         "carrier": "AgroLog Express",
         "date": "2023-10-14",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "António Mbala",
         "deliveryAddress": {
           "street": "Rua Rainha Njinga, 12",
@@ -30,7 +30,7 @@
         "client": "Maria Fernandes",
         "carrier": "Logística Verde",
         "date": "2023-10-14",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Esperança Luvualu",
         "deliveryAddress": {
           "street": "Av. Agostinho Neto, 340",
@@ -87,7 +87,7 @@
         "client": "João Victor",
         "carrier": "Rota do Sol",
         "date": "2023-10-12",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Joaquim Dala",
         "deliveryAddress": {
           "street": "Rua Marien Ngouabi, 55",
@@ -125,7 +125,7 @@
         "client": "Lucas Andrade",
         "carrier": "TransAgro Rápido",
         "date": "2023-10-11",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Manuel Kussumua",
         "deliveryAddress": {
           "street": "Rua Patrice Lumumba, 19",
@@ -182,7 +182,7 @@
         "client": "Fernanda Rocha",
         "carrier": "Sul Transportes",
         "date": "2023-10-10",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Conceição Buela",
         "deliveryAddress": {
           "street": "Av. Deolinda Rodrigues, 77",
@@ -201,7 +201,7 @@
         "client": "Daniel Martins",
         "carrier": "Caminho Verde",
         "date": "2023-10-09",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Hélder Nguimbi",
         "deliveryAddress": {
           "street": "Rua Major Kanhangulo, 640",
@@ -239,7 +239,7 @@
         "client": "Bruno Teixeira",
         "carrier": "AgroLog Express",
         "date": "2023-10-08",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Silvio Mateus",
         "deliveryAddress": {
           "street": "Rua da Missão, 250",
@@ -296,7 +296,7 @@
         "client": "Patricia Melo",
         "carrier": "Rápido Pantanal",
         "date": "2023-10-07",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Celeste Pinto",
         "deliveryAddress": {
           "street": "Av. Pedro de Castro Van-Dúnem, 67",
@@ -315,7 +315,7 @@
         "client": "Tiago Lopes",
         "carrier": "Rota do Sol",
         "date": "2023-10-06",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Francisco Dias",
         "deliveryAddress": {
           "street": "Rua Kwame Nkrumah, 380",
@@ -353,7 +353,7 @@
         "client": "Mateus Correia",
         "carrier": "TransAgro Rápido",
         "date": "2023-10-05",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Januário Leite",
         "deliveryAddress": {
           "street": "Rua Saidy Mingas, 30",
@@ -372,7 +372,7 @@
         "client": "Juliana Pires",
         "carrier": "Velocidade Agro",
         "date": "2023-10-05",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Delfina Campos",
         "deliveryAddress": {
           "street": "Av. Cmdt. Valódia, 150",
@@ -410,7 +410,7 @@
         "client": "Luciana Freitas",
         "carrier": "Sul Transportes",
         "date": "2023-10-04",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Esperança Luvualu",
         "deliveryAddress": {
           "street": "Av. Agostinho Neto, 340",
@@ -429,7 +429,7 @@
         "client": "Vitor Cunha",
         "carrier": "Caminho Verde",
         "date": "2023-10-03",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Domingos Neto",
         "deliveryAddress": {
           "street": "Rua Amílcar Cabral, 78",
@@ -467,7 +467,7 @@
         "client": "Gabriel Batista",
         "carrier": "AgroLog Express",
         "date": "2023-10-02",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Joaquim Dala",
         "deliveryAddress": {
           "street": "Rua Marien Ngouabi, 55",
@@ -486,7 +486,7 @@
         "client": "Eduarda Monteiro",
         "carrier": "Logística Verde",
         "date": "2023-10-02",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Rosa Tchissola",
         "deliveryAddress": {
           "street": "Av. Comandante Gika, 430",
@@ -524,7 +524,7 @@
         "client": "Camila Azevedo",
         "carrier": "Rápido Pantanal",
         "date": "2023-10-01",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Graça Ndala",
         "deliveryAddress": {
           "street": "Av. Ho Chi Minh, 88",
@@ -543,7 +543,7 @@
         "client": "Diego Farias",
         "carrier": "Rota do Sol",
         "date": "2023-09-30",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Albino Muhongo",
         "deliveryAddress": {
           "street": "Rua Che Guevara, 310",
@@ -581,7 +581,7 @@
         "client": "Marcos Vieira",
         "carrier": "TransAgro Rápido",
         "date": "2023-09-29",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Hélder Nguimbi",
         "deliveryAddress": {
           "street": "Rua Major Kanhangulo, 640",
@@ -600,7 +600,7 @@
         "client": "Larissa Antunes",
         "carrier": "Velocidade Agro",
         "date": "2023-09-29",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Lurdes Cavalo",
         "deliveryAddress": {
           "street": "Av. Norton de Matos, 95",
@@ -638,7 +638,7 @@
         "client": "Tatiana Neves",
         "carrier": "Sul Transportes",
         "date": "2023-09-28",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Beatriz Lopes",
         "deliveryAddress": {
           "street": "Av. 1º de Maio, 500",
@@ -657,7 +657,7 @@
         "client": "Rodrigo Mota",
         "carrier": "Caminho Verde",
         "date": "2023-09-27",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Armindo Gomes",
         "deliveryAddress": {
           "street": "Rua dos Coqueiros, 180",
@@ -695,7 +695,7 @@
         "client": "Igor Nascimento",
         "carrier": "AgroLog Express",
         "date": "2023-09-26",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Francisco Dias",
         "deliveryAddress": {
           "street": "Rua Kwame Nkrumah, 380",
@@ -714,7 +714,7 @@
         "client": "Clara Pacheco",
         "carrier": "Logística Verde",
         "date": "2023-09-26",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Amélia Correia",
         "deliveryAddress": {
           "street": "Av. Revolução de Outubro, 412",
@@ -771,7 +771,7 @@
         "client": "Nelson Braga",
         "carrier": "Rota do Sol",
         "date": "2023-09-24",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "António Mbala",
         "deliveryAddress": {
           "street": "Rua Rainha Njinga, 12",
@@ -809,7 +809,7 @@
         "client": "Gustavo Peixoto",
         "carrier": "TransAgro Rápido",
         "date": "2023-09-23",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Domingos Neto",
         "deliveryAddress": {
           "street": "Rua Amílcar Cabral, 78",
@@ -828,7 +828,7 @@
         "client": "Daniela Borges",
         "carrier": "Velocidade Agro",
         "date": "2023-09-23",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Filomena Kalunga",
         "deliveryAddress": {
           "street": "Av. 4 de Fevereiro, 201",
@@ -866,7 +866,7 @@
         "client": "Alice Furtado",
         "carrier": "Sul Transportes",
         "date": "2023-09-22",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Rosa Tchissola",
         "deliveryAddress": {
           "street": "Av. Comandante Gika, 430",
@@ -885,7 +885,7 @@
         "client": "Bruno Amaral",
         "carrier": "Caminho Verde",
         "date": "2023-09-21",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Manuel Kussumua",
         "deliveryAddress": {
           "street": "Rua Patrice Lumumba, 19",
@@ -923,7 +923,7 @@
         "client": "Monica Esteves",
         "carrier": "AgroLog Express",
         "date": "2023-09-20",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Albino Muhongo",
         "deliveryAddress": {
           "street": "Rua Che Guevara, 310",
@@ -942,7 +942,7 @@
         "client": "Felipe Matos",
         "carrier": "Logística Verde",
         "date": "2023-09-20",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Conceição Buela",
         "deliveryAddress": {
           "street": "Av. Deolinda Rodrigues, 77",
@@ -961,7 +961,7 @@
         "client": "Sonia Abreu",
         "carrier": "Expresso Rural",
         "date": "2023-09-19",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Hélder Nguimbi",
         "deliveryAddress": {
           "street": "Rua Major Kanhangulo, 640",
@@ -999,7 +999,7 @@
         "client": "Tânia Costa",
         "carrier": "Rota do Sol",
         "date": "2023-09-18",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Silvio Mateus",
         "deliveryAddress": {
           "street": "Rua da Missão, 250",
@@ -1018,7 +1018,7 @@
         "client": "Marcos Lima",
         "carrier": "Conexão Campo",
         "date": "2023-09-18",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Beatriz Lopes",
         "deliveryAddress": {
           "street": "Av. 1º de Maio, 500",
@@ -1037,7 +1037,7 @@
         "client": "Lúcia Ferreira",
         "carrier": "TransAgro Rápido",
         "date": "2023-09-17",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Armindo Gomes",
         "deliveryAddress": {
           "street": "Rua dos Coqueiros, 180",
@@ -1056,7 +1056,7 @@
         "client": "Fernando Dias",
         "carrier": "Velocidade Agro",
         "date": "2023-09-17",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Celeste Pinto",
         "deliveryAddress": {
           "street": "Av. Pedro de Castro Van-Dúnem, 67",
@@ -1075,7 +1075,7 @@
         "client": "Cristina Mello",
         "carrier": "Brasil Log",
         "date": "2023-09-16",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Francisco Dias",
         "deliveryAddress": {
           "street": "Rua Kwame Nkrumah, 380",
@@ -1094,7 +1094,7 @@
         "client": "Jorge Santos",
         "carrier": "Sul Transportes",
         "date": "2023-09-16",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Amélia Correia",
         "deliveryAddress": {
           "street": "Av. Revolução de Outubro, 412",
@@ -1113,7 +1113,7 @@
         "client": "Beatriz Reis",
         "carrier": "Caminho Verde",
         "date": "2023-09-15",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Januário Leite",
         "deliveryAddress": {
           "street": "Rua Saidy Mingas, 30",
@@ -1132,7 +1132,7 @@
         "client": "Samuel Rocha",
         "carrier": "Norte Cargas",
         "date": "2023-09-15",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Delfina Campos",
         "deliveryAddress": {
           "street": "Av. Cmdt. Valódia, 150",
@@ -1151,7 +1151,7 @@
         "client": "Ricardo Silva",
         "carrier": "AgroLog Express",
         "date": "2023-09-14",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "António Mbala",
         "deliveryAddress": {
           "street": "Rua Rainha Njinga, 12",
@@ -1170,7 +1170,7 @@
         "client": "Patrícia Lima",
         "carrier": "Logística Verde",
         "date": "2023-09-14",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Esperança Luvualu",
         "deliveryAddress": {
           "street": "Av. Agostinho Neto, 340",
@@ -1189,7 +1189,7 @@
         "client": "Gustavo Santos",
         "carrier": "Expresso Rural",
         "date": "2023-09-13",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Domingos Neto",
         "deliveryAddress": {
           "street": "Rua Amílcar Cabral, 78",
@@ -1227,7 +1227,7 @@
         "client": "Tiago Souza",
         "carrier": "Rota do Sol",
         "date": "2023-09-12",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Joaquim Dala",
         "deliveryAddress": {
           "street": "Rua Marien Ngouabi, 55",
@@ -1246,7 +1246,7 @@
         "client": "Felipe Rocha",
         "carrier": "Conexão Campo",
         "date": "2023-10-14",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Rosa Tchissola",
         "deliveryAddress": {
           "street": "Av. Comandante Gika, 430",
@@ -1265,7 +1265,7 @@
         "client": "Larissa Melo",
         "carrier": "TransAgro Rápido",
         "date": "2023-10-14",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Manuel Kussumua",
         "deliveryAddress": {
           "street": "Rua Patrice Lumumba, 19",
@@ -1284,7 +1284,7 @@
         "client": "Rodrigo Alves",
         "carrier": "Velocidade Agro",
         "date": "2023-10-14",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Graça Ndala",
         "deliveryAddress": {
           "street": "Av. Ho Chi Minh, 88",
@@ -1303,7 +1303,7 @@
         "client": "Camila Duarte",
         "carrier": "Brasil Log",
         "date": "2023-10-14",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Albino Muhongo",
         "deliveryAddress": {
           "street": "Rua Che Guevara, 310",
@@ -1322,7 +1322,7 @@
         "client": "Marcos Neto",
         "carrier": "Sul Transportes",
         "date": "2023-10-14",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Conceição Buela",
         "deliveryAddress": {
           "street": "Av. Deolinda Rodrigues, 77",
@@ -1341,7 +1341,7 @@
         "client": "Juliana Lima",
         "carrier": "Caminho Verde",
         "date": "2023-10-14",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Hélder Nguimbi",
         "deliveryAddress": {
           "street": "Rua Major Kanhangulo, 640",
@@ -1360,7 +1360,7 @@
         "client": "André Silva",
         "carrier": "Norte Cargas",
         "date": "2023-10-14",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Lurdes Cavalo",
         "deliveryAddress": {
           "street": "Av. Norton de Matos, 95",
@@ -1379,7 +1379,7 @@
         "client": "Sonia Barros",
         "carrier": "AgroLog Express",
         "date": "2023-10-14",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Silvio Mateus",
         "deliveryAddress": {
           "street": "Rua da Missão, 250",
@@ -1398,7 +1398,7 @@
         "client": "Roberto Mota",
         "carrier": "Logística Verde",
         "date": "2023-10-14",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Beatriz Lopes",
         "deliveryAddress": {
           "street": "Av. 1º de Maio, 500",
@@ -1417,7 +1417,7 @@
         "client": "Tânia Reis",
         "carrier": "Expresso Rural",
         "date": "2023-10-14",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Armindo Gomes",
         "deliveryAddress": {
           "street": "Rua dos Coqueiros, 180",
@@ -1436,7 +1436,7 @@
         "client": "Marcos Guedes",
         "carrier": "Rápido Pantanal",
         "date": "2023-10-14",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Celeste Pinto",
         "deliveryAddress": {
           "street": "Av. Pedro de Castro Van-Dúnem, 67",
@@ -1455,7 +1455,7 @@
         "client": "Lúcia Brandão",
         "carrier": "Rota do Sol",
         "date": "2023-10-14",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Francisco Dias",
         "deliveryAddress": {
           "street": "Rua Kwame Nkrumah, 380",
@@ -1474,7 +1474,7 @@
         "client": "Fernando Leite",
         "carrier": "Conexão Campo",
         "date": "2023-10-14",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Amélia Correia",
         "deliveryAddress": {
           "street": "Av. Revolução de Outubro, 412",
@@ -1493,7 +1493,7 @@
         "client": "Cristina Neves",
         "carrier": "TransAgro Rápido",
         "date": "2023-10-14",
-        "status": "inTransit",
+        "status": "ongoing",
         "driver": "Januário Leite",
         "deliveryAddress": {
           "street": "Rua Saidy Mingas, 30",
@@ -1512,7 +1512,7 @@
         "client": "Jorge Pacheco",
         "carrier": "Velocidade Agro",
         "date": "2023-10-14",
-        "status": "waitingPickup",
+        "status": "incollection",
         "driver": "Delfina Campos",
         "deliveryAddress": {
           "street": "Av. Cmdt. Valódia, 150",
