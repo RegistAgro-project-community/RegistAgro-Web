@@ -1,23 +1,49 @@
-interface DeliveryAddress {
-  street: string;
-  neighborhood: string;
-  city: string;
-  province: string;
-}
-interface Products {
+// interface DeliveryAddress {
+//   street: string;
+//   neighborhood: string;
+//   city: string;
+//   province: string;
+// }
+// interface Products {
+//   name: string;
+//   weight: string;
+//   qty: number;
+// }
+// interface OrderData {
+//   id: string;
+//   client: string;
+//   carrier: string;
+//   date: string;
+//   status: string;
+//   driver: string;
+//   deliveryAddress: DeliveryAddress;
+//   products: Products;
+// }
+interface Consumer {
   name: string;
-  weight: string;
-  qty: number;
+}
+interface Product {
+  name: string;
+  transport: string;
+}
+interface Transport {
+  carrier: string;
+  plate: string;
+  start_at: string;
+  delivered_at: string;
 }
 interface OrderData {
-  id: string;
-  client: string;
-  carrier: string;
-  date: string;
+  transport: Transport;
+  consumer: Consumer;
+  product: Product;
   status: string;
-  driver: string;
-  deliveryAddress: DeliveryAddress;
-  products: Products;
+  delivery_adress: string;
+  transport_status: string | null;
+  value: number;
+  qtd: number;
+  unit: string;
+  id: string;
+  created_at: string;
 }
 type DetalhePros = {
   openDetalhe: boolean;
@@ -25,6 +51,13 @@ type DetalhePros = {
   children?: React.ReactNode;
   order: OrderData | null;
 };
+const formatter = new Intl.DateTimeFormat("pt-PT", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+});
 function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
   return (
     <div
@@ -39,19 +72,16 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
         <div className="px-8 py-6 border-b border-border-color flex justify-between items-start">
           <div>
             <h3 className="text-xl font-bold text-text-main ">
-              Detalhes da Entrega Concluída
+              Detalhes da Entrega
             </h3>
-            <p className="text-sm text-text-secondary">
-              Pedido <span className="text-primary font-semibold">#1234</span>
-            </p>
           </div>
           <span
             className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold  border  ${
               order?.status === "delivered"
                 ? "bg-gray-100 text-gray-600 border-gray-200"
-                : order?.status === "inTransit"
-                  ? "bg-blue-50 text-blue-600 border-blue-100"
-                  : order?.status === "waitingPickup"
+                : order?.status === "incollection"
+                  ? "bg-green-100 text-green-800 border-green-200"
+                  : order?.status === "ongoing"
                     ? "bg-green-100 text-green-800 border-green-200"
                     : order?.status === "canceled"
                       ? "bg-red-100 text-red-800 border-red-200"
@@ -60,9 +90,9 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
           >
             {order?.status === "delivered"
               ? "entregue"
-              : order?.status === "waitingPickup"
+              : order?.status === "incollection"
                 ? "aguardando coleta"
-                : order?.status === "inTransit"
+                : order?.status === "ongoing"
                   ? "Em Trânsito"
                   : order?.status === "canceled"
                     ? "cancelado"
@@ -70,14 +100,15 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
           </span>
         </div>
         <div className="p-8">
-          <div className="grid grid-cols-2 gap-8 mb-6">
+          <div className="grid grid-cols-2 gap-19 mb-6">
             <div className="space-y-4">
               <div>
                 <p className="text-[10px] uppercase tracking-wider font-bold text-text-secondary mb-1">
                   Cliente
                 </p>
                 <p className="text-sm font-semibold text-text-main ">
-                  {order?.client}
+                  {/* {order?.client} */}
+                  {order?.consumer.name}
                 </p>
               </div>
               <div>
@@ -85,13 +116,15 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
                   Endereço de Entrega
                 </p>
                 <p className="text-sm text-text-main  leading-relaxed">
-                  {order?.deliveryAddress.street}
+                  {/* {order?.deliveryAddress.street}
+                  {order?.consumer.name}
                   <br />
-                  {order?.deliveryAddress.neighborhood}
-                  <br />
+                  {/* {order?.deliveryAddress.neighborhood} */}
+
                   <span className="font-semibold text-primary">
-                    {order?.deliveryAddress.city},{" "}
-                    {order?.deliveryAddress.province}
+                    {/* {order?.deliveryAddress.city},{" "}
+                    {order?.deliveryAddress.province} */}
+                    {order?.delivery_adress}
                   </span>
                 </p>
               </div>
@@ -102,15 +135,17 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
                   Transportadora
                 </p>
                 <p className="text-sm font-semibold text-text-main ">
-                  {order?.carrier}
+                  {/* {order?.carrier} */}
+                  {order?.transport.carrier}
                 </p>
               </div>
               <div>
                 <p className="text-[10px] uppercase tracking-wider font-bold text-text-secondary mb-1">
-                  Motorista Responsável
+                  Placa do Carro
                 </p>
                 <p className="text-sm font-semibold text-text-main ">
-                  {order?.driver}
+                  {/* {order?.driver} */}
+                  {order?.transport.plate}
                 </p>
               </div>
             </div>
@@ -134,7 +169,9 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
                         Entregue em:
                       </p>
                       <p className="text-sm font-bold text-text-main ">
-                        {order?.date} às 14:30
+                        {formatter.format(
+                          new Date(order?.transport.delivered_at),
+                        )}
                       </p>
                     </div>
                   </div>
@@ -161,10 +198,13 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
                 <tbody className="divide-y divide-border-color text-text-main ">
                   <tr>
                     <td className="px-4 py-3">
-                      {order?.products.name} ({order?.products.weight})
+                      {/* {order?.products.name} ({order?.products.weight}) */}
+                      {order?.product.name}
                     </td>
                     <td className="px-4 py-3 text-right font-medium">
-                      {order?.products.qty}
+                      {/* {order?.products.qty} */}
+                      {order?.qtd}
+                      {order?.unit}
                     </td>
                   </tr>
                 </tbody>
