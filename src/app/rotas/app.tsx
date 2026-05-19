@@ -3,29 +3,56 @@ import { useState, useEffect } from "react";
 import Nav from "../../components/sideBar/sideBar";
 import DetalhePedido from "../../components/PedidoDetalheModal/modalDetalhePedido";
 import Cookies from "js-cookie";
-import { useTracking } from "../../hooks/useTracking/useCarrier";
+// import { useTracking } from "../../hooks/useTracking/useCarrier";
+import { useOrders } from "../../hooks/userOrders/useOrders";
 import Skeleton from "@mui/material/Skeleton";
 import MapModal from "../../components/mapModal/modalMap";
-interface DeliveryAddress {
-  street: string;
-  neighborhood: string;
-  city: string;
-  province: string;
-}
-interface Products {
+// interface DeliveryAddress {
+//   street: string;
+//   neighborhood: string;
+//   city: string;
+//   province: string;
+// }
+// interface Products {
+//   name: string;
+//   weight: string;
+//   qty: number;
+// }
+// interface OrderData {
+//   id: string;
+//   client: string;
+//   carrier: string;
+//   date: string;
+//   driver: string;
+//   status: string;
+//   deliveryAddress: DeliveryAddress;
+//   products: Products;
+// }
+interface Consumer {
   name: string;
-  weight: string;
-  qty: number;
+}
+interface Product {
+  name: string;
+  transport: string;
+}
+interface Transport {
+  carrier: string;
+  plate: string;
+  start_at: string;
+  delivered_at: string;
 }
 interface OrderData {
-  id: string;
-  client: string;
-  carrier: string;
-  date: string;
-  driver: string;
+  transport: Transport;
+  consumer: Consumer;
+  product: Product;
   status: string;
-  deliveryAddress: DeliveryAddress;
-  products: Products;
+  delivery_adress: string;
+  transport_status: string | null;
+  value: number;
+  qtd: number;
+  unit: string;
+  id: string;
+  created_at: string;
 }
 
 export default function Rotas() {
@@ -33,8 +60,8 @@ export default function Rotas() {
   const [siderAberto, setSiderAberto] = useState(false);
   const [abertoDetalhe, setAbertoDetalhe] = useState(false);
   const [openMap, setIsOpenMap] = useState(false);
-  const [waitingPickup, setIsWaitingPickup] = useState("");
-  const [inTransit, setIsInTrasit] = useState("");
+  const [incollection, setIsIncollection] = useState("");
+  const [ongoing, setIsOngoing] = useState("");
   const [delivered, setIsDelivered] = useState("");
   const [orders, setIsOrders] = useState<OrderData[]>([]);
   const token = Cookies.get("token");
@@ -42,7 +69,14 @@ export default function Rotas() {
   const itemsPerPage = 5;
   const [searchOrder, setIsSearchOrder] = useState("");
   const [orderSelected, setIsOrderSelected] = useState<OrderData | null>(null);
-  const { data } = useTracking(token);
+  const { data } = useOrders(token);
+  const formatter = new Intl.DateTimeFormat("pt-PT", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   function handleShowDetail(order: OrderData) {
     setIsOrderSelected(order);
@@ -54,27 +88,54 @@ export default function Rotas() {
     setIsCorrentPage(1);
   }
 
+  // useEffect(() => {
+  //   if (data && token) {
+  //     // eslint-disable-next-line react-hooks/set-state-in-effect
+  //     setIsOngoing(data.cardsData.ongoing.toString() || "0");
+  //     setIsIncollection(data.cardsData.incollection.toString() || "0");
+  //     setIsDelivered(data.cardsData.delivered.toString() || "0");
+  //     setIsOrders([...data.orders]);
+  //     setIsLoading(false);
+  //   }
+  // }, [token, data]);
   useEffect(() => {
     if (data && token) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIsInTrasit(data.cardsData.inTransit.toString() || "0");
-      setIsWaitingPickup(data.cardsData.waitingPickup.toString() || "0");
-      setIsDelivered(data.cardsData.delivered.toString() || "0");
+      setIsOngoing(data.ongoing.toString() || "0");
+      setIsIncollection(data.incollection.toString() || "0");
+      setIsDelivered(data.delivered.toString() || "0");
       setIsOrders([...data.orders]);
       setIsLoading(false);
     }
   }, [token, data]);
-
+  console.log(data);
+  // const filteredOrders = orders
+  //   .filter((item) => {
+  //     const order = searchOrder.toLowerCase();
+  //     return (
+  //       item.client.toLowerCase().includes(order) ||
+  //       item.carrier.toLowerCase().includes(order) ||
+  //       item.status.toLowerCase().includes(order)
+  //     );
+  //   })
+  //   .reverse();
   const filteredOrders = orders
     .filter((item) => {
+      if (!item.transport || !item.consumer) return false;
       const order = searchOrder.toLowerCase();
-      return (
-        item.client.toLowerCase().includes(order) ||
-        item.carrier.toLowerCase().includes(order) ||
-        item.status.toLowerCase().includes(order)
+      const validStatus = ["incollection", "ongoing", "delivered"].includes(
+        item.status,
       );
+      const matchesSearch =
+        item.consumer.name.toLowerCase().includes(order) ||
+        item.transport.carrier.toLowerCase().includes(order) ||
+        item.status.toLowerCase().includes(order);
+      return validStatus && matchesSearch;
     })
-    .reverse();
+    .sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    );
 
   const totalItems = filteredOrders.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -124,12 +185,12 @@ export default function Rotas() {
                   : [
                       {
                         label: "Aguardando Coleta",
-                        total: waitingPickup || 0,
+                        total: incollection || 0,
                         icon: "package_2",
                       },
                       {
-                        label: "Em Trânsito",
-                        total: inTransit || 0,
+                        label: "Em Andamento",
+                        total: ongoing || 0,
                         icon: "local_shipping",
                       },
                       {
@@ -194,8 +255,8 @@ export default function Rotas() {
                       <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
                         Transportadora
                       </th>
-                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
-                        Previsão
+                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary text-center">
+                        Início
                       </th>
                       <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary text-center">
                         Status
@@ -273,30 +334,25 @@ export default function Rotas() {
                         >
                           <td className="px-6 py-5">
                             <span
-                              onClick={
-                                item.status === "delivered" ||
-                                item.status === "canceled"
-                                  ? undefined
-                                  : () => handleShowDetail(item)
-                              }
-                              className={`text-sm font-semibold text-text-main ${
-                                item.status === "delivered" ||
-                                item.status === "canceled"
-                                  ? ""
-                                  : "cursor-pointer"
-                              }`}
+                              onClick={() => handleShowDetail(item)}
+                              className="text-sm font-semibold text-text-main cursor-pointer"
                             >
-                              {item.client}
+                              {/* {item.client} */}
+                              {item.consumer.name}
                             </span>
                           </td>
                           <td className="px-6 py-5">
                             <p className="text-base font-medium text-text-secondary leading-relaxed capitalize">
-                              {item.carrier}
+                              {/* {item.carrier} */}
+                              {item.transport.carrier}
                             </p>
                           </td>
                           <td className="px-6 py-5">
-                            <p className="text-sm text-text-secondary font-medium">
-                              {item.date}
+                            <p className="text-sm text-text-secondary font-medium text-center">
+                              {/* {item.date} */}
+                              {formatter.format(
+                                new Date(item.transport.start_at),
+                              )}
                             </p>
                           </td>
                           <td className="px-6 py-5 text-center">
@@ -304,64 +360,57 @@ export default function Rotas() {
                               className={`inline-flex items-center px-2.5 py-0 rounded-full text-xs font-medium border capitalize ${
                                 item.status === "delivered"
                                   ? "bg-gray-100 text-gray-600 border-gray-200"
-                                  : item.status === "inTransit"
+                                  : item.status === "ongoing"
                                     ? "bg-blue-50 text-blue-600 border-blue-100"
-                                    : item.status === "waitingPickup"
+                                    : item.status === "incollection"
                                       ? "bg-green-100 text-green-800 border-green-200"
-                                      : item.status === "canceled"
-                                        ? "bg-red-100 text-red-800 border-red-200"
-                                        : ""
+                                      : ""
                               }`}
                             >
                               {item.status === "delivered"
                                 ? "entregue"
-                                : item.status === "waitingPickup"
+                                : item.status === "incollection"
                                   ? "aguardando coleta"
-                                  : item.status === "inTransit"
-                                    ? "Em Trânsito"
-                                    : item.status === "canceled"
-                                      ? "cancelado"
-                                      : ""}
+                                  : item.status === "ongoing"
+                                    ? "Em andamento"
+                                    : ""}
                             </span>
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex items-center justify-end gap-2">
-                              <div
-                                className={`flex items-center  justify-end  gap-2`}
-                              >
-                                {item.status === "delivered" ||
-                                item.status === "canceled" ? null : (
-                                  <>
-                                    <button className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white  border active:scale-93 border-border-color hover:border-primary hover:text-primary text-text-secondary text-xs font-medium rounded-lg transition-all cursor-pointer">
-                                      <span className="material-symbols-outlined text-[16px]">
-                                        call
-                                      </span>
-                                      Entrar em contacto com o motorista
-                                    </button>
-                                    <button
-                                      onClick={() => setIsOpenMap(true)}
-                                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white  border  active:scale-93 border-border-color hover:border-primary hover:text-primary text-text-secondary text-xs font-medium rounded-lg transition-all cursor-pointer"
-                                    >
-                                      <span className="material-symbols-outlined text-[16px]">
-                                        map
-                                      </span>
-                                      Ver no mapa
-                                    </button>
-                                  </>
-                                )}
-                                {item.status !== "delivered" &&
-                                item.status !== "canceled" ? null : (
+                              {item.status === "incollection" ||
+                              item.status === "ongoing" ? (
+                                <>
                                   <button
                                     onClick={() => handleShowDetail(item)}
-                                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-surface-dark border active:scale-93  border-border-color hover:bg-gray-50 text-text-secondary text-xs font-medium rounded-lg transition-all cursor-pointer`}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border active:scale-93 border-border-color hover:border-primary hover:text-primary text-text-secondary text-xs font-medium rounded-lg transition-all cursor-pointer"
                                   >
-                                    <span className="material-symbols-outlined text-[16px] ">
+                                    <span className="material-symbols-outlined text-[16px]">
                                       visibility
                                     </span>
                                     Detalhes
                                   </button>
-                                )}
-                              </div>
+                                  <button
+                                    onClick={() => setIsOpenMap(true)}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border active:scale-93 border-border-color hover:border-primary hover:text-primary text-text-secondary text-xs font-medium rounded-lg transition-all cursor-pointer"
+                                  >
+                                    <span className="material-symbols-outlined text-[16px]">
+                                      map
+                                    </span>
+                                    Ver no mapa
+                                  </button>
+                                </>
+                              ) : item.status === "delivered" ? (
+                                <button
+                                  onClick={() => handleShowDetail(item)}
+                                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-surface-dark border active:scale-93 border-border-color hover:bg-gray-50 text-text-secondary text-xs font-medium rounded-lg transition-all cursor-pointer"
+                                >
+                                  <span className="material-symbols-outlined text-[16px]">
+                                    visibility
+                                  </span>
+                                  Detalhes
+                                </button>
+                              ) : null}
                             </div>
                           </td>
                         </tr>
