@@ -219,10 +219,10 @@ export default function Produtos() {
                       <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
                         Estoque
                       </th>
-                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary text-center">
                         Preço
                       </th>
-                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                      <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary text-center">
                         Transporte
                       </th>
                       <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
@@ -326,13 +326,15 @@ export default function Produtos() {
                             </p>
                           </td>
                           <td className="px-6 py-5">
-                            <p className="text-sm font-medium text-text-main">
+                            <p className="text-sm font-medium text-text-main text-center">
                               {item.price}
                             </p>
                           </td>
-                          <td className="px-6 py-5">
-                            <span className="text-sm text-text-secondary capitalize">
-                              {item.transport}
+                          <td className="px-6 py-5 text-center">
+                            <span className="text-sm text-text-secondary capitalize ">
+                              {item.transport === "Caminhão aberto_coberto"
+                                ? "Caminhão aberto coberto"
+                                : item.transport}
                             </span>
                           </td>
                           <td className="px-6 py-5 text-right">
