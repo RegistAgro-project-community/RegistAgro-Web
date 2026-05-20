@@ -80,6 +80,7 @@ export default function Rotas() {
     hour: "2-digit",
     minute: "2-digit",
   });
+  const [mapOrderId, setMapOrderId] = useState<string>("");
   const { mutate: flowProduct } = useFlowProduct(token);
   function handleFlowProduct(id: string) {
     flowProduct(id, {
@@ -102,7 +103,10 @@ export default function Rotas() {
       },
     });
   }
-
+  function handleOpenMap(id: string) {
+    setMapOrderId(id);
+    setIsOpenMap(true);
+  }
   function handleShowDetail(order: OrderData) {
     setIsOrderSelected(order);
     console.log(orderSelected);
@@ -412,7 +416,7 @@ export default function Rotas() {
                                     Começar a escoar
                                   </button>
                                   <button
-                                    onClick={() => setIsOpenMap(true)}
+                                    onClick={() => handleOpenMap(item.id)}
                                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border active:scale-93 border-border-color hover:border-primary hover:text-primary text-text-secondary text-xs font-medium rounded-lg transition-all cursor-pointer"
                                   >
                                     <span className="material-symbols-outlined text-[16px]">
@@ -433,7 +437,7 @@ export default function Rotas() {
                                     Detalhes
                                   </button>
                                   <button
-                                    onClick={() => setIsOpenMap(true)}
+                                    onClick={() => handleOpenMap(item.id)}
                                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border active:scale-93 border-border-color hover:border-primary hover:text-primary text-text-secondary text-xs font-medium rounded-lg transition-all cursor-pointer"
                                   >
                                     <span className="material-symbols-outlined text-[16px]">
@@ -526,7 +530,12 @@ export default function Rotas() {
           Fechar Detalhes
         </button>
       </DetalhePedido>
-      <MapModal openMap={openMap} onClose={() => setIsOpenMap(false)}>
+      <MapModal
+        openMap={openMap}
+        onClose={() => setIsOpenMap(false)}
+        orderId={mapOrderId}
+        token={token}
+      >
         <button
           onClick={() => setIsOpenMap(false)}
           className="px-2 py-1 flex items-center justify-center hover:text-gray-600 hover:bg-red-200 rounded cursor-pointer"
