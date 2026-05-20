@@ -332,7 +332,9 @@ export default function Home() {
                                             ? "bg-green-100 text-green-800 border border-green-200"
                                             : item.status === "rejected"
                                               ? "bg-red-100 text-red-800 border border-red-200"
-                                              : ""
+                                              : item.status === "ongoing"
+                                                ? "bg-blue-50 text-blue-600 border-blue-100"
+                                                : ""
                                   }`}
                                 >
                                   {item.transport_status === "pendente"
@@ -345,7 +347,13 @@ export default function Home() {
                                           ? "confirmado"
                                           : item.status === "rejected"
                                             ? "rejeitado"
-                                            : item.status}
+                                            : item.status === "delivered"
+                                              ? "entregue"
+                                              : item.status === "incollection"
+                                                ? "aguardando coleta"
+                                                : item.status === "ongoing"
+                                                  ? "em andamento"
+                                                  : ""}
                                 </span>
                               </td>
                             </tr>
