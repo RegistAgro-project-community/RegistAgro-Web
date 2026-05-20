@@ -171,6 +171,7 @@ export default function Rotas() {
     <>
       <div className="bg-background text-text-main">
         <div className="relative flex h-screen w-full overflow-hidden bg-background">
+          <Toast ref={toast} />
           <Nav sidebarAberto={siderAberto} setSidebarAberto={setSiderAberto} />
           <main className="flex-1 flex flex-col h-full overflow-hidden relative">
             <div className="h-16 w-full bg-white border-b border-border-color flex items-center justify-between px-8 shrink-0 z-10">
