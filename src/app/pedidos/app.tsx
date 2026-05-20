@@ -345,7 +345,9 @@ export default function Pedidos() {
                                         ? "bg-green-100 text-green-800 border border-green-200"
                                         : item.status === "rejected"
                                           ? "bg-red-100 text-red-800 border border-red-200"
-                                          : ""
+                                          : item.status === "ongoing"
+                                            ? "bg-blue-50 text-blue-600 border-blue-100"
+                                            : ""
                               }`}
                             >
                               {item.transport_status === "pendente"
@@ -358,7 +360,13 @@ export default function Pedidos() {
                                       ? "confirmado"
                                       : item.status === "rejected"
                                         ? "rejeitado"
-                                        : item.status}
+                                        : item.status === "delivered"
+                                          ? "entregue"
+                                          : item.status === "incollection"
+                                            ? "aguardando coleta"
+                                            : item.status === "ongoing"
+                                              ? "em andamento"
+                                              : ""}
                             </span>
                           </td>
                           {item.status === "pendent" ? (
@@ -390,11 +398,10 @@ export default function Pedidos() {
                                 Contratar Transporte
                               </button>
                             </td>
-                          ) : item.status === "incollection" &&
-                            item.transport_status === "aguardando_coleta" ? (
+                          ) : item.status === "incollection" ||
+                            item.status === "ongoing" ? (
                             <td className="px-6 py-5 text-right">
                               <Link
-                                // onClick={}
                                 to={"/rotas"}
                                 className={
                                   "px-4 py-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-lg shadow-sm transition-all transform active:scale-95 cursor-pointer"
