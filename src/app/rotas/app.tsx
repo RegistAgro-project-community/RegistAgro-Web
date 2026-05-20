@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Nav from "../../components/sideBar/sideBar";
 import DetalhePedido from "../../components/PedidoDetalheModal/modalDetalhePedido";
+import { Toast } from "primereact/toast";
 import Cookies from "js-cookie";
 // import { useTracking } from "../../hooks/useTracking/useCarrier";
 import { useOrders } from "../../hooks/userOrders/useOrders";
 import Skeleton from "@mui/material/Skeleton";
 import MapModal from "../../components/mapModal/modalMap";
+import { useFlowProduct } from "../../hooks/useStartFlowProduct/useStartFlowProducts";
 // interface DeliveryAddress {
 //   street: string;
 //   neighborhood: string;
@@ -65,6 +67,7 @@ export default function Rotas() {
   const [delivered, setIsDelivered] = useState("");
   const [orders, setIsOrders] = useState<OrderData[]>([]);
   const token = Cookies.get("token");
+  const toast = useRef<Toast>(null);
   const [correntPage, setIsCorrentPage] = useState(1);
   const itemsPerPage = 5;
   const [searchOrder, setIsSearchOrder] = useState("");
@@ -77,6 +80,28 @@ export default function Rotas() {
     hour: "2-digit",
     minute: "2-digit",
   });
+  const { mutate: flowProduct } = useFlowProduct(token);
+  function handleFlowProduct(id: string) {
+    flowProduct(id, {
+      onSuccess: (data) => {
+        console.log(data);
+        toast.current?.show({
+          severity: "success",
+          summary: "Tudo certo",
+          detail: data.message,
+          life: 2000,
+        });
+      },
+      onError: () => {
+        toast.current?.show({
+          severity: "error",
+          summary: "Erro",
+          detail: "Não foi possível escoar produto",
+          life: 2000,
+        });
+      },
+    });
+  }
 
   function handleShowDetail(order: OrderData) {
     setIsOrderSelected(order);
@@ -87,7 +112,6 @@ export default function Rotas() {
     setIsSearchOrder(e.target.value);
     setIsCorrentPage(1);
   }
-
   // useEffect(() => {
   //   if (data && token) {
   //     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -337,19 +361,16 @@ export default function Rotas() {
                               onClick={() => handleShowDetail(item)}
                               className="text-sm font-semibold text-text-main cursor-pointer"
                             >
-                              {/* {item.client} */}
                               {item.consumer.name}
                             </span>
                           </td>
                           <td className="px-6 py-5">
                             <p className="text-base font-medium text-text-secondary leading-relaxed capitalize">
-                              {/* {item.carrier} */}
                               {item.transport.carrier}
                             </p>
                           </td>
                           <td className="px-6 py-5">
                             <p className="text-sm text-text-secondary font-medium text-center">
-                              {/* {item.date} */}
                               {formatter.format(
                                 new Date(item.transport.start_at),
                               )}
@@ -378,8 +399,28 @@ export default function Rotas() {
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex items-center justify-end gap-2">
-                              {item.status === "incollection" ||
-                              item.status === "ongoing" ? (
+                              {item.status === "incollection" ? (
+                                <>
+                                  <button
+                                    onClick={() => handleFlowProduct(item.id)}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border active:scale-93 border-border-color hover:border-primary hover:text-primary text-text-secondary text-xs font-medium rounded-lg transition-all cursor-pointer"
+                                  >
+                                    <span className="material-symbols-outlined text-[16px]">
+                                      play_arrow
+                                    </span>
+                                    Começar a escoar
+                                  </button>
+                                  <button
+                                    onClick={() => setIsOpenMap(true)}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border active:scale-93 border-border-color hover:border-primary hover:text-primary text-text-secondary text-xs font-medium rounded-lg transition-all cursor-pointer"
+                                  >
+                                    <span className="material-symbols-outlined text-[16px]">
+                                      map
+                                    </span>
+                                    Ver no mapa
+                                  </button>
+                                </>
+                              ) : item.status === "ongoing" ? (
                                 <>
                                   <button
                                     onClick={() => handleShowDetail(item)}
