@@ -82,7 +82,7 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
                 : order?.status === "incollection"
                   ? "bg-green-100 text-green-800 border-green-200"
                   : order?.status === "ongoing"
-                    ? "bg-green-100 text-green-800 border-green-200"
+                    ? "bg-blue-50 text-blue-600 border-blue-100"
                     : order?.status === "canceled"
                       ? "bg-red-100 text-red-800 border-red-200"
                       : ""
@@ -93,7 +93,7 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
               : order?.status === "incollection"
                 ? "aguardando coleta"
                 : order?.status === "ongoing"
-                  ? "Em Trânsito"
+                  ? "Em andamento"
                   : order?.status === "canceled"
                     ? "cancelado"
                     : ""}
@@ -107,7 +107,6 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
                   Cliente
                 </p>
                 <p className="text-sm font-semibold text-text-main ">
-                  {/* {order?.client} */}
                   {order?.consumer.name}
                 </p>
               </div>
@@ -116,14 +115,7 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
                   Endereço de Entrega
                 </p>
                 <p className="text-sm text-text-main  leading-relaxed">
-                  {/* {order?.deliveryAddress.street}
-                  {order?.consumer.name}
-                  <br />
-                  {/* {order?.deliveryAddress.neighborhood} */}
-
                   <span className="font-semibold text-primary">
-                    {/* {order?.deliveryAddress.city},{" "}
-                    {order?.deliveryAddress.province} */}
                     {order?.delivery_adress}
                   </span>
                 </p>
@@ -135,7 +127,6 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
                   Transportadora
                 </p>
                 <p className="text-sm font-semibold text-text-main ">
-                  {/* {order?.carrier} */}
                   {order?.transport.carrier}
                 </p>
               </div>
@@ -144,7 +135,6 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
                   Placa do Carro
                 </p>
                 <p className="text-sm font-semibold text-text-main ">
-                  {/* {order?.driver} */}
                   {order?.transport.plate}
                 </p>
               </div>
@@ -197,12 +187,8 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
                 </thead>
                 <tbody className="divide-y divide-border-color text-text-main ">
                   <tr>
-                    <td className="px-4 py-3">
-                      {/* {order?.products.name} ({order?.products.weight}) */}
-                      {order?.product.name}
-                    </td>
+                    <td className="px-4 py-3">{order?.product.name}</td>
                     <td className="px-4 py-3 text-right font-medium">
-                      {/* {order?.products.qty} */}
                       {order?.qtd}
                       {order?.unit}
                     </td>
