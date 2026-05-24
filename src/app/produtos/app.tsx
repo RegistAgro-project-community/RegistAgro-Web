@@ -8,6 +8,7 @@ import { Toast } from "primereact/toast";
 import { useNavigate } from "react-router-dom";
 import { useProducts } from "../../hooks/useProducts/useProduct";
 import Skeleton from "@mui/material/Skeleton";
+import Tooltip from "@mui/material/Tooltip";
 interface Product {
   id: string;
   name: string;
@@ -165,27 +166,55 @@ export default function Produtos() {
                     },
                     {
                       label: "Ganhos",
-                      total: ganho || "0Kz",
+                      total: Number(ganho.replace(/[^\d]/g, "")) || 0,
                       icon: "attach_money",
                     },
                   ].map((item, i) => (
                     <div
                       key={i}
-                      className={`bg-surface-light p-4 rounded-xl border border-gray-300 flex items-center justify-between `}
+                      className="bg-surface-light p-4 rounded-xl border border-gray-300 flex items-center justify-between"
                     >
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-sm text-text-secondary font-medium">
                           {item.label}
                         </p>
-                        <p className="text-2xl font-bold text-text-main mt-2">
-                          {item.total} {item.icon === "attach_money"}
-                        </p>
+
+                        <Tooltip
+                          title={
+                            item.icon === "attach_money"
+                              ? item.total.toLocaleString("pt-AO", {
+                                  style: "currency",
+                                  currency: "AOA",
+                                })
+                              : item.total
+                          }
+                          arrow
+                        >
+                          <p className="text-2xl font-bold text-text-main mt-2 truncate">
+                            {item.icon === "attach_money"
+                              ? item.total.toLocaleString("pt-AO", {
+                                  style: "currency",
+                                  currency: "AOA",
+                                })
+                              : item.total}
+                          </p>
+                        </Tooltip>
                       </div>
+
                       <div
-                        className={`h-10 w-10 rounded-full ${item.icon === "attach_money" ? "text-blue-600 bg-blue-100" : item.icon === "warning" ? "bg-orange-100 text-orange-600" : item.icon === "grass" ? "bg-primary/30 text-primary" : ""}  flex items-center justify-center`}
+                        className={`h-10 w-10 rounded-full flex items-center justify-center
+                    ${
+                      item.icon === "attach_money"
+                        ? "text-blue-600 bg-blue-100"
+                        : item.icon === "warning"
+                          ? "bg-orange-100 text-orange-600"
+                          : item.icon === "grass"
+                            ? "bg-primary/30 text-primary"
+                            : ""
+                    }`}
                       >
                         <span className="material-symbols-outlined">
-                          {item.icon}{" "}
+                          {item.icon}
                         </span>
                       </div>
                     </div>
