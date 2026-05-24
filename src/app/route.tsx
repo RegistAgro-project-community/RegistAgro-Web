@@ -11,6 +11,7 @@ import PerfilUsuario from "./perfil/app";
 import Rotas from "./rotas/app";
 import ProdutoDetalhe from "./produto-detalhe/app";
 import Auth from "../auth/auth";
+import { isAuth } from "./auth";
 
 export function AppRoutes() {
   return (
@@ -38,6 +39,16 @@ export function AppRoutes() {
             }
           />
         </Route>
+        <Route
+    path="*"
+    element={
+      isAuth() ? (
+        <Navigate to="/dashboard" replace />
+      ) : (
+        <Navigate to="/login" replace />
+      )
+    }
+  />
 
         {/* Rotas privadas continuam iguais */}
         <Route
