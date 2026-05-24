@@ -7,6 +7,7 @@ import { useOrders } from "../../hooks/userOrders/useOrders";
 import { useProducts } from "../../hooks/useProducts/useProduct";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
+import Tooltip from "@mui/material/Tooltip";
 
 interface Comsumer {
   name: string;
@@ -173,25 +174,37 @@ export default function Home() {
                       {
                         icon: "attach_money",
                         label: "Receita total",
-                        total: balance || 0,
+                        total: Number(balance.replace(/[^\d]/g, "")),
                       },
                     ].map((item, i) => (
                       <div
                         key={i}
                         className={`bg-white p-4 rounded-lg border flex items-center justify-between border-gray-200 z-50`}
                       >
-                        <div>
+                        <div className="min-w-0">
                           <p className="text-text-secondary text-sm font-medium mb-1">
                             {item.label}
                           </p>
-                          <h3 className="text-3xl font-bold text-text-main">
-                            {item.label === "Receita total"
-                              ? item.total.toLocaleString("pt-AO", {
-                                  style: "currency",
-                                  currency: "AOA",
-                                })
-                              : item.total}
-                          </h3>
+                          <Tooltip
+                            title={
+                              item.label === "Receita total"
+                                ? item.total.toLocaleString("pt-AO", {
+                                    style: "currency",
+                                    currency: "AOA",
+                                  })
+                                : item.total
+                            }
+                            arrow
+                          >
+                            <h3 className="text-3xl font-bold text-text-main truncate">
+                              {item.label === "Receita total"
+                                ? item.total.toLocaleString("pt-AO", {
+                                    style: "currency",
+                                    currency: "AOA",
+                                  })
+                                : item.total}
+                            </h3>
+                          </Tooltip>
                         </div>
                         <div className="flex justify-between items-start">
                           <div
