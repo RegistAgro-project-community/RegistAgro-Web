@@ -70,19 +70,9 @@ export default function ContratarTransorte() {
                   </h2>
                   <p className="text-sm text-text-secondary2 max-w-sm leading-relaxed mb-8">
                     Não encontrámos transportadoras para o tipo de carga
-                    selecionado. Tente novamente mais tarde ou escolha outro
-                    tipo de transporte.
+                    selecionado. Tente novamente mais tarde.
                   </p>
                   <div className="flex gap-3 flex-wrap justify-center">
-                    <button
-                      onClick={() => window.location.reload()}
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-lg border border-border-color text-sm font-medium hover:bg-gray-50 transition-colors cursor-pointer"
-                    >
-                      <span className="material-symbols-outlined text-sm">
-                        refresh
-                      </span>
-                      Tentar novamente
-                    </button>
                     <button
                       onClick={() => navigate(-1)}
                       className="flex items-center gap-2 px-5 py-2.5 rounded-lg border border-border-color text-sm font-medium hover:bg-gray-50 transition-colors cursor-pointer"
