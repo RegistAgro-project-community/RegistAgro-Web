@@ -33,7 +33,7 @@ export default function Home() {
   const [correntPage] = useState(1);
   const [fazendaIgm, setFazendaImg] = useState("");
   const [ongoing, setOngoing] = useState("");
-   const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [balance, setIsBalance] = useState("");
   const [pendentOrder, setPedentOrder] = useState("");
   const [totalProduto, setTotalProduto] = useState("");
@@ -51,7 +51,7 @@ export default function Home() {
       setOngoing(orders.ongoing || "");
       setTotalProduto(String(products.totalProducts));
       setIsBalance(profile.balance || "");
-      setIsLoading(false)
+      setIsLoading(false);
       setTotalOrders([...orders.orders]);
       console.log(token);
     }
