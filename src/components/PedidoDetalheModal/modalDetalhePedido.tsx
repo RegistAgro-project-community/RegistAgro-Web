@@ -78,14 +78,12 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
           <span
             className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold  border  ${
               order?.status === "delivered"
-                ? "bg-gray-100 text-gray-600 border-gray-200"
+                ? "bg-purple-100 text-purple-800 border border-purple-200"
                 : order?.status === "incollection"
                   ? "bg-green-100 text-green-800 border-green-200"
                   : order?.status === "ongoing"
                     ? "bg-blue-50 text-blue-600 border-blue-100"
-                    : order?.status === "canceled"
-                      ? "bg-red-100 text-red-800 border-red-200"
-                      : ""
+                    : ""
             }`}
           >
             {order?.status === "delivered"

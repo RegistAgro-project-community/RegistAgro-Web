@@ -363,7 +363,7 @@ export default function ProdutoDetalhe() {
                             {produto.stock}
                           </p>
                           <p className="text-[11px] text-[#a0b099] m-0">
-                            {produto.unit}
+                            {produto.unit === "t" ? "ton" : produto.unit}
                           </p>
                         </div>
                         <Tooltip title={preco ?? ""} placement="top" arrow>
@@ -375,7 +375,7 @@ export default function ProdutoDetalhe() {
                               {preco}
                             </p>
                             <p className="text-[11px] text-white/60 m-0">
-                              por {produto.unit}
+                              por kg
                             </p>
                           </div>
                         </Tooltip>
@@ -384,7 +384,7 @@ export default function ProdutoDetalhe() {
                             Unidade
                           </p>
                           <p className="text-xl font-extrabold text-[#1a2016] m-0 tracking-tight leading-tight">
-                            {produto.unit}
+                            {produto.unit === "t" ? "ton" : produto.unit}
                           </p>
                           <p className="text-[11px] text-[#a0b099] m-0">
                             medida
@@ -396,7 +396,7 @@ export default function ProdutoDetalhe() {
                         <p className="text-[11px] font-bold text-[#8a9e83] uppercase tracking-[0.8px] m-0">
                           Descrição
                         </p>
-                        <p className="text-sm text-[#3d4e38] leading-relaxed m-0 max-h-24 overflow-y-auto wrap-break-words pr-1">
+                        <p className="text-sm text-[#3d4e38] leading-relaxed m-0 max-h-24 overflow-y-auto break-all pr-1">
                           {produto.description || "—"}
                         </p>
                       </div>

@@ -185,7 +185,7 @@ export default function Pedidos() {
                         </p>
                       </div>
                       <div
-                        className={`h-10 w-10 rounded-full ${item.icon === "pending_actions" ? "text-blue-600 bg-blue-100" : item.icon === "local_shipping" ? "bg-orange-100 text-orange-600" : item.icon === "format_list_numbered" ? "bg-green-50 text-green-600" : ""}  flex items-center justify-center`}
+                        className={`h-10 w-10 rounded-full ${item.icon === "pending_actions" ? "text-blue-600 bg-blue-100" : item.icon === "local_shipping" ? "bg-cyan-100 text-cyan-800" : item.icon === "format_list_numbered" ? "bg-green-50 text-green-600" : ""}  flex items-center justify-center`}
                       >
                         <span className="material-symbols-outlined">
                           {item.icon}{" "}
@@ -336,11 +336,11 @@ export default function Pedidos() {
                             <span
                               className={`inline-flex items-center px-2.5 py-0 rounded-full text-xs font-medium ${
                                 item.status === "delivered"
-                                  ? "bg-gray-100 text-gray-600 border-gray-200"
+                                  ? "bg-purple-100 text-purple-800 border border-purple-200"
                                   : item.transport_status === "pendente"
-                                    ? "bg-blue-100 text-blue-800 border border-blue-200"
+                                    ? "bg-orange-100 text-orange-800 border border-orange-200"
                                     : item.status === "incollection"
-                                      ? "bg-teal-100 text-teal-800 border border-teal-200"
+                                      ? "bg-cyan-100 text-cyan-800 border border-cyan-200"
                                       : item.status === "pendent"
                                         ? "bg-yellow-100 text-yellow-800 border border-yellow-200"
                                         : item.status === "confirmed"
@@ -348,7 +348,7 @@ export default function Pedidos() {
                                           : item.status === "rejected"
                                             ? "bg-red-100 text-red-800 border border-red-200"
                                             : item.status === "ongoing"
-                                              ? "bg-blue-50 text-blue-600 border-blue-100"
+                                              ? "bg-blue-100 text-blue-800 border border-blue-200"
                                               : ""
                               }`}
                             >
@@ -391,7 +391,7 @@ export default function Pedidos() {
                               </div>
                             </td>
                           ) : item.status === "confirmed" &&
-                            item.transport_status ? (
+                            item.transport_status != "pendente" ? (
                             <td className="px-6 py-5 text-right">
                               <button
                                 onClick={() => handleSearchTransport(item)}
@@ -401,12 +401,13 @@ export default function Pedidos() {
                               </button>
                             </td>
                           ) : item.status === "incollection" ||
-                            item.status === "ongoing" ? (
+                            item.status === "ongoing" ||
+                            item.status === "delivered" ? (
                             <td className="px-6 py-5 text-right">
                               <Link
                                 to={"/rotas"}
                                 className={
-                                  "px-4 py-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-lg shadow-sm transition-all transform active:scale-95 cursor-pointer"
+                                  "px-4 py-1.5 bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-all transform active:scale-95 cursor-pointer"
                                 }
                               >
                                 Ir para rastreamento

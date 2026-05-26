@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -27,6 +27,7 @@ type MapProps = {
 type MapControllerProps = {
   expanded: boolean;
   route: LatLngExpression[];
+  carrierLocation: LatLng | null;
 };
 
 const initialPosition: LatLng = {
@@ -34,18 +35,38 @@ const initialPosition: LatLng = {
   lng: 13.2344,
 };
 
-function MapController({ expanded, route }: MapControllerProps) {
+function MapController({
+  expanded,
+  route,
+  carrierLocation,
+}: MapControllerProps) {
   const map = useMap();
+  const hasFitted = useRef(false);
 
   useEffect(() => {
     setTimeout(() => {
       map.invalidateSize();
-      if (route.length > 0) {
-        const bounds = L.latLngBounds(route as [number, number][]);
-        map.fitBounds(bounds, { padding: [50, 50] });
-      }
     }, 200);
-  }, [expanded, map, route]);
+  }, [expanded, map]);
+
+
+  useEffect(() => {
+    if (hasFitted.current) return;
+    console.log("route:", route.length);
+    console.log("carrierLocation:", carrierLocation);
+    if (route.length > 0) {
+      const bounds = L.latLngBounds(route as [number, number][]);
+      map.fitBounds(bounds, { padding: [50, 50] });
+      hasFitted.current = true;
+      return;
+    }
+
+    if (carrierLocation) {
+      console.log("setView a executar com zoom 8");
+      map.setView([carrierLocation.lat, carrierLocation.lng], 1);
+      hasFitted.current = true; 
+    }
+  }, [route, carrierLocation, map]);
 
   return null;
 }
@@ -56,6 +77,7 @@ function MapModal({ openMap, onClose, orderId, token, children }: MapProps) {
   const [route, setRoute] = useState<LatLngExpression[]>([]);
   const [loadingLocation, setLoadingLocation] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
   const truckIcon = L.divIcon({
     className: "",
     html: `
@@ -78,6 +100,7 @@ function MapModal({ openMap, onClose, orderId, token, children }: MapProps) {
     iconSize: [38, 38],
     iconAnchor: [19, 19],
   });
+
   const farmIcon = L.divIcon({
     className: "",
     html: `
@@ -101,20 +124,23 @@ function MapModal({ openMap, onClose, orderId, token, children }: MapProps) {
     iconSize: [38, 38],
     iconAnchor: [19, 19],
   });
+
   const { data: carrierData } = useLocationCarrier(
     openMap ? token : undefined,
     orderId ?? "",
   );
-  console.log(carrierData);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const carrierLocation: LatLng | null =
     carrierData?.latitude && carrierData?.longitude
-      ? { lat: carrierData.latitude, lng: carrierData.longitude }
+      ? {
+          lat: Number(carrierData.latitude),
+          lng: Number(carrierData.longitude),
+        } 
       : null;
 
   useEffect(() => {
     if (!openMap) return;
-
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoadingLocation(true);
 
     navigator.geolocation.getCurrentPosition(
@@ -139,7 +165,7 @@ function MapModal({ openMap, onClose, orderId, token, children }: MapProps) {
       try {
         setError(null);
 
-        const url = `https://router.project-osrm.org/route/v1/driving/${userLocation.lng},${userLocation.lat};${carrierLocation.lng},${carrierLocation.lat}?overview=full&geometries=geojson`;
+        const url = `https://router.project-osrm.org/route/v1/driving/${Number(userLocation.lng)},${Number(userLocation.lat)};${Number(carrierLocation.lng)},${Number(carrierLocation.lat)}?overview=full&geometries=geojson`;
 
         const res = await fetch(url);
         const data = await res.json();
@@ -225,32 +251,24 @@ function MapModal({ openMap, onClose, orderId, token, children }: MapProps) {
 
           <MapContainer
             center={[userLocation.lat, userLocation.lng]}
-            zoom={13}
+            zoom={8}
             style={{ width: "100%", height: "100%" }}
           >
-            <MapController expanded={expanded} route={route} />
+            <MapController
+              expanded={expanded}
+              route={route}
+              carrierLocation={carrierLocation}
+            />
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
             <Marker
               position={[userLocation.lat, userLocation.lng]}
-              // icon={L.icon({
-              //   iconUrl:
-              //     "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-              //   iconSize: [32, 32],
-              //   iconAnchor: [16, 32],
-              // })}
               icon={farmIcon}
             />
 
             {carrierLocation && (
               <Marker
                 position={[carrierLocation.lat, carrierLocation.lng]}
-                // icon={L.icon({
-                //   iconUrl:
-                //     "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
-                //   iconSize: [32, 32],
-                //   iconAnchor: [16, 32],
-                // })}
                 icon={truckIcon}
               />
             )}

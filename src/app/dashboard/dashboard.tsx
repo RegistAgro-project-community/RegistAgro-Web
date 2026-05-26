@@ -336,11 +336,11 @@ export default function Home() {
                                 <span
                                   className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                                     item.status === "delivered"
-                                      ? "bg-gray-100 text-gray-600 border-gray-200"
+                                      ? "bg-purple-100 text-purple-800 border border-purple-200"
                                       : item.transport_status === "pendente"
-                                        ? "bg-blue-100 text-blue-800 border border-blue-200"
+                                        ? "bg-orange-100 text-orange-800 border border-orange-200"
                                         : item.status === "incollection"
-                                          ? "bg-teal-100 text-teal-800 border border-teal-200"
+                                          ? "bg-cyan-100 text-cyan-800 border border-cyan-200"
                                           : item.status === "pendent"
                                             ? "bg-yellow-100 text-yellow-800 border border-yellow-200"
                                             : item.status === "confirmed"
@@ -348,7 +348,7 @@ export default function Home() {
                                               : item.status === "rejected"
                                                 ? "bg-red-100 text-red-800 border border-red-200"
                                                 : item.status === "ongoing"
-                                                  ? "bg-blue-50 text-blue-600 border-blue-100"
+                                                  ? "bg-blue-100 text-blue-800 border border-blue-200"
                                                   : ""
                                   }`}
                                 >
