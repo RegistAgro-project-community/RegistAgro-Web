@@ -28,20 +28,22 @@ type MapControllerProps = {
   expanded: boolean;
   route: LatLngExpression[];
   carrierLocation: LatLng | null;
-};
-
-const initialPosition: LatLng = {
-  lat: -8.8383,
-  lng: 13.2344,
+  destinationLocation: LatLng | null;
+  orderId?: string;
 };
 
 function MapController({
   expanded,
   route,
   carrierLocation,
+  destinationLocation,
+  orderId,
 }: MapControllerProps) {
   const map = useMap();
-  const hasFitted = useRef(false);
+  const fittedWithRoute = useRef(false);
+  useEffect(() => {
+    fittedWithRoute.current = false;
+  }, [orderId]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -49,123 +51,119 @@ function MapController({
     }, 200);
   }, [expanded, map]);
 
-
   useEffect(() => {
-    if (hasFitted.current) return;
-    console.log("route:", route.length);
-    console.log("carrierLocation:", carrierLocation);
-    if (route.length > 0) {
+    if (route.length > 0 && !fittedWithRoute.current) {
       const bounds = L.latLngBounds(route as [number, number][]);
-      map.fitBounds(bounds, { padding: [50, 50] });
-      hasFitted.current = true;
+
+      map.fitBounds(bounds, {
+        padding: [50, 50],
+      });
+
+      fittedWithRoute.current = true;
       return;
     }
 
-    if (carrierLocation) {
-      console.log("setView a executar com zoom 8");
-      map.setView([carrierLocation.lat, carrierLocation.lng], 1);
-      hasFitted.current = true; 
+    if (route.length === 0 && carrierLocation && destinationLocation) {
+      const bounds = L.latLngBounds([
+        [carrierLocation.lat, carrierLocation.lng],
+        [destinationLocation.lat, destinationLocation.lng],
+      ]);
+
+      map.fitBounds(bounds, {
+        padding: [60, 60],
+      });
+
+      return;
     }
-  }, [route, carrierLocation, map]);
+    if (route.length === 0 && carrierLocation && !destinationLocation) {
+      map.setView([carrierLocation.lat, carrierLocation.lng], 15);
+    }
+  }, [route, carrierLocation, destinationLocation, map]);
 
   return null;
 }
 
 function MapModal({ openMap, onClose, orderId, token, children }: MapProps) {
   const [expanded, setIsExpanded] = useState(false);
-  const [userLocation, setUserLocation] = useState<LatLng>(initialPosition);
   const [route, setRoute] = useState<LatLngExpression[]>([]);
-  const [loadingLocation, setLoadingLocation] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const truckIcon = L.divIcon({
     className: "",
     html: `
-    <div style="
-      background: #16a34a;
-      border-radius: 50%;
-      width: 38px;
-      height: 38px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-      border: 2px solid white;
-    ">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="white">
-        <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
-      </svg>
-    </div>
-  `,
+      <div style="
+        background: #16a34a;
+        border-radius: 50%;
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        border: 2px solid white;
+      ">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="white">
+          <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+        </svg>
+      </div>
+    `,
     iconSize: [38, 38],
     iconAnchor: [19, 19],
   });
 
-  const farmIcon = L.divIcon({
+  const destinationIcon = L.divIcon({
     className: "",
     html: `
-    <div style="
-      background: #2563eb;
-      border-radius: 50%;
-      width: 38px;
-      height: 38px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-      border: 2px solid white;
-    ">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="white">
-        <path d="M12 3L2 12h3v8h6v-5h2v5h6v-8h3L12 3zm0 2.7L19 12v7h-4v-5H9v5H5v-7l7-6.3z"/>
-        <path d="M10 12h4v4h-4z"/>
-      </svg>
-    </div>
-  `,
+      <div style="
+        background: #2563eb;
+        border-radius: 50%;
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        border: 2px solid white;
+      ">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="white">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+        </svg>
+      </div>
+    `,
     iconSize: [38, 38],
-    iconAnchor: [19, 19],
+    iconAnchor: [19, 38],
   });
 
   const { data: carrierData } = useLocationCarrier(
     openMap ? token : undefined,
     orderId ?? "",
   );
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const carrierLocation: LatLng | null =
-    carrierData?.latitude && carrierData?.longitude
+    carrierData?.origin?.[0] && carrierData?.origin?.[1]
       ? {
-          lat: Number(carrierData.latitude),
-          lng: Number(carrierData.longitude),
-        } 
+          lat: Number(carrierData.origin[0]),
+          lng: Number(carrierData.origin[1]),
+        }
       : null;
-
+  const destinationLocation: LatLng | null =
+    carrierData?.destination?.[0] && carrierData?.destination?.[1]
+      ? {
+          lat: Number(carrierData.destination[0]),
+          lng: Number(carrierData.destination[1]),
+        }
+      : null;
   useEffect(() => {
-    if (!openMap) return;
-    setLoadingLocation(true);
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setUserLocation({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-        setLoadingLocation(false);
-      },
-      (err) => {
-        console.error(err);
-        setLoadingLocation(false);
-      },
-    );
-  }, [openMap]);
-
+    setRoute([]);
+    setError(null);
+  }, [orderId]);
   useEffect(() => {
-    if (!openMap || !carrierLocation) return;
+    if (!openMap || !carrierLocation || !destinationLocation) return;
 
     const fetchRoute = async (): Promise<void> => {
       try {
         setError(null);
 
-        const url = `https://router.project-osrm.org/route/v1/driving/${Number(userLocation.lng)},${Number(userLocation.lat)};${Number(carrierLocation.lng)},${Number(carrierLocation.lat)}?overview=full&geometries=geojson`;
+        const url = `https://router.project-osrm.org/route/v1/driving/${carrierLocation.lng},${carrierLocation.lat};${destinationLocation.lng},${destinationLocation.lat}?overview=full&geometries=geojson`;
 
         const res = await fetch(url);
         const data = await res.json();
@@ -189,7 +187,19 @@ function MapModal({ openMap, onClose, orderId, token, children }: MapProps) {
     };
 
     fetchRoute();
-  }, [openMap, userLocation, carrierLocation]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    openMap,
+    carrierLocation?.lat,
+    carrierLocation?.lng,
+    destinationLocation?.lat,
+    destinationLocation?.lng,
+  ]);
+  useEffect(() => {
+  if (!openMap) {
+    setIsExpanded(false);
+  }
+}, [openMap]);
 
   const handleClose = (): void => {
     setIsExpanded(false);
@@ -217,6 +227,7 @@ function MapModal({ openMap, onClose, orderId, token, children }: MapProps) {
       >
         <div className="flex justify-between items-center p-3 bg-green-100 text-green-700 font-semibold">
           <span>Rastreamento do Veículo</span>
+
           <div className="flex gap-2">
             <button
               onClick={() => setIsExpanded(!expanded)}
@@ -226,57 +237,77 @@ function MapModal({ openMap, onClose, orderId, token, children }: MapProps) {
                 {expanded ? "fullscreen_exit" : "fullscreen"}
               </span>
             </button>
+
             {children}
           </div>
         </div>
 
         <div className="flex-1 relative">
-          {loadingLocation && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-600 z-10">
-              A obter localização...
+          {openMap && !carrierLocation && (
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/70 backdrop-blur-sm">
+              <div className="w-12 h-12 border-4 border-green-200 border-t-green-600 rounded-full animate-spin" />
+
+              <p className="mt-4 text-sm font-medium text-green-700">
+                A carregar localização do transporte...
+              </p>
             </div>
           )}
-
-          {!carrierLocation && !loadingLocation && (
+          {!carrierLocation && (
             <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-yellow-100 text-yellow-700 text-sm px-3 py-1 rounded z-10">
               A aguardar posição do transporte...
             </div>
           )}
-
           {error && (
             <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-red-100 text-red-700 text-sm px-3 py-1 rounded z-10">
               {error}
             </div>
           )}
 
-          <MapContainer
-            center={[userLocation.lat, userLocation.lng]}
-            zoom={8}
-            style={{ width: "100%", height: "100%" }}
-          >
-            <MapController
-              expanded={expanded}
-              route={route}
-              carrierLocation={carrierLocation}
-            />
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          {carrierLocation ? (
+            <MapContainer
+              key={orderId}
+              center={[carrierLocation.lat, carrierLocation.lng]}
+              zoom={13}
+              style={{ width: "100%", height: "100%" }}
+            >
+              <MapController
+                expanded={expanded}
+                route={route}
+                carrierLocation={carrierLocation}
+                destinationLocation={destinationLocation}
+                orderId={orderId}
+              />
 
-            <Marker
-              position={[userLocation.lat, userLocation.lng]}
-              icon={farmIcon}
-            />
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-            {carrierLocation && (
+              {/* Transportador */}
               <Marker
                 position={[carrierLocation.lat, carrierLocation.lng]}
                 icon={truckIcon}
               />
-            )}
 
-            {route.length > 0 && (
-              <Polyline positions={route} color="green" weight={5} />
-            )}
-          </MapContainer>
+              {/* Destino */}
+              {destinationLocation && (
+                <Marker
+                  position={[destinationLocation.lat, destinationLocation.lng]}
+                  icon={destinationIcon}
+                />
+              )}
+
+              {/* Linha da rota */}
+              {route.length > 0 && (
+                <Polyline positions={route} color="green" weight={5} />
+              )}
+            </MapContainer>
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center bg-white">
+              <div className="w-12 h-12 border-4 border-green-200 border-t-green-600 rounded-full animate-spin" />
+
+              <p className="mt-4 text-sm font-medium text-green-700">
+                A carregar localização do transporte...
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -32,6 +32,7 @@ export default function Produtos() {
   const [abertoDelete, setAbertoDelete] = useState(false);
   const [totalProduto, setTotalProduto] = useState("");
   const [estoqueBaixo, setEstoqueBaixo] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const [ganho, setGanho] = useState("");
   const [produtos, setProdutos] = useState<Product[]>([]);
   const token = Cookies.get("token");
@@ -53,7 +54,7 @@ export default function Produtos() {
     console.log(searchProduct);
   }
 
-  const { data, isLoading, error } = useProducts(token);
+  const { data, error } = useProducts(token);
   useEffect(() => {
     if (token && data) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -61,6 +62,7 @@ export default function Produtos() {
       setEstoqueBaixo(data.low_stock.toString() || "0");
       setGanho(data.balance);
       setProdutos([...data.products]);
+      setIsLoading(false);
     }
   }, [token, data]);
 

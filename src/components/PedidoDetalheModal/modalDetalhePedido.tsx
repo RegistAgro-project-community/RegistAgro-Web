@@ -188,7 +188,7 @@ function DetalhePedido({ openDetalhe, onClose, children, order }: DetalhePros) {
                     <td className="px-4 py-3">{order?.product.name}</td>
                     <td className="px-4 py-3 text-right font-medium">
                       {order?.qtd}
-                      {order?.unit}
+                      {order?.unit === "t" ? "ton" : order?.unit}
                     </td>
                   </tr>
                 </tbody>

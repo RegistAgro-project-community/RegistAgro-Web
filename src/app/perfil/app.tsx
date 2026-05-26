@@ -24,10 +24,10 @@ interface BackendError {
 export default function PerfilUsuario() {
   const [siderAberto, setSiderAberto] = useState(false);
   const [abertoEdit, setAbertoEdit] = useState(false);
-
   const [upload, setUpload] = useState(false);
   const [img, setImg] = useState("");
   const queryClient = useQueryClient();
+  const [isLoading, setIsLoading] = useState(true);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const toast = useRef<Toast>(null);
   const token = Cookies.get("token");
@@ -43,7 +43,7 @@ export default function PerfilUsuario() {
     nif: "",
   });
 
-  const { data, isLoading, error } = useProfile(token);
+  const { data, error } = useProfile(token);
   const userImgMutation = useMutation({
     mutationFn: handleFile,
     onSuccess: () => {
@@ -52,6 +52,7 @@ export default function PerfilUsuario() {
   });
   useEffect(() => {
     if (!data) return;
+    setIsLoading(false);
     setFormData((prev) => ({
       ...prev,
       name: data.data?.name || "",

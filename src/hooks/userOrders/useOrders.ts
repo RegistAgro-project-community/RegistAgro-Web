@@ -20,7 +20,7 @@ export function useOrders(token: string | undefined) {
     queryFn: fetchOrdersData,
     enabled: !!token,
     retry: 1,
-    refetchInterval: 1000 * 30,
+    refetchInterval: 100 * 30,
     refetchOnWindowFocus: false,
     
   });

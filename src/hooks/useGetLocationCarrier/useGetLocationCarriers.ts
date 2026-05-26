@@ -18,7 +18,7 @@ export function useLocationCarrier(token: string | undefined, id: string) {
     }
   }
   return useQuery({
-    queryKey: ["Carrier", token],
+    queryKey: ["Carrier", token, id],
     queryFn: fetchLocationCarrier,
     enabled: !!token,
     refetchInterval: 30000,

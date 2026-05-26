@@ -33,11 +33,12 @@ export default function Home() {
   const [correntPage] = useState(1);
   const [fazendaIgm, setFazendaImg] = useState("");
   const [ongoing, setOngoing] = useState("");
+   const [isLoading, setIsLoading] = useState(true);
   const [balance, setIsBalance] = useState("");
   const [pendentOrder, setPedentOrder] = useState("");
   const [totalProduto, setTotalProduto] = useState("");
   const [siderAberto, setSiderAberto] = useState(false);
-  const { data: orders, isLoading } = useOrders(token);
+  const { data: orders } = useOrders(token);
   const { data: profile } = useProfile(token);
   const { data: products } = useProducts(token);
 
@@ -50,6 +51,7 @@ export default function Home() {
       setOngoing(orders.ongoing || "");
       setTotalProduto(String(products.totalProducts));
       setIsBalance(profile.balance || "");
+      setIsLoading(false)
       setTotalOrders([...orders.orders]);
       console.log(token);
     }

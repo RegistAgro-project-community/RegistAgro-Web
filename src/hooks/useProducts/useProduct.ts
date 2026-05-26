@@ -20,7 +20,5 @@ export function useProducts(token: string | undefined) {
     queryKey: ["Products", token],
     queryFn: fetchPruductData,
     enabled: !!token,
-    refetchInterval: 1000 * 60 * 30,
-    refetchOnWindowFocus: false,
   });
 }

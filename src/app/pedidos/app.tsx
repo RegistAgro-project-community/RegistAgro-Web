@@ -28,6 +28,7 @@ interface OrderData {
 }
 export default function Pedidos() {
   const token = Cookies.get("token");
+  const [isLoading, setIsLoading] = useState(true);
   const [totalOrders, setTotalOrders] = useState<OrderData[]>([]);
   const [correntPage, setCorrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -52,7 +53,7 @@ export default function Pedidos() {
     console.log(searchProduct);
   }
 
-  const { data, isLoading, error } = useOrders(token);
+  const { data, error } = useOrders(token);
   useEffect(() => {
     if (token && data) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -60,6 +61,7 @@ export default function Pedidos() {
       setTotalOrders([...data.orders]);
       setIncollection(String(data.incollection));
       setTotalOrder(String(data.total));
+      setIsLoading(false);
     }
   }, [token, data]);
   console.log(totalOrders);
@@ -321,7 +323,7 @@ export default function Pedidos() {
                           <td className="px-6 py-5">
                             <p className="text-sm text-text-secondary font-medium">
                               {item.qtd}
-                              {item.unit}
+                              {item.unit === "t" ? "ton" : item.unit}
                             </p>
                           </td>
                           <td className="px-6 py-5">

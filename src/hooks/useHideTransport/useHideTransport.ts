@@ -24,7 +24,7 @@ export function useHideTransport(token: string | undefined) {
   return useMutation({
     mutationFn: fetchHideTransport,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["Corriers", token] });
+      queryClient.invalidateQueries({ queryKey: ["Orders", token] });
     },
   });
 }
