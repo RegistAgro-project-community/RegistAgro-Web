@@ -134,6 +134,8 @@ export default function Rotas() {
       setIsDelivered(data.delivered.toString() || "0");
       setIsOrders([...data.orders]);
       setIsLoading(false);
+    }else{
+      setIsLoading(false)
     }
   }, [token, data]);
   console.log(data);

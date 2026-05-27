@@ -43,19 +43,24 @@ export default function Home() {
   const { data: products } = useProducts(token);
 
   useEffect(() => {
-    if (token && orders && profile && products) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setFazendaName(profile.data.name || "");
-      setFazendaImg(profile.data.profile || "");
+  if (token && profile) {
+    setFazendaName(profile.data.name || "");
+    setFazendaImg(profile.data.profile || "");
+    setIsBalance(profile.balance || "");
+
+    if (orders) {
       setPedentOrder(orders.pendents || "");
       setOngoing(orders.ongoing || "");
-      setTotalProduto(String(products.totalProducts));
-      setIsBalance(profile.balance || "");
-      setIsLoading(false);
       setTotalOrders([...orders.orders]);
-      console.log(token);
     }
-  }, [token, orders, profile, products]);
+
+    if (products) {
+      setTotalProduto(String(products.totalProducts));
+    }
+
+    setIsLoading(false);
+  }
+}, [token, orders, profile, products]);
 
   const startIndex = (correntPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -125,7 +130,7 @@ export default function Home() {
                   </div>
                   <div className="h-10 w-10 bg-amber-200 rounded-full hidden md:block">
                     <img
-                      src={`${fazendaIgm ? fazendaIgm : "http://localhost:5500/upload/users/user-30-01-2026_145927.jpg"}`}
+                      src={`${fazendaIgm ? fazendaIgm : "https://api-registagro.onrender.com/upload/users/user-30-01-2026_145927.jpg"}`}
                       alt="Euclénio kkkk"
                       title="Foto de Perfil"
                       className="aspect-square w-full rounded-full object-cover border border-border-color"

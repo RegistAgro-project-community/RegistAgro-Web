@@ -63,6 +63,8 @@ export default function Produtos() {
       setGanho(data.balance);
       setProdutos([...data.products]);
       setIsLoading(false);
+    }else{
+      setIsLoading(false)
     }
   }, [token, data]);
 

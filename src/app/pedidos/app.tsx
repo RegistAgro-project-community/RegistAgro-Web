@@ -62,7 +62,11 @@ export default function Pedidos() {
       setIncollection(String(data.incollection));
       setTotalOrder(String(data.total));
       setIsLoading(false);
+
+    }else{
+      setIsLoading(false)
     }
+
   }, [token, data]);
   console.log(totalOrders);
   if (error) {
